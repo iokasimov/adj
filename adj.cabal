@@ -1,0 +1,28 @@
+name:                adj
+version:             0.0.1
+synopsis:            Abstract algebra base library
+description:         Because programs could be so much better
+homepage:            https://github.com/iokasimov/adj
+license:             MIT
+license-file:        LICENSE
+extra-source-files:  CHANGELOG.md, README.md
+author:              Murat Kasimov
+maintainer:          Murat Kasimov <iokasimov.m@gmail.com>
+copyright:           Copyright (c) 2019 Murat Kasimov
+category:            Data, Control
+build-type:          Simple
+cabal-version:       >= 1.10
+
+source-repository head
+  type: git
+  location: https://github.com/iokasimov/adj.git
+
+library
+  exposed-modules:
+  default-extensions:
+    DataKinds, ConstraintKinds, ExistentialQuantification, GADTs, QuantifiedConstraints, InstanceSigs, StandaloneKindSignatures
+    FlexibleContexts, FlexibleInstances, KindSignatures, StandaloneKindSignatures, LiberalTypeSynonyms, LambdaCase, FunctionalDependencies
+    MultiParamTypeClasses, NoImplicitPrelude, PackageImports, PolyKinds, RankNTypes, ViewPatterns
+    ScopedTypeVariables, TypeApplications, TypeFamilies, TypeFamilyDependencies, TypeOperators
+  default-language: Haskell2010
+  ghc-options: -Wall -fno-warn-tabs -fno-warn-unticked-promoted-constructors -fprint-potential-instances
