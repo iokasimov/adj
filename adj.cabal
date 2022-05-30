@@ -19,6 +19,10 @@ source-repository head
 
 library
   exposed-modules:
+    Adj
+    Adj.Algebra
+    Adj.Algebra.Semigroupoid
+    Adj.Program
   default-extensions:
     DataKinds, ConstraintKinds, ExistentialQuantification, GADTs, QuantifiedConstraints, InstanceSigs, StandaloneKindSignatures
     FlexibleContexts, FlexibleInstances, KindSignatures, StandaloneKindSignatures, LiberalTypeSynonyms, LambdaCase, FunctionalDependencies
