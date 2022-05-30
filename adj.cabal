@@ -22,6 +22,7 @@ library
     Adj
     Adj.Algebra
     Adj.Algebra.Semigroupoid
+    Adj.Algebra.Category
     Adj.Program
   default-extensions:
     DataKinds, ConstraintKinds, ExistentialQuantification, GADTs, QuantifiedConstraints, InstanceSigs, StandaloneKindSignatures
