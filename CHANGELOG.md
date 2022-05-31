@@ -3,3 +3,4 @@
 * Define `Adj.Program` module
 * Define `Adj.Algebra.Semigroupoid` module
 * Define `Adj.Algebra.Category` module
+* Define `Adj.Algebra.Functor` module
