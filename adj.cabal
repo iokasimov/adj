@@ -25,7 +25,7 @@ library
     Adj.Algebra.Category
     Adj.Algebra.Functor
     Adj.Algebra.Morphism
-    Adj.Algebra.Morphism.Straight
+    Adj.Algebra.Morphism.Flat
     Adj.Program
   default-extensions:
     DataKinds, ConstraintKinds, ExistentialQuantification, GADTs, QuantifiedConstraints, InstanceSigs, StandaloneKindSignatures

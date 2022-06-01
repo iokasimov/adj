@@ -5,4 +5,4 @@
 * Define `Adj.Algebra.Category` module
 * Define `Adj.Algebra.Functor` module
 * Define `Adj.Algebra.Morphism` module
-* Define `Adj.Algebra.Morphism.Straight` module
+* Define `Adj.Algebra.Morphism.Flat` module
