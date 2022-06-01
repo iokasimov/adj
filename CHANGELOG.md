@@ -4,3 +4,5 @@
 * Define `Adj.Algebra.Semigroupoid` module
 * Define `Adj.Algebra.Category` module
 * Define `Adj.Algebra.Functor` module
+* Define `Adj.Algebra.Morphism` module
+* Define `Adj.Algebra.Morphism.Straight` module
