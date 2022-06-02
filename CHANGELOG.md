@@ -16,3 +16,5 @@
 * Define `Adj.Algebra.Sum` module
 * Define `Adj.Algebra.Initial` module
 * Define `Adj.Algebra.Terminal` module
+
+# 0.0.2
