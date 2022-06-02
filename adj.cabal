@@ -30,6 +30,7 @@ library
     Adj.Algebra.Morphism.Kleisli
     Adj.Algebra.Product
     Adj.Algebra.Sum
+    Adj.Algebra.Initial
     Adj.Program
   default-extensions:
     DataKinds, ConstraintKinds, ExistentialQuantification, GADTs, QuantifiedConstraints, InstanceSigs, StandaloneKindSignatures

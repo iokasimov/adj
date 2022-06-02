@@ -14,3 +14,4 @@
 * Define `(<-\-)` type alias
 * Define `Adj.Algebra.Product` module
 * Define `Adj.Algebra.Sum` module
+* Define `Adj.Algebra.Initial` module
