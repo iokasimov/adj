@@ -7,3 +7,5 @@
 * Define `Adj.Algebra.Morphism` module
 * Define `Adj.Algebra.Morphism.Flat` module
 * Define `Adj.Algebra.Morphism.Dual` module
+* Define `(-->)` type alias
+* Define `(<--)` type alias
