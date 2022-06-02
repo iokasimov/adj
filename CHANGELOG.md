@@ -12,3 +12,4 @@
 * Define `Adj.Algebra.Morphism.Kleisli` module
 * Define `(-/->)` type alias
 * Define `(<-\-)` type alias
+* Define `Adj.Algebra.Product` module
