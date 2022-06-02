@@ -27,6 +27,7 @@ library
     Adj.Algebra.Morphism
     Adj.Algebra.Morphism.Flat
     Adj.Algebra.Morphism.Dual
+    Adj.Algebra.Morphism.Kleisli
     Adj.Program
   default-extensions:
     DataKinds, ConstraintKinds, ExistentialQuantification, GADTs, QuantifiedConstraints, InstanceSigs, StandaloneKindSignatures
