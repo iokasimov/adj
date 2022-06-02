@@ -31,6 +31,7 @@ library
     Adj.Algebra.Product
     Adj.Algebra.Sum
     Adj.Algebra.Initial
+    Adj.Algebra.Terminal
     Adj.Program
   default-extensions:
     DataKinds, ConstraintKinds, ExistentialQuantification, GADTs, QuantifiedConstraints, InstanceSigs, StandaloneKindSignatures
