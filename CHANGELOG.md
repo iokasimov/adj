@@ -18,3 +18,4 @@
 * Define `Adj.Algebra.Terminal` module
 
 # 0.0.2
+* Define `Adj.Algebra.Unit` module

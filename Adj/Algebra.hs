@@ -8,3 +8,4 @@ import Adj.Algebra.Product as Exports
 import Adj.Algebra.Sum as Exports
 import Adj.Algebra.Initial as Exports
 import Adj.Algebra.Terminal as Exports
+import Adj.Algebra.Unit as Exports
