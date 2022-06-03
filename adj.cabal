@@ -34,6 +34,8 @@ library
     Adj.Algebra.Terminal
     Adj.Algebra.Unit
     Adj.Program
+    Adj.Program.Instruction
+    Adj.Program.Construction
   default-extensions:
     DataKinds, ConstraintKinds, ExistentialQuantification, GADTs, QuantifiedConstraints, InstanceSigs, StandaloneKindSignatures
     FlexibleContexts, FlexibleInstances, KindSignatures, StandaloneKindSignatures, LiberalTypeSynonyms, LambdaCase, FunctionalDependencies

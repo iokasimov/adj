@@ -19,3 +19,5 @@
 
 # 0.0.2
 * Define `Adj.Algebra.Unit` module
+* Define `Adj.Program.Instruction` module
+* Define `Adj.Program.Construction` module
