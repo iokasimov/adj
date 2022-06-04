@@ -19,11 +19,20 @@ type family Contravariant x source target functor where
 	Contravariant Functor source target functor = 
 		Functor (Flat source) (Dual target) functor 
 
-instance Functor (-->) (-->) ((:*:) left) where
+instance Functor (-->) (-->) ((Flat (:*:)) left) where
 	map (Flat m) = Flat .: \case
-		left :*: right -> left :*: m right
+		Flat (left :*: right) -> Flat (left :*: m right)
 
-instance Functor (-->) (-->) ((:+:) left) where
+instance Functor (-->) (-->) ((Flat (:+:)) left) where
 	map (Flat m) = Flat .: \case
-		Option left -> Option left
-		Adoption x -> Adoption .: m x
+		Flat (Option left) -> Flat (Option left)
+		Flat (Adoption right) -> Flat (Adoption .: m right)
+
+instance Functor (-->) (-->) ((Dual (:*:)) right) where
+	map (Flat m) = Flat .: \case
+		Dual (left :*: right) -> Dual (m left :*: right)
+
+instance Functor (-->) (-->) ((Dual (:+:)) right) where
+	map (Flat m) = Flat .: \case
+		Dual (Option left) -> Dual (Option .: m left)
+		Dual (Adoption right) -> Dual (Adoption right)
