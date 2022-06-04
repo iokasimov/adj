@@ -2,12 +2,12 @@ module Adj.Algebra.Category where
 
 import Adj.Algebra.Semigroupoid (Semigroupoid)
 
+infixl 8 .:
+
 {- |
 > * Left identity: identity . f ≡ f
 > * Right identity: f . identity ≡ f
 -}
-
-infixl 8 .:
 
 class Semigroupoid morphism => Category morphism where
 	identity :: morphism source source
