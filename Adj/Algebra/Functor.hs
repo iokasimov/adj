@@ -7,5 +7,5 @@ import Adj.Algebra.Category (Category)
 > * Composition preserving: map (f . g) ≡ map f . map g
 -}
 
-class (Category source, Category target) => Functor source target t where
-	map :: source a b -> target (t a) (t b)
+class (Category from, Category to) => Functor from to functor where
+	map :: from source target -> to (functor source) (functor target)

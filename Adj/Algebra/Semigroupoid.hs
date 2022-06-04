@@ -7,4 +7,6 @@ infixr 9 .
 -}
 
 class Semigroupoid morphism where
-	(.) :: morphism b c -> morphism a b -> morphism a c
+	(.) :: morphism between target
+		-> morphism source between
+		-> morphism source target

@@ -8,4 +8,4 @@ import Adj.Algebra.Semigroupoid (Semigroupoid)
 -}
 
 class Semigroupoid morphism => Category morphism where
-	identity :: morphism a a
+	identity :: morphism source source
