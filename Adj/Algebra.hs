@@ -1,3 +1,4 @@
+{-# OPTIONS_GHC -fno-warn-orphans #-}
 module Adj.Algebra (module Exports, Covariant) where
 
 import Adj.Algebra.Semigroupoid as Exports
@@ -17,3 +18,12 @@ type family Covariant x source target functor where
 type family Contravariant x source target functor where
 	Contravariant Functor source target functor = 
 		Functor (Flat source) (Dual target) functor 
+
+instance Functor (-->) (-->) ((:*:) left) where
+	map (Flat m) = Flat .: \case
+		left :*: right -> left :*: m right
+
+instance Functor (-->) (-->) ((:+:) left) where
+	map (Flat m) = Flat .: \case
+		Option left -> Option left
+		Adoption x -> Adoption .: m x
