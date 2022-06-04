@@ -22,3 +22,4 @@
 * Define `Adj.Program.Instruction` module
 * Define `Adj.Program.Construction` module
 * Define `:.` method in `Categroy` typeclass
+* Define `Adj.Program.Option` module

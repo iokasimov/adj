@@ -36,10 +36,11 @@ library
     Adj.Program
     Adj.Program.Instruction
     Adj.Program.Construction
+    Adj.Program.Option
   default-extensions:
     DataKinds, ConstraintKinds, ExistentialQuantification, GADTs, QuantifiedConstraints, InstanceSigs, StandaloneKindSignatures
     FlexibleContexts, FlexibleInstances, KindSignatures, StandaloneKindSignatures, LiberalTypeSynonyms, LambdaCase, FunctionalDependencies
-    MultiParamTypeClasses, NoImplicitPrelude, PackageImports, PolyKinds, RankNTypes, ViewPatterns
+    MultiParamTypeClasses, NoImplicitPrelude, PackageImports, PolyKinds, RankNTypes, ViewPatterns, PatternSynonyms
     ScopedTypeVariables, TypeApplications, TypeFamilies, TypeFamilyDependencies, TypeOperators
   default-language: Haskell2010
   ghc-options: -Wall -fno-warn-tabs -fno-warn-unticked-promoted-constructors -fprint-potential-instances
