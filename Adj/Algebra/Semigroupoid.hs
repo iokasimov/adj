@@ -10,3 +10,6 @@ class Semigroupoid morphism where
 	(.) :: morphism between target
 		-> morphism source between
 		-> morphism source target
+
+instance Semigroupoid (->) where
+	g . f = \x -> g (f x)

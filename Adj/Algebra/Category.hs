@@ -9,3 +9,6 @@ import Adj.Algebra.Semigroupoid (Semigroupoid)
 
 class Semigroupoid morphism => Category morphism where
 	identity :: morphism source source
+
+instance Category (->) where
+	identity = \x -> x
