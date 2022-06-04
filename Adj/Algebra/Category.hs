@@ -7,6 +7,8 @@ import Adj.Algebra.Semigroupoid (Semigroupoid)
 > * Right identity: f . identity ≡ f
 -}
 
+infixl 8 .:
+
 class Semigroupoid morphism => Category morphism where
 	identity :: morphism source source
 
