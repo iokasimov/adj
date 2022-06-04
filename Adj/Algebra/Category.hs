@@ -2,7 +2,8 @@
 {-# LANGUAGE UndecidableInstances #-}
 module Adj.Algebra.Category where
 
-infixr 7 :*:, :+:
+infixr 6 <-\-, -/->
+infixr 7 :*:, :+:, <--, -->
 infixl 8 .:
 infixr 9 .
 
@@ -68,8 +69,11 @@ type family Contravariant x source target functor where
 -- instance Category (Kleisli functor target) where
 
 type (-->) = Flat (->)
+
 type (<--) = Dual (->)
+
 type (-/->) t = Kleisli t (-->)
+
 type (<-\-) t = Kleisli t (<--)
 
 data (:*:) left right = left :*: right
