@@ -7,8 +7,8 @@ newtype Flat morphism source target = Flat (morphism source target)
 
 type (-->) = Flat (->)
 
-instance Semigroupoid (-->) where
-	Flat g . Flat f = Flat (\x -> g (f x))
+instance Semigroupoid morhism => Semigroupoid (Flat morhism) where
+	Flat g . Flat f = Flat (g . f)
 
-instance Category (-->) where
-	identity = Flat (\x -> x)
+instance Category morhism => Category (Flat morhism) where
+	identity = Flat identity

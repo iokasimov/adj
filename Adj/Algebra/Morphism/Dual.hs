@@ -7,8 +7,8 @@ newtype Dual morphism source target = Dual (morphism target source)
 
 type (<--) = Dual (->)
 
-instance Semigroupoid (<--) where
-	Dual f . Dual g = Dual (\x -> g (f x))
+instance Semigroupoid morhism => Semigroupoid (Dual morhism) where
+	Dual g . Dual f = Dual (f . g)
 
-instance Category (<--) where
-	identity = Dual (\x -> x)
+instance Category morhism => Category (Dual morhism) where
+	identity = Dual identity
