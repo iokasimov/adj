@@ -35,3 +35,4 @@
 * Move `Unit` module content to `Category`
 
 # 0.0.3
+* Make `Unit` type family closed

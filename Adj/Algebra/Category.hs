@@ -84,9 +84,15 @@ data Initial
 
 data Terminal = Terminal
 
-type family Unit (p :: * -> * -> *) = r | r -> p
-type instance Unit (:*:) = Terminal
-type instance Unit (:+:) = Initial
+type family Unit p = r | r -> p where
+	Unit (:*:) = Terminal
+	Unit (:+:) = Initial
+
+instance Category (->) where
+	identity = \x -> x
+
+instance Semigroupoid (->) where
+	g . f = \x -> g (f x)
 
 instance Functor (-->) (-->) ((Flat (:*:)) left) where
 	map (Flat m) = Flat .: \case
@@ -105,9 +111,3 @@ instance Functor (-->) (-->) ((Dual (:+:)) right) where
 	map (Flat m) = Flat .: \case
 		Dual (Option left) -> Dual (Option .: m left)
 		Dual (Adoption right) -> Dual (Adoption right)
-
-instance Category (->) where
-	identity = \x -> x
-
-instance Semigroupoid (->) where
-	g . f = \x -> g (f x)
