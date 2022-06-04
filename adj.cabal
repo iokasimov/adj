@@ -21,18 +21,7 @@ library
   exposed-modules:
     Adj
     Adj.Algebra
-    Adj.Algebra.Semigroupoid
     Adj.Algebra.Category
-    Adj.Algebra.Functor
-    Adj.Algebra.Morphism
-    Adj.Algebra.Morphism.Flat
-    Adj.Algebra.Morphism.Dual
-    Adj.Algebra.Morphism.Kleisli
-    Adj.Algebra.Product
-    Adj.Algebra.Sum
-    Adj.Algebra.Initial
-    Adj.Algebra.Terminal
-    Adj.Algebra.Unit
     Adj.Program
     Adj.Program.Instruction
     Adj.Program.Construction

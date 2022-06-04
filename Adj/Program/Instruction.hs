@@ -1,10 +1,6 @@
 module Adj.Program.Instruction where
 
-import Adj.Algebra.Morphism.Flat (type (-->), Flat (Flat))
-import Adj.Algebra.Semigroupoid ((.))
-import Adj.Algebra.Category ((.:))
-import Adj.Algebra.Functor (Functor (map))
-import Adj.Algebra.Sum ((:+:) (Option, Adoption))
+import Adj.Algebra.Category ((.), (.:), Functor (map), (:+:) (Option, Adoption), type (-->), Flat (Flat))
 
 newtype Instruction t a = Instruction (a :+: t (Instruction t a))
 

@@ -1,7 +1,6 @@
 module Adj.Program.Option where
 
-import Adj.Algebra.Sum ((:+:) (Option, Adoption))
-import Adj.Algebra.Terminal (Terminal (Terminal))
+import Adj.Algebra.Category ((:+:) (Option, Adoption), Terminal (Terminal))
 
 type Option = (:+:) Terminal
 

@@ -1,10 +1,6 @@
 module Adj.Program.Construction where
 
-import Adj.Algebra.Morphism.Flat (type (-->), Flat (Flat))
-import Adj.Algebra.Semigroupoid ((.))
-import Adj.Algebra.Category ((.:))
-import Adj.Algebra.Functor (Functor (map))
-import Adj.Algebra.Product ((:*:) ((:*:)))
+import Adj.Algebra.Category ((.), (.:), Functor (map), (:*:) ((:*:)), type (-->), Flat (Flat))
 
 newtype Construction t a = Construction (a :*: t (Construction t a))
 
