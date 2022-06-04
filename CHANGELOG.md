@@ -33,3 +33,5 @@
 * Move `Terminal` module content to `Category`
 * Move `Initial` module content to `Category`
 * Move `Unit` module content to `Category`
+
+# 0.0.3
