@@ -111,3 +111,6 @@ instance Functor (-->) (-->) ((Dual (:+:)) right) where
 	map (Flat m) = Flat .: \case
 		Dual (Option left) -> Dual (Option .: m left)
 		Dual (Adoption right) -> Dual (Adoption right)
+
+(|->) :: Covariant Functor (->) (->) f => f s -> (s -> t) -> f t
+x |-> m = let Flat change = map (Flat m) in change x
