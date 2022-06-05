@@ -52,3 +52,4 @@
 
 # 0.0.3
 * Make `Unit` type family closed
+* Define `-=-` and `=-=` operators in `Disbandable` typeclass

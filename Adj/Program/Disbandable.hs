@@ -2,6 +2,7 @@ module Adj.Program.Disbandable where
 
 import Adj.Algebra (Flat (Flat), Dual (Dual), Kleisli (Kleisli))
 
+infixl 7 =-=, -=-
 infixl 8 =-, -=
 
 class Disbandable t where
@@ -9,6 +10,12 @@ class Disbandable t where
 	type Primary t a :: *
 	(=-) :: t a -> Primary t a
 	(-=) :: Primary t a -> t a
+
+	(=-=) :: (Primary t a -> Primary t b) -> t a -> t b
+	m =-= x = (-=) (m ((=-) x))
+	
+	(-=-) :: (t a -> t b) -> Primary t a -> Primary t b
+	m -=- x = (=-) (m ((-=) x))
 
 instance Disbandable (Flat morphism source) where
 	type Primary (Flat morphism source) target = morphism source target
