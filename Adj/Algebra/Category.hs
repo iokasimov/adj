@@ -1,4 +1,5 @@
 {-# OPTIONS_GHC -fno-warn-orphans #-}
+{-# LANGUAGE AllowAmbiguousTypes #-}
 {-# LANGUAGE UndecidableInstances #-}
 module Adj.Algebra.Category where
 
@@ -32,11 +33,29 @@ class Semigroupoid morphism => Category morphism where
 > * Composition preserving: map (f . g) ≡ map f . map g
 -}
 
-class (Category from, Category to) => Functor from to functor where
-	map :: from source target -> to (functor source) (functor target)
-
 type family Betwixt from to = btw | btw -> from to where
 	Betwixt category category = category
+
+class (Category from, Category to) => Functor from to f where
+	map :: from source target -> to (f source) (f target)
+
+	(-|) :: from source target -> to (f source) (f target)
+	(-|) = map
+	
+	(-|-|)
+		:: Functor from (Betwixt from to) f 
+		=> Functor from (Betwixt from to) g
+		=> Functor (Betwixt from to) from f
+		=> Functor (Betwixt from to) from g
+		=> from source target -> from (f (g source)) (f (g target))
+	(-|-|) m = ((-|) ((-|) @from @(Betwixt from to) m))
+	
+	(-|-|-|)
+		:: Functor from (Betwixt from (Betwixt from to)) h
+		=> Functor (Betwixt from (Betwixt from to)) (Betwixt (Betwixt from to) to) g
+		=> Functor (Betwixt (Betwixt from to) to) to f
+		=> from source target -> to (f (g (h source))) (f (g (h target)))
+	(-|-|-|) m = ((-|) @(Betwixt (Betwixt from to) to) @to ((-|) @(Betwixt from (Betwixt from to)) @(Betwixt (Betwixt from to) to) @_ ((-|) @from @(Betwixt from (Betwixt from to)) @_ m)))
 
 newtype Flat morphism source target = Flat (morphism source target)
 
@@ -116,10 +135,10 @@ instance Functor (-->) (-->) ((Dual (:+:)) right) where
 		Dual (Adoption right) -> Dual (Adoption right)
 
 (|->) :: Covariant Functor (->) (->) f => f s -> (s -> t) -> f t
-x |-> m = let Flat change = map (Flat m) in change x
+x |-> m = let Flat change = (-|) (Flat m) in change x
 
 (|-|->) :: (Covariant Functor (->) (->) f, Covariant Functor (->) (->) f') => f (f' s) -> (s -> t) -> f (f' t)
-x |-|-> m = let Flat change = map @(-->) @(-->) . map @(-->) @(-->) .: Flat m in change x
+x |-|-> m = let Flat change = (-|-|) (Flat m) in change x
 
 (|-|-|->) :: (Covariant Functor (->) (->) f, Covariant Functor (->) (->) f', Covariant Functor (->) (->) f'') => f (f' (f'' s)) -> (s -> t) -> f (f' (f'' t))
-x |-|-|-> m = let Flat change = map @(-->) @(-->) . map @(-->) @(-->) . map @(-->) @(-->) .: Flat m in change x
+x |-|-|-> m = let Flat change = (-|-|-|) (Flat m) in change x

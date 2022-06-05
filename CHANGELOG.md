@@ -57,3 +57,6 @@
 * Define `Betwixt` type family in `Adj.Algebara.Category` module
 * Define `|-|->` operator in `Adj.Algebra.Category` module
 * Define `|-|-|->` operator in `Adj.Algebra.Category` module
+* Define `-|` operator in `Functor` typeclass
+* Define `-|-|` operator in `Functor` typeclass
+* Define `-|-|-|` operator in `Functor` typeclass
