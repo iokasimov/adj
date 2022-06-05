@@ -35,6 +35,9 @@ class Semigroupoid morphism => Category morphism where
 class (Category from, Category to) => Functor from to functor where
 	map :: from source target -> to (functor source) (functor target)
 
+type family Betwixt from to = btw | btw -> from to where
+	Betwixt category category = category
+
 newtype Flat morphism source target = Flat (morphism source target)
 
 instance Semigroupoid morhism => Semigroupoid (Flat morhism) where
