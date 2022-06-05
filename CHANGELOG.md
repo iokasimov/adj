@@ -55,3 +55,5 @@
 * Define `-=-` and `=-=` operators in `Disbandable` typeclass
 * Define `|->` operator in `Adj.Algebra.Category` module
 * Define `Betwixt` type family in `Adj.Algebara.Category` module
+* Define `|-|->` operator in `Adj.Algebra.Category` module
+* Define `|-|-|->` operator in `Adj.Algebra.Category` module

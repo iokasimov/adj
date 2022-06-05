@@ -117,3 +117,9 @@ instance Functor (-->) (-->) ((Dual (:+:)) right) where
 
 (|->) :: Covariant Functor (->) (->) f => f s -> (s -> t) -> f t
 x |-> m = let Flat change = map (Flat m) in change x
+
+(|-|->) :: (Covariant Functor (->) (->) f, Covariant Functor (->) (->) f') => f (f' s) -> (s -> t) -> f (f' t)
+x |-|-> m = let Flat change = map @(-->) @(-->) . map @(-->) @(-->) .: Flat m in change x
+
+(|-|-|->) :: (Covariant Functor (->) (->) f, Covariant Functor (->) (->) f', Covariant Functor (->) (->) f'') => f (f' (f'' s)) -> (s -> t) -> f (f' (f'' t))
+x |-|-|-> m = let Flat change = map @(-->) @(-->) . map @(-->) @(-->) . map @(-->) @(-->) .: Flat m in change x
