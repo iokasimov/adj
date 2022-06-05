@@ -2,6 +2,8 @@ module Adj.Program.Disbandable where
 
 import Adj.Algebra (Flat (Flat), Dual (Dual), Kleisli (Kleisli))
 
+infixl 8 =-, -=
+
 class Disbandable t where
 	{-# MINIMAL (=-), (-=) #-}
 	type Primary t a :: *
