@@ -36,3 +36,19 @@
 
 # 0.0.3
 * Make `Unit` type family closed
+* Define `Adj.Program.Disbandable` module
+* Define `:.` method in `Categroy` typeclass
+* Define `Adj.Program.Option` module
+* Define `Covariant` type family
+* Define `Contravariant` type family
+* Move `Semigroupoid` module content to `Category`
+* Move `Morphism` module content to `Category`
+* Move `Functor` module content to `Category`
+* Move `Product` module content to `Category`
+* Move `Sum` module content to `Category`
+* Move `Terminal` module content to `Category`
+* Move `Initial` module content to `Category`
+* Move `Unit` module content to `Category`
+
+# 0.0.3
+* Make `Unit` type family closed

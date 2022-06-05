@@ -23,6 +23,7 @@ library
     Adj.Algebra
     Adj.Algebra.Category
     Adj.Program
+    Adj.Program.Disbandable
     Adj.Program.Instruction
     Adj.Program.Construction
     Adj.Program.Option
