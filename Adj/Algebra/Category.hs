@@ -3,10 +3,17 @@
 {-# LANGUAGE UndecidableInstances #-}
 module Adj.Algebra.Category where
 
-infixr 6 <-\-, -/->
-infixr 7 :*:, :+:, <--, -->
 infixl 8 .:
 infixr 9 .
+
+infixr 6 <-\-, -/->
+infixr 7 <--, -->
+
+infixr 7 :*:, :+:
+
+infixl 4 -|-|-|
+infixl 6 -|-|
+infixl 8 -|
 
 {- |
 > * Associativity: f . (g . h) ≡ (f . g) . h
