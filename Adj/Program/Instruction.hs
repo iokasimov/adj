@@ -1,7 +1,7 @@
 module Adj.Program.Instruction where
 
+import Adj.Auxiliary (Casting (Primary, (=-), (-=)))
 import Adj.Algebra.Category ((.:), Functor (map), (|-|->), (:+:) (Option, Adoption), type (-->), Flat (Flat))
-import Adj.Program.Casting (Casting (Primary, (=-), (-=)))
 
 newtype Instruction t a = Instruction (a :+: t (Instruction t a))
 

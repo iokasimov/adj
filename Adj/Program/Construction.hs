@@ -1,7 +1,7 @@
 module Adj.Program.Construction where
 
+import Adj.Auxiliary (Casting (Primary, (=-), (-=)))
 import Adj.Algebra ((.:), Functor (map), (|-|->), (:*:) ((:*:)), type (-->), Flat (Flat))
-import Adj.Program.Casting (Casting (Primary, (=-), (-=)))
 
 newtype Construction t a = Construction (a :*: t (Construction t a))
 

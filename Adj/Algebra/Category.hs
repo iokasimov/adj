@@ -3,6 +3,8 @@
 {-# LANGUAGE UndecidableInstances #-}
 module Adj.Algebra.Category where
 
+import Adj.Auxiliary (Casting (Primary, (-=), (=-)))
+
 infixl 8 .:
 infixr 9 .
 
@@ -73,6 +75,11 @@ class (Category from, Category to) => Functor from to f where
 
 newtype Flat morphism source target = Flat (morphism source target)
 
+instance Casting (Flat morphism source) where
+	type Primary (Flat morphism source) target = morphism source target
+	(=-) (Flat m) = m
+	(-=) m = Flat m
+
 instance Semigroupoid morhism => Semigroupoid (Flat morhism) where
 	Flat g . Flat f = Flat .: g . f
 
@@ -81,6 +88,11 @@ instance Category morhism => Category (Flat morhism) where
 
 newtype Dual morphism source target = Dual (morphism target source)
 
+instance Casting (Dual morphism target) where
+	type Primary (Dual morphism target) source = morphism source target
+	(=-) (Dual m) = m
+	(-=) m = Dual m
+
 instance Semigroupoid morhism => Semigroupoid (Dual morhism) where
 	Dual g . Dual f = Dual .: f . g
 
@@ -88,6 +100,11 @@ instance Category morhism => Category (Dual morhism) where
 	identity = Dual identity
 
 newtype Kleisli effect morphism source target = Kleisli (morphism source (effect target))
+
+instance Casting (Kleisli effect morphism source) where
+	type Primary (Kleisli effect morphism source) target = morphism source (effect target)
+	(=-) (Kleisli m) = m
+	(-=) m = Kleisli m
 
 instance Functor (Kleisli functor target) target functor
 	=> Semigroupoid (Kleisli functor target) where

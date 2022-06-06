@@ -22,8 +22,8 @@ library
     Adj
     Adj.Algebra
     Adj.Algebra.Category
+    Adj.Auxiliary
     Adj.Program
-    Adj.Program.Casting
     Adj.Program.Instruction
     Adj.Program.Construction
     Adj.Program.Option
