@@ -60,3 +60,4 @@
 * Define `-|` operator in `Functor` typeclass
 * Define `-|-|` operator in `Functor` typeclass
 * Define `-|-|-|` operator in `Functor` typeclass
+* Rename `Disbandable` typeclass and module to `Casting`
