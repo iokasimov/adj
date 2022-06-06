@@ -40,7 +40,7 @@ class (Category from, Category to) => Functor from to f where
 	map :: from source target -> to (f source) (f target)
 
 	(-|) :: from source target -> to (f source) (f target)
-	(-|) = map
+	(-|) = map @from @to
 	
 	(-|-|)
 		:: Functor from (Betwixt from to) f 
@@ -48,14 +48,21 @@ class (Category from, Category to) => Functor from to f where
 		=> Functor (Betwixt from to) from f
 		=> Functor (Betwixt from to) from g
 		=> from source target -> from (f (g source)) (f (g target))
-	(-|-|) m = ((-|) ((-|) @from @(Betwixt from to) m))
+	(-|-|) morphism 
+		= map @(Betwixt from to) @from
+		. map @from @(Betwixt from to)
+		.: morphism
 	
 	(-|-|-|)
 		:: Functor from (Betwixt from (Betwixt from to)) h
 		=> Functor (Betwixt from (Betwixt from to)) (Betwixt (Betwixt from to) to) g
 		=> Functor (Betwixt (Betwixt from to) to) to f
 		=> from source target -> to (f (g (h source))) (f (g (h target)))
-	(-|-|-|) m = ((-|) @(Betwixt (Betwixt from to) to) @to ((-|) @(Betwixt from (Betwixt from to)) @(Betwixt (Betwixt from to) to) @_ ((-|) @from @(Betwixt from (Betwixt from to)) @_ m)))
+	(-|-|-|) morphism
+		= map @(Betwixt (Betwixt from to) to) @to
+		. map @(Betwixt from (Betwixt from to)) @(Betwixt (Betwixt from to) to)
+		. map @from @(Betwixt from (Betwixt from to)) 
+		.: morphism
 
 newtype Flat morphism source target = Flat (morphism source target)
 
