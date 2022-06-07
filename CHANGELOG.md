@@ -69,3 +69,5 @@
 * Define `Semimonoidal` type family
 * Rename `Option` constructor to `This`
 * Rename `Adoption` constructor to `That`
+
+# 0.0.4
