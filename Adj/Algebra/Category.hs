@@ -164,6 +164,14 @@ instance Category (->) where
 instance Semigroupoid (->) where
 	g . f = \x -> g (f x)
 
+type (-*~*->) t = Tensor t (:*:) (:*:) (-->)
+
+type (-+~*->) t = Tensor t (:+:) (:*:) (-->)
+
+type (-*~+->) t = Tensor t (:*:) (:+:) (-->)
+
+type (-+~+->) t = Tensor t (:+:) (:+:) (-->)
+
 instance Functor (-->) (-->) ((Flat (:*:)) left) where
 	map (Flat m) = Flat .: \case
 		Flat (left :*: right) -> Flat (left :*: m right)

@@ -71,3 +71,7 @@
 * Rename `Adoption` constructor to `That`
 
 # 0.0.4
+* Define `-*~*->` type alias
+* Define `-+~*->` type alias
+* Define `-*~+->` type alias
+* Define `-+~+->` type alias
