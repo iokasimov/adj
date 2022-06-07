@@ -52,12 +52,12 @@ class (Category from, Category to) => Functor from to f where
 	(-|) = map @from @to
 
 	(-|-|)
-		:: Functor from (Betwixt from to) f 
+		:: Functor from (Betwixt from to) f
 		=> Functor from (Betwixt from to) g
 		=> Functor (Betwixt from to) from f
 		=> Functor (Betwixt from to) from g
 		=> from source target -> from (f (g source)) (f (g target))
-	(-|-|) morphism 
+	(-|-|) morphism
 		= map @(Betwixt from to) @from
 		. map @from @(Betwixt from to)
 		.: morphism
@@ -70,10 +70,10 @@ class (Category from, Category to) => Functor from to f where
 	(-|-|-|) morphism
 		= map @(Betwixt (Betwixt from to) to) @to
 		. map @(Betwixt from (Betwixt from to)) @(Betwixt (Betwixt from to) to)
-		. map @from @(Betwixt from (Betwixt from to)) 
+		. map @from @(Betwixt from (Betwixt from to))
 		.: morphism
 
-class (Functor category category f, Functor category category g) => Component category f g where
+class Component category f g where
 	component :: category (f object) (g object)
 
 {- |
@@ -120,7 +120,7 @@ instance Functor (Kleisli functor target) target functor
 	=> Semigroupoid (Kleisli functor target) where
 		g . Kleisli f = Kleisli .: map g . f
 
-newtype Tensor effect from to morphism source target = 
+newtype Tensor effect from to morphism source target =
 	Tensor (morphism (from (effect source) (effect target)) (effect (to source target)))
 
 type family Covariant x source target functor where
@@ -197,6 +197,12 @@ instance Functor (-->) (-->) ((.:+:) right) where
 	map (Flat m) = Flat .: \case
 		Dual (This left) -> Dual (This .: m left)
 		Dual (That right) -> Dual (That right)
+
+instance Component ((-*~+->) ((:+:.) left)) ((:+:.) left) ((:+:.) left) where
+	component = Tensor . Flat .: \case
+		Flat (This _) :*: Flat (This left) -> Flat .: This left
+		Flat (This _) :*: Flat (That right) -> Flat . That .: That right
+		Flat (That right) :*: _ -> Flat . That .: This right
 
 (|->) :: Covariant Functor (->) (->) f => f s -> (s -> t) -> f t
 x |-> m = (-|) @(-->) @(-->) (Flat m) =- x
