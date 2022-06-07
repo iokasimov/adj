@@ -63,3 +63,4 @@
 * Rename `Disbandable` typeclass and module to `Casting`
 * Define `Adj.Auxiliary` module
 * Move `Casting` typeclass to `Adj.Auxiliary` method
+* Define `Tensor` morpism

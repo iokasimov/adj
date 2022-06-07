@@ -110,6 +110,9 @@ instance Functor (Kleisli functor target) target functor
 	=> Semigroupoid (Kleisli functor target) where
 		g . Kleisli f = Kleisli .: map g . f
 
+newtype Tensor effect from to morphism source target = 
+	Tensor (morphism (from (effect source) (effect target)) (effect (to source target)))
+
 type family Covariant x source target functor where
 	Covariant Functor source target functor =
 		Functor (Flat source) (Flat target) functor
@@ -166,10 +169,10 @@ instance Functor (-->) (-->) ((Dual (:+:)) right) where
 		Dual (Adoption right) -> Dual (Adoption right)
 
 (|->) :: Covariant Functor (->) (->) f => f s -> (s -> t) -> f t
-x |-> m = let Flat change = (-|) (Flat m) in change x
+x |-> m = (-|) @(-->) @(-->) (Flat m) =- x
 
-(|-|->) :: (Covariant Functor (->) (->) f, Covariant Functor (->) (->) f') => f (f' s) -> (s -> t) -> f (f' t)
-x |-|-> m = let Flat change = (-|-|) (Flat m) in change x
+(|-|->) :: (Covariant Functor (->) (->) f, Covariant Functor (->) (->) g) => f (g s) -> (s -> t) -> f (g t)
+x |-|-> m = (-|-|) @(-->) @(-->) (Flat m) =- x
 
-(|-|-|->) :: (Covariant Functor (->) (->) f, Covariant Functor (->) (->) f', Covariant Functor (->) (->) f'') => f (f' (f'' s)) -> (s -> t) -> f (f' (f'' t))
-x |-|-|-> m = let Flat change = (-|-|-|) (Flat m) in change x
+(|-|-|->) :: (Covariant Functor (->) (->) f, Covariant Functor (->) (->) g, Covariant Functor (->) (->) h) => f (g (h s)) -> (s -> t) -> f (g (h t))
+x |-|-|-> m = (-|-|-|) @(-->) @(-->) (Flat m) =- x
