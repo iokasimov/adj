@@ -64,3 +64,4 @@
 * Define `Adj.Auxiliary` module
 * Move `Casting` typeclass to `Adj.Auxiliary` method
 * Define `Tensor` morpism
+* Define `Component` typeclass

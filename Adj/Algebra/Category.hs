@@ -73,6 +73,9 @@ class (Category from, Category to) => Functor from to f where
 		. map @from @(Betwixt from (Betwixt from to)) 
 		.: morphism
 
+class Component category source target where
+	component :: category (source object) (target object)
+
 newtype Flat morphism source target = Flat (morphism source target)
 
 instance Casting (Flat morphism source) where
