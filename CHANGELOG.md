@@ -66,3 +66,4 @@
 * Define `Tensor` morpism
 * Define `Component` typeclass
 * Define `Transformation` typeclass
+* Define `Semimonoidal` type family

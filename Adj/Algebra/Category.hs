@@ -73,8 +73,8 @@ class (Category from, Category to) => Functor from to f where
 		. map @from @(Betwixt from (Betwixt from to)) 
 		.: morphism
 
-class Component category source target where
-	component :: category (source object) (target object)
+class (Functor category category f, Functor category category g) => Component category f g where
+	component :: category (f object) (g object)
 
 {- |
 > * Associativity: (-|) morphism . component = component . (-|) morphism
@@ -130,6 +130,10 @@ type family Covariant x source target functor where
 type family Contravariant x source target functor where
 	Contravariant Functor source target functor =
 		Functor (Flat source) (Dual target) functor
+
+type family Semimonoidal x from to morphism functor where
+	Semimonoidal Component from to morphism functor =
+		Component (Tensor functor from to morphism) functor functor
 
 -- TODO: we need a monoidal functor here
 -- instance Category (Kleisli functor target) where
