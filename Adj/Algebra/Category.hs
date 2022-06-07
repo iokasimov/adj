@@ -148,7 +148,15 @@ type (<-\-) t = Kleisli t (<--)
 
 data (:*:) left right = left :*: right
 
+type (:*:.) = Flat (:*:)
+
+type (.:*:) = Dual (:*:)
+
 data (:+:) left right = This left | That right
+
+type (:+:.) = Flat (:+:)
+
+type (.:+:) = Dual (:+:)
 
 data Initial
 
@@ -172,20 +180,20 @@ type (-*~+->) t = Tensor t (:*:) (:+:) (-->)
 
 type (-+~+->) t = Tensor t (:+:) (:+:) (-->)
 
-instance Functor (-->) (-->) ((Flat (:*:)) left) where
+instance Functor (-->) (-->) ((:*:.) left) where
 	map (Flat m) = Flat .: \case
 		Flat (left :*: right) -> Flat (left :*: m right)
 
-instance Functor (-->) (-->) ((Flat (:+:)) left) where
+instance Functor (-->) (-->) ((:+:.) left) where
 	map (Flat m) = Flat .: \case
 		Flat (This left) -> Flat (This left)
 		Flat (That right) -> Flat (That .: m right)
 
-instance Functor (-->) (-->) ((Dual (:*:)) right) where
+instance Functor (-->) (-->) ((.:*:) right) where
 	map (Flat m) = Flat .: \case
 		Dual (left :*: right) -> Dual (m left :*: right)
 
-instance Functor (-->) (-->) ((Dual (:+:)) right) where
+instance Functor (-->) (-->) ((.:+:) right) where
 	map (Flat m) = Flat .: \case
 		Dual (This left) -> Dual (This .: m left)
 		Dual (That right) -> Dual (That right)
