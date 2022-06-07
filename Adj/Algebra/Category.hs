@@ -76,6 +76,13 @@ class (Category from, Category to) => Functor from to f where
 class Component category source target where
 	component :: category (source object) (target object)
 
+{- |
+> * Associativity: (-|) morphism . component = component . (-|) morphism
+-}
+
+class (Functor from to f, Functor from to g) => Transformation from to f g where
+	(|-|) :: from source target -> to (f source) (g target)
+
 newtype Flat morphism source target = Flat (morphism source target)
 
 instance Casting (Flat morphism source) where
