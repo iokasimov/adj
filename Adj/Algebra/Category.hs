@@ -50,7 +50,7 @@ class (Category from, Category to) => Functor from to f where
 
 	(-|) :: from source target -> to (f source) (f target)
 	(-|) = map @from @to
-	
+
 	(-|-|)
 		:: Functor from (Betwixt from to) f 
 		=> Functor from (Betwixt from to) g
@@ -61,7 +61,7 @@ class (Category from, Category to) => Functor from to f where
 		= map @(Betwixt from to) @from
 		. map @from @(Betwixt from to)
 		.: morphism
-	
+
 	(-|-|-|)
 		:: Functor from (Betwixt from (Betwixt from to)) h
 		=> Functor (Betwixt from (Betwixt from to)) (Betwixt (Betwixt from to) to) g
@@ -81,7 +81,7 @@ class (Functor category category f, Functor category category g) => Component ca
 -}
 
 class (Functor from to f, Functor from to g) => Transformation from to f g where
-	(|-|) :: from source target -> to (f source) (g target)
+	transformation :: from source target -> to (f source) (g target)
 
 newtype Flat morphism source target = Flat (morphism source target)
 
@@ -148,7 +148,7 @@ type (<-\-) t = Kleisli t (<--)
 
 data (:*:) left right = left :*: right
 
-data (:+:) left right = Option left | Adoption right
+data (:+:) left right = This left | That right
 
 data Initial
 
@@ -170,8 +170,8 @@ instance Functor (-->) (-->) ((Flat (:*:)) left) where
 
 instance Functor (-->) (-->) ((Flat (:+:)) left) where
 	map (Flat m) = Flat .: \case
-		Flat (Option left) -> Flat (Option left)
-		Flat (Adoption right) -> Flat (Adoption .: m right)
+		Flat (This left) -> Flat (This left)
+		Flat (That right) -> Flat (That .: m right)
 
 instance Functor (-->) (-->) ((Dual (:*:)) right) where
 	map (Flat m) = Flat .: \case
@@ -179,8 +179,8 @@ instance Functor (-->) (-->) ((Dual (:*:)) right) where
 
 instance Functor (-->) (-->) ((Dual (:+:)) right) where
 	map (Flat m) = Flat .: \case
-		Dual (Option left) -> Dual (Option .: m left)
-		Dual (Adoption right) -> Dual (Adoption right)
+		Dual (This left) -> Dual (This .: m left)
+		Dual (That right) -> Dual (That right)
 
 (|->) :: Covariant Functor (->) (->) f => f s -> (s -> t) -> f t
 x |-> m = (-|) @(-->) @(-->) (Flat m) =- x

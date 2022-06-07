@@ -67,3 +67,5 @@
 * Define `Component` typeclass
 * Define `Transformation` typeclass
 * Define `Semimonoidal` type family
+* Rename `Option` constructor to `This`
+* Rename `Adoption` constructor to `That`

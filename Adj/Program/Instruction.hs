@@ -1,7 +1,7 @@
 module Adj.Program.Instruction where
 
 import Adj.Auxiliary (Casting (Primary, (=-), (-=)))
-import Adj.Algebra.Category ((.:), Functor (map), (|-|->), (:+:) (Option, Adoption), type (-->), Flat (Flat))
+import Adj.Algebra.Category ((.:), Functor (map), (|-|->), (:+:) (This, That), type (-->), Flat (Flat))
 
 newtype Instruction t a = Instruction (a :+: t (Instruction t a))
 
@@ -12,5 +12,5 @@ instance Casting (Instruction t) where
 
 instance Functor (-->) (-->) t => Functor (-->) (-->) (Instruction t) where
 	map (Flat m) = Flat .: \(Instruction i) -> Instruction .: case i of
-		Adoption xs -> Adoption (xs |-|-> m)
-		Option x -> Option .: m x
+		That xs -> That (xs |-|-> m)
+		This x -> This .: m x
