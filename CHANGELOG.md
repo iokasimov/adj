@@ -80,3 +80,4 @@
 * Define `.:*:` type alias
 * Define `.:+:` type alias
 * Define `Adj.Program.Progress` module
+* Define `Unitor` morphism

@@ -123,6 +123,9 @@ instance Functor (Kleisli functor target) target functor
 newtype Tensor effect from to morphism source target =
 	Tensor (morphism (from (effect source) (effect target)) (effect (to source target)))
 
+newtype Unitor effect from to morphism object =
+	Unitor (morphism (Unit to) (effect (Unit from)))
+
 type family Covariant x source target functor where
 	Covariant Functor source target functor =
 		Functor (Flat source) (Flat target) functor
