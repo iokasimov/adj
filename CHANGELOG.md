@@ -81,3 +81,4 @@
 * Define `.:+:` type alias
 * Define `Adj.Program.Progress` module
 * Define `Unitor` morphism
+* Define `Day` convolution

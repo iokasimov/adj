@@ -175,6 +175,15 @@ instance Category (->) where
 instance Semigroupoid (->) where
 	g . f = \x -> g (f x)
 
+data Day morphism f g from to result where
+	Day :: from (f left) (g right)
+		-> morphism (to left right) result
+		-> Day morphism f g from to result
+
+instance Functor (-->) (-->) (Day (-->) f g from to) where
+	map morphism = Flat .: \case
+		Day from to -> Day from .: morphism . to
+
 type (-*~*->) t = Tensor t (:*:) (:*:) (-->)
 
 type (-+~*->) t = Tensor t (:+:) (:*:) (-->)
