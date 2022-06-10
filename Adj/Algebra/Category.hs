@@ -210,6 +210,18 @@ instance Functor (-->) (-->) ((.:+:) right) where
 		Dual (This left) -> Dual (This .: m left)
 		Dual (That right) -> Dual (That right)
 
+instance Component (-->) (Day (-->) ((:+:.) left) ((:+:.) left) (:*:) (:*:)) ((:+:.) left) where
+	component = Flat .: \case
+		Day (Flat (That left) :*: Flat (That right)) (Flat morphism) -> Flat . That .: morphism (left :*: right)
+		Day (Flat (This left) :*: _) _ -> Flat . This .: left
+		Day (_ :*: Flat (This right)) _ -> Flat . This .: right
+
+instance Component (-->) (Day (-->) ((.:+:) right) ((.:+:) right) (:*:) (:*:)) ((.:+:) right) where
+	component = Flat .: \case
+		Day (Dual (This left) :*: Dual (This right)) (Flat morphism) -> Dual . This .: morphism (left :*: right)
+		Day (Dual (That left) :*: _) _ -> Dual . That .: left
+		Day (_ :*: Dual (That right)) _ -> Dual . That .: right
+
 instance Component ((-*~+->) ((:+:.) left)) ((:+:.) left) ((:+:.) left) where
 	component = Tensor . Flat .: \case
 		Flat (This _) :*: Flat (This left) -> Flat .: This left
