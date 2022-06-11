@@ -242,10 +242,19 @@ instance Component (-->) (Day (-->) ((.:+:) right) ((.:+:) right) (:*:) (:*:)) (
 		Day (Dual (That left) :*: _) _ -> Dual . That .: left
 		Day (_ :*: Dual (That right)) _ -> Dual . That .: right
 
--- instance Component (-->) (Day (-->) ((.:+:) right) Identity (:*:) (:*:)) ((.:+:) right) where
--- 	component = Flat .: \case
--- 		Day (Dual (This left) :*: Identity right) (Flat m) -> Dual . This .: m (left :*: right)
--- 		Day (Dual (That left) :*: Identity right) (Flat m) -> Dual . This .: m (left :*: right)
+instance Component (-->) (Day (-->) ((.:+:) right) Identity (:*:) (:*:)) ((.:+:) right) where
+	component = Flat .: \case
+		Day (Dual (This left) :*: Identity right) (Flat m) -> Dual . This .: m (left :*: right)
+		Day (Dual (That left) :*: _) _ -> Dual . That .: left
+
+instance Component (-->) (Day (-->) Identity ((.:+:) right) (:*:) (:*:)) ((.:+:) right) where
+	component = Flat .: \case
+		Day (Identity left :*: Dual (This right)) (Flat m) -> Dual . This .: m (left :*: right)
+		Day (_ :*: Dual (That right)) _ -> Dual . That .: right
+
+instance Component (-->) (Day (-->) Identity Identity (:*:) (:*:)) ((.:+:) right) where
+	component = Flat .: \case
+		Day (Identity left :*: Identity right) (Flat m) -> Dual . This .: m (left :*: right)
 
 (|->) :: Covariant Functor (->) (->) f => f s -> (s -> t) -> f t
 x |-> m = (-|) @(-->) @(-->) (Flat m) =- x
