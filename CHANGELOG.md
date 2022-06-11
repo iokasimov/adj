@@ -50,7 +50,7 @@
 * Move `Initial` module content to `Category`
 * Move `Unit` module content to `Category`
 
-# 0.0.3
+# 0.0.4
 * Make `Unit` type family closed
 * Define `-=-` and `=-=` operators in `Disbandable` typeclass
 * Define `|->` operator in `Adj.Algebra.Category` module
@@ -70,7 +70,7 @@
 * Rename `Option` constructor to `This`
 * Rename `Adoption` constructor to `That`
 
-# 0.0.4
+# 0.0.5
 * Define `-*~*->` type alias
 * Define `-+~*->` type alias
 * Define `-*~+->` type alias
