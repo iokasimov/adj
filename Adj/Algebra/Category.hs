@@ -128,9 +128,8 @@ type family Contravariant x source target functor where
 	Contravariant Functor source target functor =
 		Functor (Flat source) (Dual target) functor
 
-type family Semimonoidal x from to morphism functor where
-	Semimonoidal Functor from to morphism functor =
-		Component (Flat morphism) (Day (Flat morphism) functor functor from to) functor
+type family Semimonoidal x from to m f where
+	Semimonoidal Functor from to m f = Component (Flat m) (Day (Flat m) f f from to) f
 
 -- TODO: we need a monoidal functor here
 -- instance Category (Kleisli functor target) where
@@ -168,6 +167,12 @@ instance Category (->) where
 
 instance Semigroupoid (->) where
 	g . f = \x -> g (f x)
+
+newtype Identity o = Identity o
+
+instance Functor (-->) (-->) Identity where
+	map (Flat m) = Flat .: \case
+		Identity x -> Identity .: m x
 
 data Day morphism f g from to result where
 	Day :: from (f left) (g right)
