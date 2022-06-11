@@ -80,5 +80,6 @@
 * Define `.:*:` type alias
 * Define `.:+:` type alias
 * Define `Adj.Program.Progress` module
-* Define `Unitor` morphism
 * Define `Day` convolution
+* Remove `Tensor` morphism
+* Change `Semimonoidal` type family definition

@@ -73,8 +73,8 @@ class (Category from, Category to) => Functor from to f where
 		. map @from @(Betwixt from (Betwixt from to))
 		.: morphism
 
-class Component category f g where
-	component :: category (f object) (g object)
+class Component morphism f g where
+	component :: morphism (f object) (g object)
 
 {- |
 > * Associativity: (-|) morphism . component = component . (-|) morphism
@@ -120,12 +120,6 @@ instance Functor (Kleisli functor target) target functor
 	=> Semigroupoid (Kleisli functor target) where
 		g . Kleisli f = Kleisli .: map g . f
 
-newtype Tensor effect from to morphism source target =
-	Tensor (morphism (from (effect source) (effect target)) (effect (to source target)))
-
-newtype Unitor effect from to morphism object =
-	Unitor (morphism (Unit to) (effect (Unit from)))
-
 type family Covariant x source target functor where
 	Covariant Functor source target functor =
 		Functor (Flat source) (Flat target) functor
@@ -135,8 +129,8 @@ type family Contravariant x source target functor where
 		Functor (Flat source) (Dual target) functor
 
 type family Semimonoidal x from to morphism functor where
-	Semimonoidal Component from to morphism functor =
-		Component (Tensor functor from to morphism) functor functor
+	Semimonoidal Functor from to morphism functor =
+		Component (Flat morphism) (Day (Flat morphism) functor functor from to) functor
 
 -- TODO: we need a monoidal functor here
 -- instance Category (Kleisli functor target) where
@@ -184,14 +178,6 @@ instance Functor (-->) (-->) (Day (-->) f g from to) where
 	map morphism = Flat .: \case
 		Day from to -> Day from .: morphism . to
 
-type (-*~*->) t = Tensor t (:*:) (:*:) (-->)
-
-type (-+~*->) t = Tensor t (:+:) (:*:) (-->)
-
-type (-*~+->) t = Tensor t (:*:) (:+:) (-->)
-
-type (-+~+->) t = Tensor t (:+:) (:+:) (-->)
-
 instance Functor (-->) (-->) ((:*:.) left) where
 	map (Flat m) = Flat .: \case
 		Flat (left :*: right) -> Flat (left :*: m right)
@@ -221,12 +207,6 @@ instance Component (-->) (Day (-->) ((.:+:) right) ((.:+:) right) (:*:) (:*:)) (
 		Day (Dual (This left) :*: Dual (This right)) (Flat morphism) -> Dual . This .: morphism (left :*: right)
 		Day (Dual (That left) :*: _) _ -> Dual . That .: left
 		Day (_ :*: Dual (That right)) _ -> Dual . That .: right
-
-instance Component ((-*~+->) ((:+:.) left)) ((:+:.) left) ((:+:.) left) where
-	component = Tensor . Flat .: \case
-		Flat (This _) :*: Flat (This left) -> Flat .: This left
-		Flat (This _) :*: Flat (That right) -> Flat . That .: That right
-		Flat (That right) :*: _ -> Flat . That .: This right
 
 (|->) :: Covariant Functor (->) (->) f => f s -> (s -> t) -> f t
 x |-> m = (-|) @(-->) @(-->) (Flat m) =- x
