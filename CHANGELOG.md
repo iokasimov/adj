@@ -85,3 +85,4 @@
 * Change `Semimonoidal` type family definition
 * Define `Identity` datatype
 * Define `Monoidal` type family
+* Define `TU` scheme

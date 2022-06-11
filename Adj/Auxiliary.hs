@@ -14,3 +14,10 @@ class Casting t where
 	
 	(-=-) :: (t a -> t b) -> Primary t a -> Primary t b
 	m -=- x = (=-) (m ((-=) x))
+
+newtype TU t u a = TU (t (u a))
+
+instance Casting (TU t u) where
+	type Primary (TU t u) a = t (u a)
+	(=-) ~(TU x) = x
+	(-=) = TU
