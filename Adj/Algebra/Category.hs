@@ -142,8 +142,7 @@ type family Monoidal x from to morhism f where
 		, Component (Flat morhism) (Day (Flat morhism) Identity Identity from to) f
 		)
 
--- TODO: we need a monoidal functor here
--- instance Category (Kleisli functor target) where
+-- instance (Functor (Kleisli f target) target f, Monoidal Functor (:*:) (:*:) (-->) f) => Category (Kleisli f target) where
 
 type (-->) = Flat (->)
 
@@ -153,13 +152,13 @@ type (-/->) t = Kleisli t (-->)
 
 type (<-\-) t = Kleisli t (<--)
 
-data (:*:) left right = left :*: right
+data (:*:) l r = l :*: r
 
 type (:*:.) = Flat (:*:)
 
 type (.:*:) = Dual (:*:)
 
-data (:+:) left right = This left | That right
+data (:+:) l r = This l | That r
 
 type (:+:.) = Flat (:+:)
 
@@ -186,75 +185,75 @@ instance Functor (-->) (-->) Identity where
 		Identity x -> Identity .: m x
 
 data Day m f g from to result where
-	Day :: from (f left) (g right)
-		-> m (to left right) result
+	Day :: from (f l) (g r)
+		-> m (to l r) result
 		-> Day m f g from to result
 
 instance Functor (-->) (-->) (Day (-->) f g from to) where
 	map m = Flat .: \case
 		Day from to -> Day from .: m . to
 
-instance Functor (-->) (-->) ((:*:.) left) where
+instance Functor (-->) (-->) ((:*:.) l) where
 	map (Flat m) = Flat .: \case
-		Flat (left :*: right) -> Flat (left :*: m right)
+		Flat (l :*: r) -> Flat (l :*: m r)
 
-instance Functor (-->) (-->) ((:+:.) left) where
+instance Functor (-->) (-->) ((:+:.) l) where
 	map (Flat m) = Flat .: \case
-		Flat (This left) -> Flat (This left)
-		Flat (That right) -> Flat (That .: m right)
+		Flat (This l) -> Flat (This l)
+		Flat (That r) -> Flat (That .: m r)
 
-instance Functor (-->) (-->) ((.:*:) right) where
+instance Functor (-->) (-->) ((.:*:) r) where
 	map (Flat m) = Flat .: \case
-		Dual (left :*: right) -> Dual (m left :*: right)
+		Dual (l :*: r) -> Dual (m l :*: r)
 
-instance Functor (-->) (-->) ((.:+:) right) where
+instance Functor (-->) (-->) ((.:+:) r) where
 	map (Flat m) = Flat .: \case
-		Dual (This left) -> Dual (This .: m left)
-		Dual (That right) -> Dual (That right)
+		Dual (This l) -> Dual (This .: m l)
+		Dual (That r) -> Dual (That r)
 
 instance Component (-->) (Day (-->) Identity Identity (:*:) (:*:)) Identity where
 	component = Flat .: \case
-		Day (Identity left :*: Identity right) (Flat m) -> Identity .: m (left :*: right)
+		Day (Identity l :*: Identity r) (Flat m) -> Identity .: m (l :*: r)
 
-instance Component (-->) (Day (-->) ((:+:.) left) ((:+:.) left) (:*:) (:*:)) ((:+:.) left) where
+instance Component (-->) (Day (-->) ((:+:.) l) ((:+:.) l) (:*:) (:*:)) ((:+:.) l) where
 	component = Flat .: \case
-		Day (Flat (That left) :*: Flat (That right)) (Flat m) -> Flat . That .: m (left :*: right)
-		Day (Flat (This left) :*: _) _ -> Flat . This .: left
-		Day (_ :*: Flat (This right)) _ -> Flat . This .: right
+		Day (Flat (That l) :*: Flat (That r)) (Flat m) -> Flat . That .: m (l :*: r)
+		Day (Flat (This l) :*: _) _ -> Flat . This .: l
+		Day (_ :*: Flat (This r)) _ -> Flat . This .: r
 
-instance Component (-->) (Day (-->) ((:+:.) left) Identity (:*:) (:*:)) ((:+:.) left) where
+instance Component (-->) (Day (-->) ((:+:.) l) Identity (:*:) (:*:)) ((:+:.) l) where
 	component = Flat .: \case
-		Day (Flat (That left) :*: Identity right) (Flat m) -> Flat . That .: m (left :*: right)
-		Day (Flat (This left) :*: _) _ -> Flat . This .: left
+		Day (Flat (That l) :*: Identity r) (Flat m) -> Flat . That .: m (l :*: r)
+		Day (Flat (This l) :*: _) _ -> Flat . This .: l
 
-instance Component (-->) (Day (-->) Identity ((:+:.) left) (:*:) (:*:)) ((:+:.) left) where
+instance Component (-->) (Day (-->) Identity ((:+:.) l) (:*:) (:*:)) ((:+:.) l) where
 	component = Flat .: \case
-		Day (Identity left :*: Flat (That right)) (Flat m) -> Flat . That .: m (left :*: right)
-		Day (_ :*: Flat (This right)) _ -> Flat . This .: right
+		Day (Identity l :*: Flat (That r)) (Flat m) -> Flat . That .: m (l :*: r)
+		Day (_ :*: Flat (This r)) _ -> Flat . This .: r
 
-instance Component (-->) (Day (-->) Identity Identity (:*:) (:*:)) ((:+:.) left) where
+instance Component (-->) (Day (-->) Identity Identity (:*:) (:*:)) ((:+:.) l) where
 	component = Flat .: \case
-		Day (Identity left :*: Identity right) (Flat m) -> Flat . That .: m (left :*: right)
+		Day (Identity l :*: Identity r) (Flat m) -> Flat . That .: m (l :*: r)
 
-instance Component (-->) (Day (-->) ((.:+:) right) ((.:+:) right) (:*:) (:*:)) ((.:+:) right) where
+instance Component (-->) (Day (-->) ((.:+:) r) ((.:+:) r) (:*:) (:*:)) ((.:+:) r) where
 	component = Flat .: \case
-		Day (Dual (This left) :*: Dual (This right)) (Flat m) -> Dual . This .: m (left :*: right)
-		Day (Dual (That left) :*: _) _ -> Dual . That .: left
-		Day (_ :*: Dual (That right)) _ -> Dual . That .: right
+		Day (Dual (This l) :*: Dual (This r)) (Flat m) -> Dual . This .: m (l :*: r)
+		Day (Dual (That l) :*: _) _ -> Dual . That .: l
+		Day (_ :*: Dual (That r)) _ -> Dual . That .: r
 
-instance Component (-->) (Day (-->) ((.:+:) right) Identity (:*:) (:*:)) ((.:+:) right) where
+instance Component (-->) (Day (-->) ((.:+:) r) Identity (:*:) (:*:)) ((.:+:) r) where
 	component = Flat .: \case
-		Day (Dual (This left) :*: Identity right) (Flat m) -> Dual . This .: m (left :*: right)
-		Day (Dual (That left) :*: _) _ -> Dual . That .: left
+		Day (Dual (This l) :*: Identity r) (Flat m) -> Dual . This .: m (l :*: r)
+		Day (Dual (That l) :*: _) _ -> Dual . That .: l
 
-instance Component (-->) (Day (-->) Identity ((.:+:) right) (:*:) (:*:)) ((.:+:) right) where
+instance Component (-->) (Day (-->) Identity ((.:+:) r) (:*:) (:*:)) ((.:+:) r) where
 	component = Flat .: \case
-		Day (Identity left :*: Dual (This right)) (Flat m) -> Dual . This .: m (left :*: right)
-		Day (_ :*: Dual (That right)) _ -> Dual . That .: right
+		Day (Identity l :*: Dual (This r)) (Flat m) -> Dual . This .: m (l :*: r)
+		Day (_ :*: Dual (That r)) _ -> Dual . That .: r
 
-instance Component (-->) (Day (-->) Identity Identity (:*:) (:*:)) ((.:+:) right) where
+instance Component (-->) (Day (-->) Identity Identity (:*:) (:*:)) ((.:+:) r) where
 	component = Flat .: \case
-		Day (Identity left :*: Identity right) (Flat m) -> Dual . This .: m (left :*: right)
+		Day (Identity l :*: Identity r) (Flat m) -> Dual . This .: m (l :*: r)
 
 (|->) :: Covariant Functor (->) (->) f => f s -> (s -> t) -> f t
 x |-> m = (-|) @(-->) @(-->) (Flat m) =- x
