@@ -3,7 +3,7 @@
 {-# LANGUAGE UndecidableInstances #-}
 module Adj.Algebra.Category where
 
-import Adj.Auxiliary (Casting (Primary, (-=), (=-)))
+import Adj.Auxiliary (Casting (Primary, (-=), (=-)), TU (TU))
 
 infixl 8 .:
 infixr 9 .
@@ -140,6 +140,15 @@ type family Monoidal x from to morhism f where
 		, Component (Flat morhism) (Day (Flat morhism) Identity f from to) f
 		, Component (Flat morhism) (Day (Flat morhism) f Identity from to) f
 		, Component (Flat morhism) (Day (Flat morhism) Identity Identity from to) f
+		)
+
+-- TODO: not really sure about morphisms in conponents
+type family Adjunction source target f g where
+	Adjunction source target f g =
+		( Functor target source f
+		, Functor source target g
+		, Component (Flat source) (TU f g) Identity
+		, Component (Flat target) Identity (TU g f)
 		)
 
 -- instance (Functor (Kleisli f target) target f, Monoidal Functor (:*:) (:*:) (-->) f) => Category (Kleisli f target) where

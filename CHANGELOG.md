@@ -86,3 +86,4 @@
 * Define `Identity` datatype
 * Define `Monoidal` type family
 * Define `TU` scheme
+* Define `Adjunction` type family
