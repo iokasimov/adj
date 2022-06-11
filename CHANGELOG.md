@@ -84,3 +84,4 @@
 * Remove `Tensor` morphism
 * Change `Semimonoidal` type family definition
 * Define `Identity` datatype
+* Define `Monoidal` type family

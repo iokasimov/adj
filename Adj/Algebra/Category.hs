@@ -134,6 +134,14 @@ type family Semimonoidal x from to morhism f where
 	Semimonoidal Functor from to morhism f =
 		Component (Flat morhism) (Day (Flat morhism) f f from to) f
 
+type family Monoidal x from to morhism f where
+	Monoidal Functor from to morhism f =
+		( Component (Flat morhism) (Day (Flat morhism) f f from to) f
+		, Component (Flat morhism) (Day (Flat morhism) Identity f from to) f
+		, Component (Flat morhism) (Day (Flat morhism) f Identity from to) f
+		, Component (Flat morhism) (Day (Flat morhism) Identity Identity from to) f
+		)
+
 -- TODO: we need a monoidal functor here
 -- instance Category (Kleisli functor target) where
 
