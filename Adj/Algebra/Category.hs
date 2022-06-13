@@ -145,11 +145,11 @@ type family Monoidal x from to morhism f where
 
 type family Bindable x source target f where
 	Bindable Functor source target f =
-		Functor (Kleisli (Flat source) f) (Flat target) f
+		Functor (Kleisli f (Flat source)) (Flat target) f
 
 type family Traversable x source target g f where
 	Traversable Functor source target g f =
-		Functor (Kleisli (Flat source) g) (Kleisli (Flat target) g) f
+		Functor (Kleisli g (Flat source)) (Kleisli g (Flat target)) f
 
 -- TODO: not really sure about morphisms in conponents
 type family Adjunction source target f g where
@@ -316,3 +316,8 @@ x |-|-> m = (-|-|) @(-->) @(-->) (Flat m) =- x
 	=> Covariant Functor (->) (->) h
 	=> f (g (h source)) -> (source -> target) -> f (g (h target))
 x |-|-|-> m = (-|-|-|) @(-->) @(-->) (Flat m) =- x
+
+(|-/->)
+	:: Bindable Functor (->) (->) f
+	=> f source -> (source -> f target) -> f target
+x |-/-> m = (-|) @_ @(-->) (Kleisli (Flat m)) =- x
