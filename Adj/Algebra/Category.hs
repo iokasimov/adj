@@ -3,7 +3,7 @@
 {-# LANGUAGE UndecidableInstances #-}
 module Adj.Algebra.Category where
 
-import Adj.Auxiliary (Casting (Primary, (-=), (=-)), TU (TU))
+import Adj.Auxiliary (Casting (Primary, (-=), (=-)), TU)
 
 infixl 8 .:
 infixr 9 .
@@ -264,11 +264,20 @@ instance Component (-->) (Day (-->) Identity Identity (:*:) (:*:)) ((.:+:) r) wh
 	component = Flat .: \case
 		Day (Identity l :*: Identity r) (Flat m) -> Dual . This .: m (l :*: r)
 
-(|->) :: Covariant Functor (->) (->) f => f s -> (s -> t) -> f t
+(|->)
+	:: Covariant Functor (->) (->) f
+	=> f source -> (source -> target) -> f target
 x |-> m = (-|) @(-->) @(-->) (Flat m) =- x
 
-(|-|->) :: (Covariant Functor (->) (->) f, Covariant Functor (->) (->) g) => f (g s) -> (s -> t) -> f (g t)
+(|-|->)
+	:: Covariant Functor (->) (->) f
+	=> Covariant Functor (->) (->) g
+	=> f (g source) -> (source -> target) -> f (g target)
 x |-|-> m = (-|-|) @(-->) @(-->) (Flat m) =- x
 
-(|-|-|->) :: (Covariant Functor (->) (->) f, Covariant Functor (->) (->) g, Covariant Functor (->) (->) h) => f (g (h s)) -> (s -> t) -> f (g (h t))
+(|-|-|->)
+	:: Covariant Functor (->) (->) f
+	=> Covariant Functor (->) (->) g
+	=> Covariant Functor (->) (->) h
+	=> f (g (h source)) -> (source -> target) -> f (g (h target))
 x |-|-|-> m = (-|-|-|) @(-->) @(-->) (Flat m) =- x

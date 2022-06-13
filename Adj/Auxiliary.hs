@@ -5,7 +5,7 @@ infixl 8 =-, -=
 
 class Casting t where
 	{-# MINIMAL (=-), (-=) #-}
-	type Primary t a :: *
+	type Primary t a
 	(=-) :: t a -> Primary t a
 	(-=) :: Primary t a -> t a
 
