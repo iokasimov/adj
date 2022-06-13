@@ -45,7 +45,8 @@ class Semigroupoid m => Category m where
 type family Betwixt from to = btw | btw -> from to where
 	Betwixt category category = category
 
-class (Category from, Category to) => Functor from to f where
+-- TODO: Semigroupoid or Category or one of them?
+class Functor from to f where
 	map :: from source target -> to (f source) (f target)
 
 	(-|) :: from source target -> to (f source) (f target)
@@ -118,7 +119,7 @@ instance Casting (Kleisli f m source) where
 	(=-) (Kleisli m) = m
 	(-=) m = Kleisli m
 
-instance Functor (Kleisli f target) target f
+instance (Functor (Kleisli f target) target f, Semigroupoid target)
 	=> Semigroupoid (Kleisli f target) where
 		g . Kleisli f = Kleisli .: map g . f
 
@@ -141,6 +142,10 @@ type family Monoidal x from to morhism f where
 		, Component (Flat morhism) (Day (Flat morhism) f Identity from to) f
 		, Component (Flat morhism) (Day (Flat morhism) Identity Identity from to) f
 		)
+
+type family Bindable x source target f where
+	Bindable Functor source target f =
+		Functor (Kleisli (Flat source) f) (Flat target) f
 
 -- TODO: not really sure about morphisms in conponents
 type family Adjunction source target f g where
@@ -206,10 +211,19 @@ instance Functor (-->) (-->) ((:*:.) l) where
 	map (Flat m) = Flat .: \case
 		Flat (l :*: r) -> Flat (l :*: m r)
 
+instance Functor ((-/->) ((:*:.) l)) (-->) ((:*:.) l) where
+	map (Kleisli (Flat m)) = Flat .: \case
+		Flat (_ :*: r) -> m r
+
 instance Functor (-->) (-->) ((:+:.) l) where
 	map (Flat m) = Flat .: \case
-		Flat (This l) -> Flat (This l)
-		Flat (That r) -> Flat (That .: m r)
+		Flat (This l) -> Flat .: This l
+		Flat (That r) -> Flat . That .: m r
+
+instance Functor ((-/->) ((:+:.) l)) (-->) ((:+:.) l) where
+	map (Kleisli (Flat m)) = Flat .: \case
+		Flat (This l) -> Flat .: This l
+		Flat (That r) -> m r
 
 instance Functor (-->) (-->) ((.:*:) r) where
 	map (Flat m) = Flat .: \case
@@ -217,8 +231,17 @@ instance Functor (-->) (-->) ((.:*:) r) where
 
 instance Functor (-->) (-->) ((.:+:) r) where
 	map (Flat m) = Flat .: \case
-		Dual (This l) -> Dual (This .: m l)
-		Dual (That r) -> Dual (That r)
+		Dual (This l) -> Dual . This .: m l
+		Dual (That r) -> Dual .: That r
+
+instance Functor ((-/->) ((.:+:) r)) (-->) ((.:+:) r) where
+	map (Kleisli (Flat m)) = Flat .: \case
+		Dual (This l) -> m l
+		Dual (That r) -> Dual .: That r
+
+instance Functor ((-/->) ((.:*:) r)) (-->) ((.:*:) r) where
+	map (Kleisli (Flat m)) = Flat .: \case
+		Dual (l :*: _) -> m l
 
 instance Component (-->) (Day (-->) Identity Identity (:*:) (:*:)) Identity where
 	component = Flat .: \case

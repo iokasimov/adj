@@ -87,3 +87,4 @@
 * Define `Monoidal` type family
 * Define `TU` scheme
 * Define `Adjunction` type family
+* Define `Bindable` type family
