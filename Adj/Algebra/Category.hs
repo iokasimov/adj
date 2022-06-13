@@ -202,6 +202,14 @@ instance Functor (-->) (-->) Identity where
 	map (Flat m) = Flat .: \case
 		Identity x -> Identity .: m x
 
+instance Functor ((-/->) Identity) (-->) Identity where
+	map (Kleisli (Flat m)) = Flat .: \case
+		Identity x -> m x
+
+instance Covariant Functor (->) (->) g => Functor ((-/->) g) ((-/->) g) Identity where
+	map (Kleisli (Flat m)) = Kleisli . Flat .: \case
+		Identity x -> (-|) @_ @(-->) (Flat Identity) =- m x
+
 data Day m f g from to result where
 	Day :: from (f l) (g r)
 		-> m (to l r) result
