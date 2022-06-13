@@ -147,6 +147,10 @@ type family Bindable x source target f where
 	Bindable Functor source target f =
 		Functor (Kleisli (Flat source) f) (Flat target) f
 
+type family Traversable x source target g f where
+	Traversable Functor source target g f =
+		Functor (Kleisli (Flat source) g) (Kleisli (Flat target) g) f
+
 -- TODO: not really sure about morphisms in conponents
 type family Adjunction source target f g where
 	Adjunction source target f g =

@@ -88,3 +88,4 @@
 * Define `TU` scheme
 * Define `Adjunction` type family
 * Define `Bindable` type family
+* Define `Traversable` type family
