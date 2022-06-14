@@ -321,3 +321,9 @@ x |-|-|-> m = (-|-|-|) @(-->) @(-->) (Flat m) =- x
 	:: Bindable Functor (->) (->) f
 	=> f source -> (source -> f target) -> f target
 x |-/-> m = (-|) @_ @(-->) (Kleisli (Flat m)) =- x
+
+(|-|-/->)
+	:: Covariant Functor (->) (->) f
+	=> Bindable Functor (->) (->) g
+	=> f (g source) -> (source -> g target) -> f (g target)
+x |-|-/-> m = x |-> (|-/-> m)

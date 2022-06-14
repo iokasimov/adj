@@ -89,4 +89,5 @@
 * Define `Adjunction` type family
 * Define `Bindable` type family
 * Define `Traversable` type family
-* Define `|-/->` operator for `Bindable` functors
+* Define `|-/->` operator
+* Define `|-|-/->` operator
