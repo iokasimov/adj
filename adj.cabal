@@ -24,6 +24,7 @@ library
     Adj.Algebra.Category
     Adj.Auxiliary
     Adj.Program
+    Adj.Program.Generation
     Adj.Program.Instruction
     Adj.Program.Construction
     Adj.Program.Option

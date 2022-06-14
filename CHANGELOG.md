@@ -91,3 +91,4 @@
 * Define `Traversable` type family
 * Define `|-/->` operator
 * Define `|-|-/->` operator
+* Define `Adj.Program.Generation` module
