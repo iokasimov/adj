@@ -1,7 +1,7 @@
 module Adj.Program.Generation where
 
 import Adj.Auxiliary (Casting (Primary, (=-), (-=)))
-import Adj.Algebra ((.:), Functor (map), (|->), (|-|->), type (-->), Flat (Flat), Dual (Dual))
+import Adj.Algebra ((.:), Functor (map), (|->), (|-|->), (:*:), (:+:), type (-->), Flat (Flat), Dual (Dual))
 
 newtype Generation p t a = Generation (p a (t (Generation p t a)))
 
@@ -15,3 +15,7 @@ instance (Functor (-->) (-->) t, forall b . Functor (-->) (-->) ((Flat p) b), fo
 		map (Flat m) = Flat .: \(Generation xxs) ->
 			-- TODO: try to simplify this expression
 			Generation .: (=-) (Dual ((=-) (Flat xxs |-> (|-|-> m))) |-> m)
+
+type Construction = Generation (:*:)
+
+type Instruction = Generation (:+:)

@@ -92,3 +92,7 @@
 * Define `|-/->` operator
 * Define `|-|-/->` operator
 * Define `Adj.Program.Generation` module
+* Remove `Adj.Program.Construction` module
+* Remove `Adj.Program.Instruction` module
+* Define `Construction` type alias of `Generation`
+* Define `Instruction` type alias of `Generation`

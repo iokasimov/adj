@@ -25,8 +25,6 @@ library
     Adj.Auxiliary
     Adj.Program
     Adj.Program.Generation
-    Adj.Program.Instruction
-    Adj.Program.Construction
     Adj.Program.Option
     Adj.Program.Progress
   default-extensions:
