@@ -96,3 +96,5 @@
 * Remove `Adj.Program.Instruction` module
 * Define `Construction` type alias of `Generation`
 * Define `Instruction` type alias of `Generation`
+
+# 0.0.6
