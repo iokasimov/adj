@@ -347,3 +347,11 @@ x |-/-> m = (-|) @_ @(-->) (Kleisli (Flat m)) =- x
 	=> Bindable Functor (->) (->) g
 	=> f (g source) -> (source -> g target) -> f (g target)
 x |-|-/-> m = x |-> (|-/-> m)
+
+unit :: forall from from' to to' p f o 
+	. Component to (from (Unit p)) f
+	=> Casting (to (from (Unit p) o))
+	=> Primary (to (from (Unit p) o)) (f o) ~ to' (from (Unit p) o) (f o)
+	=> Primary (from (Unit p)) o ~ from' (Unit p) o
+	=> to' (from (Unit p) o) (f o)
+unit = (=-) @(to (from (Unit p) o)) (component @to @(from (Unit p)) @f)

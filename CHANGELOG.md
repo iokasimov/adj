@@ -98,3 +98,4 @@
 * Define `Instruction` type alias of `Generation`
 
 # 0.0.6
+* Define `unit` method
