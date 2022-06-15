@@ -299,6 +299,26 @@ instance Component (-->) (Day (-->) Identity Identity (:*:) (:*:)) ((.:+:) r) wh
 	component = Flat .: \case
 		Day (Identity l :*: Identity r) (Flat m) -> Dual . This .: m (l :*: r)
 
+instance Component (-->) ((-->) Terminal) Identity where
+	component = Flat .: \case
+		Flat m -> Identity .: m Terminal
+
+instance Component (-->) ((-->) Terminal) (Flat (:+:) l) where
+	component = Flat .: \case
+		Flat m -> Flat . That .: m Terminal
+
+instance Component (-->) ((-->) Terminal) (Dual (:+:) r) where
+	component = Flat .: \case
+		Flat m -> Dual . This .: m Terminal
+
+instance Component (<--) ((-->) Terminal) (Flat (:*:) l) where
+	component = Dual .: \case
+		Flat (_ :*: r) -> Flat .: \_ -> r
+
+instance Component (<--) ((-->) Terminal) (Dual (:*:) r) where
+	component = Dual .: \case
+		Dual (l :*: _) -> Flat .: \_ -> l
+
 (|->)
 	:: Covariant Functor (->) (->) f
 	=> f source -> (source -> target) -> f target
