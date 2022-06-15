@@ -113,6 +113,7 @@ instance Category morhism => Category (Dual morhism) where
 newtype Kleisli f m source target =
 	Kleisli (m source (f target))
 
+-- TODO: cast m as well
 instance Casting (Kleisli f m source) where
 	type Primary (Kleisli f m source) target =
 		m source (f target)
@@ -131,16 +132,16 @@ type family Contravariant x source target f where
 	Contravariant Functor source target f =
 		Functor (Flat source) (Dual target) f
 
-type family Semimonoidal x from to morhism f where
-	Semimonoidal Functor from to morhism f =
-		Component (Flat morhism) (Day (Flat morhism) f f from to) f
+type family Semimonoidal x source target from to f where
+	Semimonoidal Functor source target from to f =
+		Component from (Day to f f source target) f
 
-type family Monoidal x from to morhism f where
-	Monoidal Functor from to morhism f =
-		( Component (Flat morhism) (Day (Flat morhism) f f from to) f
-		, Component (Flat morhism) (Day (Flat morhism) Identity f from to) f
-		, Component (Flat morhism) (Day (Flat morhism) f Identity from to) f
-		, Component (Flat morhism) (Day (Flat morhism) Identity Identity from to) f
+type family Monoidal x source target from to f where
+	Monoidal Functor source target from to f =
+		( Component from (Day (Flat to) f f source target) f
+		, Component from (Day (Flat to) Identity f source target) f
+		, Component from (Day (Flat to) f Identity source target) f
+		, Component from (to (Unit target)) f
 		)
 
 type family Bindable x source target f where

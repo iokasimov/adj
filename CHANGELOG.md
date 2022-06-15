@@ -99,3 +99,5 @@
 
 # 0.0.6
 * Define `unit` method
+* Change `Semimonoidal` type family definition
+* Change `Monoidal` type family definition
