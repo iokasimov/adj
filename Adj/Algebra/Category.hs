@@ -111,16 +111,15 @@ instance Category morhism => Category (Dual morhism) where
 	identity = Dual identity
 
 newtype Kleisli f m source target =
-	Kleisli (m source (f target))
+	Kleisli (m source .: f target)
 
--- TODO: cast m as well
-instance Casting (Kleisli f m source) where
+instance Casting (m source) => Casting (Kleisli f m source) where
 	type Primary (Kleisli f m source) target =
-		m source (f target)
-	(=-) (Kleisli m) = m
-	(-=) m = Kleisli m
+		Primary .: m source .: f target
+	(=-) (Kleisli m) = (=-) m
+	(-=) m = Kleisli ((-=) m)
 
-instance (Functor (Kleisli f target) target f, Semigroupoid target)
+instance (Functor .: Kleisli f target .: target .: f, Semigroupoid target)
 	=> Semigroupoid (Kleisli f target) where
 		g . Kleisli f = Kleisli .: map g . f
 
