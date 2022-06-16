@@ -8,6 +8,8 @@ import Adj.Auxiliary (type (.:), Casting (Primary, (-=), (=-)), TU)
 infixl 8 .:
 infixr 9 .
 
+infixr 6 <.:>, >.:>, <.:<, >.:<
+
 infixr 6 <-\-, -/->
 infixr 7 <--, -->
 
@@ -44,6 +46,8 @@ class Semigroupoid m => Category m where
 
 type family Betwixt from to = btw | btw -> from to where
 	Betwixt category category = category
+
+data Variance = Co | Contra
 
 -- TODO: Semigroupoid or Category or one of them?
 class Functor from to f where
@@ -156,8 +160,8 @@ type family Adjunction source target f g where
 	Adjunction source target f g =
 		( Functor target source f
 		, Functor source target g
-		, Component .: Flat source .: TU f g .: Identity
-		, Component .: Flat target .: Identity .: TU g f
+		, Component .: Flat source .: (f <.:> g) .: Identity
+		, Component .: Flat target .: Identity .: (g <.:> f)
 		)
 
 -- instance (Functor (Kleisli f target) target f, Monoidal Functor (:*:) (:*:) (-->) f) => Category (Kleisli f target) where
@@ -358,3 +362,8 @@ unit = (=-) @(to (from (Unit p) o)) (component @to @(from (Unit p)) @f)
 
 point :: forall f o . Component (-->) ((-->) (Unit (:*:))) f => o -> f o
 point x = unit @f @(-->) @(-->) @(:*:) (Flat .: \Terminal -> x)
+
+type (<.:>) = TU Co Co
+type (>.:>) = TU Contra Co
+type (<.:<) = TU Co Contra
+type (>.:<) = TU Contra Contra

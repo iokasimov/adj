@@ -102,4 +102,5 @@
 * Change `Semimonoidal` type family definition
 * Change `Monoidal` type family definition
 * Define `point` method
-* Define `.:` type operator
+* Change `TU` datatype
+* Define `<.:>`, `>.:>`, `<.:<`, `>.:<` type aliases
