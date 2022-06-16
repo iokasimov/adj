@@ -90,7 +90,7 @@ class (Functor from to f, Functor from to g) => Transformation from to f g where
 
 newtype Flat m source target = Flat (m source target)
 
-instance Casting (Flat m source) where
+instance Casting (->) (Flat m source) where
 	type Primary (Flat m source) target = m source target
 	(=-) (Flat m) = m
 	(-=) m = Flat m
@@ -103,7 +103,7 @@ instance Category morhism => Category (Flat morhism) where
 
 newtype Dual m source target = Dual (m target source)
 
-instance Casting (Dual m target) where
+instance Casting (->) (Dual m target) where
 	type Primary (Dual m target) source = m source target
 	(=-) (Dual m) = m
 	(-=) m = Dual m
@@ -117,11 +117,10 @@ instance Category morhism => Category (Dual morhism) where
 newtype Kleisli f m source target =
 	Kleisli (m source .: f target)
 
-instance Casting (m source) => Casting (Kleisli f m source) where
-	type Primary (Kleisli f m source) target =
-		Primary .: m source .: f target
-	(=-) (Kleisli m) = (=-) m
-	(-=) m = Kleisli ((-=) m)
+instance Casting (->) (Kleisli f (->) source) where
+	type Primary (Kleisli f (->) source) target = source -> f target
+	(=-) (Kleisli m) = m
+	(-=) m = Kleisli m
 
 instance (Functor .: Kleisli f target .: target .: f, Semigroupoid target)
 	=> Semigroupoid (Kleisli f target) where
@@ -352,16 +351,16 @@ x |-/-> m = (-|) @_ @(-->) (Kleisli (Flat m)) =- x
 	=> f (g source) -> (source -> g target) -> f (g target)
 x |-|-/-> m = x |-> (|-/-> m)
 
-unit :: forall f from to p from' to' o
-	. Component to (from (Unit p)) f
-	=> Casting (to (from (Unit p) o))
-	=> Primary (to (from (Unit p) o)) (f o) ~ to' (from (Unit p) o) (f o)
-	=> Primary (from (Unit p)) o ~ from' (Unit p) o
-	=> to' (from (Unit p) o) (f o)
-unit = (=-) @(to (from (Unit p) o)) (component @to @(from (Unit p)) @f)
+-- unit :: forall f from to p from' to' o
+	-- . Component to (from (Unit p)) f
+	-- => Casting (to (from (Unit p) o))
+	-- => Primary (to (from (Unit p) o)) (f o) ~ to' (from (Unit p) o) (f o)
+	-- => Primary (from (Unit p)) o ~ from' (Unit p) o
+	-- => to' (from (Unit p) o) (f o)
+-- unit = (=-) @(to (from (Unit p) o)) (component @to @(from (Unit p)) @f)
 
-point :: forall f o . Component (-->) ((-->) (Unit (:*:))) f => o -> f o
-point x = unit @f @(-->) @(-->) @(:*:) (Flat .: \Terminal -> x)
+-- point :: forall f o . Component (-->) ((-->) (Unit (:*:))) f => o -> f o
+-- point x = unit @f @(-->) @(-->) @(:*:) (Flat .: \Terminal -> x)
 
 type (<.:>) = TU Co Co
 type (>.:>) = TU Contra Co

@@ -102,5 +102,7 @@
 * Change `Semimonoidal` type family definition
 * Change `Monoidal` type family definition
 * Define `point` method
-* Change `TU` datatype
+* Change `TU` datatype definition
+* Define `Variance` datatype
 * Define `<.:>`, `>.:>`, `<.:<`, `>.:<` type aliases
+* Change `Casting` typeclass definition
