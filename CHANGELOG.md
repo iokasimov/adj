@@ -101,3 +101,4 @@
 * Define `unit` method
 * Change `Semimonoidal` type family definition
 * Change `Monoidal` type family definition
+* Define `point` method
