@@ -3,7 +3,7 @@
 {-# LANGUAGE UndecidableInstances #-}
 module Adj.Algebra.Category where
 
-import Adj.Auxiliary (Casting (Primary, (-=), (=-)), TU)
+import Adj.Auxiliary (type (.:), Casting (Primary, (-=), (=-)), TU)
 
 infixl 8 .:
 infixr 9 .
@@ -47,27 +47,27 @@ type family Betwixt from to = btw | btw -> from to where
 
 -- TODO: Semigroupoid or Category or one of them?
 class Functor from to f where
-	map :: from source target -> to (f source) (f target)
+	map :: from source target -> to .: f source .: f target
 
-	(-|) :: from source target -> to (f source) (f target)
+	(-|) :: from source target -> to .: f source .: f target
 	(-|) = map @from @to
 
 	(-|-|)
-		:: Functor from (Betwixt from to) f
-		=> Functor from (Betwixt from to) g
-		=> Functor (Betwixt from to) from f
-		=> Functor (Betwixt from to) from g
-		=> from source target -> from (f (g source)) (f (g target))
+		:: Functor .: from .: Betwixt from to .: f
+		=> Functor .: from .: Betwixt from to .: g
+		=> Functor .: Betwixt from to .: from .: f
+		=> Functor .: Betwixt from to .: from .: g
+		=> from source target -> from .: f (g source) .: f (g target)
 	(-|-|) m
 		= map @(Betwixt from to) @from
 		. map @from @(Betwixt from to)
 		.: m
 
 	(-|-|-|)
-		:: Functor from (Betwixt from (Betwixt from to)) h
-		=> Functor (Betwixt from (Betwixt from to)) (Betwixt (Betwixt from to) to) g
-		=> Functor (Betwixt (Betwixt from to) to) to f
-		=> from source target -> to (f (g (h source))) (f (g (h target)))
+		:: Functor .: from .: Betwixt from (Betwixt from to) .: h
+		=> Functor .: Betwixt from (Betwixt from to) .: Betwixt (Betwixt from to) to .: g
+		=> Functor .: Betwixt (Betwixt from to) to .: to .: f
+		=> from source target -> to .: f (g (h source)) .: f (g (h target))
 	(-|-|-|) m
 		= map @(Betwixt (Betwixt from to) to) @to
 		. map @(Betwixt from (Betwixt from to)) @(Betwixt (Betwixt from to) to)
@@ -75,14 +75,14 @@ class Functor from to f where
 		.: m
 
 class Component m f g where
-	component :: m (f object) (g object)
+	component :: m .: f object .: g object
 
 {- |
 > * Associativity: (-|) m . component = component . (-|) m
 -}
 
 class (Functor from to f, Functor from to g) => Transformation from to f g where
-	transformation :: from source target -> to (f source) (g target)
+	transformation :: from source target -> to .: f source .: g target
 
 newtype Flat m source target = Flat (m source target)
 
@@ -126,39 +126,39 @@ instance (Functor (Kleisli f target) target f, Semigroupoid target)
 
 type family Covariant x source target f where
 	Covariant Functor source target f =
-		Functor (Flat source) (Flat target) f
+		Functor .: Flat source .: Flat target .: f
 
 type family Contravariant x source target f where
 	Contravariant Functor source target f =
-		Functor (Flat source) (Dual target) f
+		Functor .: Flat source .: Dual target .: f
 
 type family Semimonoidal x source target from to f where
 	Semimonoidal Functor source target from to f =
-		Component from (Day to f f source target) f
+		Component .: from .: Day to f f source target .: f
 
 type family Monoidal x source target from to f where
 	Monoidal Functor source target from to f =
-		( Component from (Day (Flat to) f f source target) f
-		, Component from (Day (Flat to) Identity f source target) f
-		, Component from (Day (Flat to) f Identity source target) f
-		, Component from (to (Unit target)) f
+		( Component .: from .: Day (Flat to) f f source target .: f
+		, Component .: from .: Day (Flat to) Identity f source target .: f
+		, Component .: from .: Day (Flat to) f Identity source target .: f
+		, Component .: from .: to (Unit target) .: f
 		)
 
 type family Bindable x source target f where
 	Bindable Functor source target f =
-		Functor (Kleisli f (Flat source)) (Flat target) f
+		Functor .: Kleisli f (Flat source) .: Flat target .: f
 
 type family Traversable x source target g f where
 	Traversable Functor source target g f =
-		Functor (Kleisli g (Flat source)) (Kleisli g (Flat target)) f
+		Functor .: Kleisli g (Flat source) .: Kleisli g (Flat target) .: f
 
 -- TODO: not really sure about morphisms in conponents
 type family Adjunction source target f g where
 	Adjunction source target f g =
 		( Functor target source f
 		, Functor source target g
-		, Component (Flat source) (TU f g) Identity
-		, Component (Flat target) Identity (TU g f)
+		, Component .: Flat source .: TU f g .: Identity
+		, Component .: Flat target .: Identity .: TU g f
 		)
 
 -- instance (Functor (Kleisli f target) target f, Monoidal Functor (:*:) (:*:) (-->) f) => Category (Kleisli f target) where

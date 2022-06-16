@@ -1,7 +1,7 @@
 module Adj.Auxiliary where
 
 infixl 7 =-=, -=-
-infixl 8 =-, -=
+infixl 8 .:, =-, -=
 
 class Casting t where
 	{-# MINIMAL (=-), (-=) #-}
@@ -22,3 +22,5 @@ instance Casting (TU t u) where
 	type Primary (TU t u) a = t (u a)
 	(=-) ~(TU x) = x
 	(-=) = TU
+
+type (.:) oo o = oo o
