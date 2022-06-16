@@ -351,16 +351,11 @@ x |-/-> m = (-|) @_ @(-->) (Kleisli (Flat m)) =- x
 	=> f (g source) -> (source -> g target) -> f (g target)
 x |-|-/-> m = x |-> (|-/-> m)
 
--- unit :: forall f from to p from' to' o
-	-- . Component to (from (Unit p)) f
-	-- => Casting (to (from (Unit p) o))
-	-- => Primary (to (from (Unit p) o)) (f o) ~ to' (from (Unit p) o) (f o)
-	-- => Primary (from (Unit p)) o ~ from' (Unit p) o
-	-- => to' (from (Unit p) o) (f o)
--- unit = (=-) @(to (from (Unit p) o)) (component @to @(from (Unit p)) @f)
+unit :: forall f from to p o . Component to (from (Unit p)) f => to .: from (Unit p) o .: f o
+unit = component @to @(from (Unit p)) @f
 
--- point :: forall f o . Component (-->) ((-->) (Unit (:*:))) f => o -> f o
--- point x = unit @f @(-->) @(-->) @(:*:) (Flat .: \Terminal -> x)
+point :: forall f o . Component (-->) ((-->) (Unit (:*:))) f => o -> f o
+point x = unit @f @(-->) @(-->) @(:*:) =- (Flat .: \Terminal -> x)
 
 type (<.:>) = TU Co Co
 type (>.:>) = TU Contra Co
