@@ -106,3 +106,4 @@
 * Define `Variance` datatype
 * Define `<.:>`, `>.:>`, `<.:<`, `>.:<` type aliases
 * Change `Casting` typeclass definition
+* Define `extract` method

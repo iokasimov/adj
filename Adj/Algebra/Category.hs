@@ -357,6 +357,9 @@ unit = component @to @(from (Unit p)) @f
 point :: forall f o . Component (-->) ((-->) (Unit (:*:))) f => o -> f o
 point x = unit @f @(-->) @(-->) @(:*:) =- (Flat .: \Terminal -> x)
 
+extract :: forall f o . Component (<--) ((-->) (Unit (:*:))) f => f o -> o
+extract x = unit @f @(-->) @(<--) @(:*:) =- x =- Terminal
+
 type (<.:>) = TU Co Co
 type (>.:>) = TU Contra Co
 type (<.:<) = TU Co Contra
