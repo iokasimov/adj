@@ -1,6 +1,8 @@
 {-# OPTIONS_GHC -fno-warn-orphans #-}
 {-# LANGUAGE AllowAmbiguousTypes #-}
 {-# LANGUAGE UndecidableInstances #-}
+{-# LANGUAGE EmptyCase #-}
+
 module Adj.Algebra.Category where
 
 import Adj.Auxiliary (type (.:), Casting (Primary, (-=), (=-)), TU)
@@ -187,6 +189,9 @@ type (.:+:) = Dual (:+:)
 
 data Initial
 
+absurd :: Initial -> a
+absurd x = case x of {}
+
 data Terminal = Terminal
 
 type family Unit p = r | r -> p where
@@ -354,11 +359,17 @@ x |-|-/-> m = x |-> (|-/-> m)
 unit :: forall f from to p o . Component to (from (Unit p)) f => to .: from (Unit p) o .: f o
 unit = component @to @(from (Unit p)) @f
 
+-- TODO: use Monoidal constraint
 point :: forall f o . Component (-->) ((-->) (Unit (:*:))) f => o -> f o
 point x = unit @f @(-->) @(-->) @(:*:) =- (Flat .: \Terminal -> x)
 
+-- TODO: use Monoidal constraint
 extract :: forall f o . Component (<--) ((-->) (Unit (:*:))) f => f o -> o
 extract x = unit @f @(-->) @(<--) @(:*:) =- x =- Terminal
+
+-- TODO: use Monoidal constraint
+empty :: forall f o . Component (-->) ((-->) (Unit (:+:))) f => f o
+empty = unit @f @(-->) @(-->) @(:+:) =- Flat absurd
 
 type (<.:>) = TU Co Co
 type (>.:>) = TU Contra Co
