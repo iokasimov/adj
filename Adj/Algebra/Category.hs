@@ -356,20 +356,14 @@ x |-/-> m = (-|) @_ @(-->) (Kleisli (Flat m)) =- x
 	=> f (g source) -> (source -> g target) -> f (g target)
 x |-|-/-> m = x |-> (|-/-> m)
 
-unit :: forall f from to p o . Component to (from (Unit p)) f => to .: from (Unit p) o .: f o
-unit = component @to @(from (Unit p)) @f
+point :: Monoidal Functor (:*:) (:*:) (-->) (-->) f => o -> f o
+point x = component @(-->) @((-->) (Unit (:*:))) =- (Flat .: \Terminal -> x)
 
--- TODO: use Monoidal constraint
-point :: forall f o . Component (-->) ((-->) (Unit (:*:))) f => o -> f o
-point x = unit @f @(-->) @(-->) @(:*:) =- (Flat .: \Terminal -> x)
+extract :: Monoidal Functor (:*:) (:*:) (<--) (-->) f => f o -> o
+extract x = component @(<--) @((-->) (Unit (:*:))) =- x =- Terminal
 
--- TODO: use Monoidal constraint
-extract :: forall f o . Component (<--) ((-->) (Unit (:*:))) f => f o -> o
-extract x = unit @f @(-->) @(<--) @(:*:) =- x =- Terminal
-
--- TODO: use Monoidal constraint
-empty :: forall f o . Component (-->) ((-->) (Unit (:+:))) f => f o
-empty = unit @f @(-->) @(-->) @(:+:) =- Flat absurd
+empty :: Monoidal Functor (:*:) (:+:) (-->) (-->) f => f o
+empty = component @(-->) @((-->) (Unit (:+:))) =- Flat absurd
 
 type (<.:>) = TU Co Co
 type (>.:>) = TU Contra Co
