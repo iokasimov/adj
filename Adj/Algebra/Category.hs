@@ -41,13 +41,6 @@ class Semigroupoid m => Category m where
 	(.:) :: m (m source target) (m source target)
 	(.:) = identity
 
-{- |
-> * Left zero morphism: constant x . f ≡ constant x . g
--}
-
-class Category m => Kernel m where
-	constant :: m o (m Initial o)
-
 type family Betwixt from to = btw | btw -> from to where
 	Betwixt category category = category
 
@@ -215,9 +208,6 @@ instance Semigroupoid (->) where
 
 instance Category (->) where
 	identity = \x -> x
-
-instance Kernel (->) where
-	constant x _ = x
 
 newtype Identity o = Identity o
 
