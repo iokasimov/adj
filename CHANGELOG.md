@@ -109,3 +109,4 @@
 * Define `absurd` method
 * Define `empty` method
 * Define `Kernel` typeclass
+* Define `boring` method

@@ -198,10 +198,13 @@ type (.:+:) = Dual (:+:)
 
 data Initial
 
-absurd :: Initial -> a
+absurd :: Initial -> o
 absurd x = case x of {}
 
 data Terminal = Terminal
+
+boring :: o -> Terminal
+boring _ = Terminal
 
 type family Unit p = r | r -> p where
 	Unit (:*:) = Terminal
