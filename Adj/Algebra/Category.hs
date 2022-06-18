@@ -128,9 +128,8 @@ instance (Functor .: Kleisli f target .: target .: f, Semigroupoid target)
 	=> Semigroupoid (Kleisli f target) where
 		g . Kleisli f = Kleisli .: map g . f
 
--- instance (Semigroupoid target, Functor (Kleisli f target) target f, Monoidal Functor (:*:) (:*:) (-->) (-->) f) => Category (Kleisli f target) where
-	-- identity = Kleisli .: point . identity
-
+instance (Category target, Functor (Kleisli f target) target f, Component target Identity f, Casting target Identity) => Category (Kleisli f target) where
+	identity = Kleisli .: component @_ @Identity @f . (-=) @_ . identity
 
 type family Covariant x source target f where
 	Covariant Functor source target f =
@@ -210,6 +209,11 @@ instance Category (->) where
 	identity = \x -> x
 
 newtype Identity o = Identity o
+
+instance Casting (->) Identity where
+	type Primary Identity o = o
+	(=-) (Identity x) = x
+	(-=) x = Identity x
 
 instance Functor (-->) (-->) Identity where
 	map (Flat m) = Flat .: \case
