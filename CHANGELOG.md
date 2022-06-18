@@ -108,3 +108,4 @@
 * Define `extract` method
 * Define `absurd` method
 * Define `empty` method
+* Define `Kernel` typeclass

@@ -42,14 +42,21 @@ class Semigroupoid m => Category m where
 	(.:) = identity
 
 {- |
-> * Identity preserving: map identity ≡ identity
-> * Composition preserving: map (f . g) ≡ map f . map g
+> * Left zero morphism: constant x . f ≡ constant x . g
 -}
+
+class Category m => Kernel m where
+	constant :: m o (m Initial o)
 
 type family Betwixt from to = btw | btw -> from to where
 	Betwixt category category = category
 
 data Variance = Co | Contra
+
+{- |
+> * Identity preserving: map identity ≡ identity
+> * Composition preserving: map (f . g) ≡ map f . map g
+-}
 
 -- TODO: Semigroupoid or Category or one of them?
 class Functor from to f where
@@ -128,6 +135,10 @@ instance (Functor .: Kleisli f target .: target .: f, Semigroupoid target)
 	=> Semigroupoid (Kleisli f target) where
 		g . Kleisli f = Kleisli .: map g . f
 
+-- instance (Semigroupoid target, Functor (Kleisli f target) target f, Monoidal Functor (:*:) (:*:) (-->) (-->) f) => Category (Kleisli f target) where
+	-- identity = Kleisli .: point . identity
+
+
 type family Covariant x source target f where
 	Covariant Functor source target f =
 		Functor .: Flat source .: Flat target .: f
@@ -165,8 +176,6 @@ type family Adjunction source target f g where
 		, Component .: Flat target .: Identity .: (g <.:> f)
 		)
 
--- instance (Functor (Kleisli f target) target f, Monoidal Functor (:*:) (:*:) (-->) f) => Category (Kleisli f target) where
-
 type (-->) = Flat (->)
 
 type (<--) = Dual (->)
@@ -198,11 +207,14 @@ type family Unit p = r | r -> p where
 	Unit (:*:) = Terminal
 	Unit (:+:) = Initial
 
+instance Semigroupoid (->) where
+	g . f = \x -> g (f x)
+
 instance Category (->) where
 	identity = \x -> x
 
-instance Semigroupoid (->) where
-	g . f = \x -> g (f x)
+instance Kernel (->) where
+	constant x _ = x
 
 newtype Identity o = Identity o
 
