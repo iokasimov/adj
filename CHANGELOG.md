@@ -109,3 +109,4 @@
 * Define `empty` method
 * Define `boring` method
 * Define `=-=` operator
+* Define `|.:|` type alias

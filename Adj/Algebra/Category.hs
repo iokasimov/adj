@@ -5,7 +5,7 @@
 
 module Adj.Algebra.Category where
 
-import Adj.Auxiliary (type (.:), Casting (Primary, (-=), (=-)), TU)
+import Adj.Auxiliary (type (.:), type (|.:|), Casting (Primary, (-=), (=-)))
 
 infixl 8 .:
 infixr 9 .
@@ -161,8 +161,8 @@ type family Adjunction source target f g where
 	Adjunction source target f g =
 		( Functor target source f
 		, Functor source target g
-		, Component .: Flat source .: (TU f g) .: Identity
-		, Component .: Flat target .: Identity .: (TU g f)
+		, Component .: Flat source .: (f |.:| g) .: Identity
+		, Component .: Flat target .: Identity .: (g |.:| f)
 		)
 
 type (-->) = Flat (->)
@@ -375,5 +375,5 @@ empty = component @(-->) @((-->) (Unit (:+:))) =- Flat absurd
 	=> m (Primary f source) (Primary f target) -> m (f source) (f target)
 (=-=) m = (-=) @m . m . (=-) @m
 
-instance (Casting m (TU f g), Category m, Functor m m f, Functor m m g) => Functor m m (TU f g) where
+instance (Casting m (f |.:| g), Category m, Functor m m f, Functor m m g) => Functor m m (f |.:| g) where
 	map m = (=-=) ((-|-|) @m @m @f @g m)
