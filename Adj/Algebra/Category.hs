@@ -44,7 +44,9 @@ class Semigroupoid m where
 class Semigroupoid m => Category m where
 	identity :: m source source
 
-	(........:), (.......:), (......:), (.....:), (....:), (...:), (..:), (.:) :: m (m source target) (m source target)
+	(........:), (.......:), (......:),
+		(.....:), (....:), (...:), (..:), (.:)
+			:: m (m source target) (m source target)
 	(........:) = identity
 	(.......:) = identity
 	(......:) = identity
@@ -392,3 +394,6 @@ empty = component @(-->) @((-->) (Unit (:+:))) =- Flat absurd
 
 instance (Casting m (f |.:| g), Category m, Functor m m f, Functor m m g) => Functor m m (f |.:| g) where
 	map m = (=-=) ((-|-|) @m @m @f @g m)
+
+instance (Casting m ((|.:.|) f g f'), Category m, Functor m m f, Functor m m g, Functor m m f') => Functor m m ((|.:.|) f g f') where
+	map m = (=-=) ((-|-|-|) @m @m @f @g @f' m)
