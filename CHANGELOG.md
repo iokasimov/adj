@@ -110,3 +110,4 @@
 * Define `boring` method
 * Define `=-=` operator
 * Define `|.:|` type alias
+* Rename `TU` scheme to `FG`
