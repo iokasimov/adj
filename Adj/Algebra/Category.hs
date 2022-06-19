@@ -59,13 +59,11 @@ class Functor from to f where
 	(-|) = map @from @to
 
 	(-|-|)
-		:: Functor .: from .: Betwixt from to .: f
+		:: Functor .: Betwixt from to .: to .: f
 		=> Functor .: from .: Betwixt from to .: g
-		=> Functor .: Betwixt from to .: from .: f
-		=> Functor .: Betwixt from to .: from .: g
-		=> from source target -> from .: f (g source) .: f (g target)
+		=> from source target -> to .: f (g source) .: f (g target)
 	(-|-|) m
-		= map @(Betwixt from to) @from
+		= map @(Betwixt from to) @to
 		. map @from @(Betwixt from to)
 		.: m
 
