@@ -381,3 +381,6 @@ type (>.:<) = TU Contra Contra
 (=-=) :: forall m f source target . (Semigroupoid m, Casting m f)
 	=> m (Primary f source) (Primary f target) -> m (f source) (f target)
 (=-=) m = (-=) @m . m . (=-) @m
+
+instance (Casting m (TU cf cg f g), Category m, Functor m m f, Functor m m g) => Functor m m (TU cf cg f g) where
+	map m = (=-=) ((-|-|) @m @m @f @g m)
