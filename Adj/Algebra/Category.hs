@@ -373,11 +373,6 @@ extract x = component @(<--) @((-->) (Unit (:*:))) =- x =- Terminal
 empty :: Monoidal Functor (:*:) (:+:) (-->) (-->) f => f o
 empty = component @(-->) @((-->) (Unit (:+:))) =- Flat absurd
 
-type (<.:>) = TU Co Co
-type (>.:>) = TU Contra Co
-type (<.:<) = TU Co Contra
-type (>.:<) = TU Contra Contra
-
 (=-=) :: forall m f source target . (Semigroupoid m, Casting m f)
 	=> m (Primary f source) (Primary f target) -> m (f source) (f target)
 (=-=) m = (-=) @m . m . (=-) @m

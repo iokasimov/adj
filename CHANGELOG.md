@@ -103,7 +103,6 @@
 * Define `point` method
 * Change `TU` datatype definition
 * Define `Variance` datatype
-* Define `<.:>`, `>.:>`, `<.:<`, `>.:<` type aliases
 * Change `Casting` typeclass definition
 * Define `extract` method
 * Define `absurd` method
