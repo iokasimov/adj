@@ -392,6 +392,10 @@ empty = component @(-->) @((-->) (Unit (:+:))) =- Flat absurd
 	=> m (Primary f source) (Primary f target) -> m (f source) (f target)
 (=-=) m = (-=) @m . m . (=-) @m
 
+(-=-) :: forall m f source target . (Semigroupoid m, Casting m f)
+	=> m (f source) (f target) -> m (Primary f source) (Primary f target)
+(-=-) m = (=-) @m . m . (-=) @m
+
 instance (Casting m (f |.:| g), Category m, Functor m m f, Functor m m g) => Functor m m (f |.:| g) where
 	map m = (=-=) ((-|-|) @m @m @f @g m)
 
