@@ -131,3 +131,5 @@
 
 # 0.0.7
 * Define `Adj.Program.Datastructure` module
+* Define `Adj.Program.Datastructure.Implementation` module
+* Define `Adj.Program.Datastructure.Implementation.List` module
