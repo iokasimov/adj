@@ -55,28 +55,29 @@ data Variance = Co | Contra
 class Functor from to f where
 	map :: from source target -> to .: f source .: f target
 
-	(-|) :: from source target -> to .: f source .: f target
-	(-|) = map @from @to
+(-|) :: forall from to f source target . Functor from to f
+	=> from source target -> to .: f source .: f target
+(-|) = map @from @to
 
-	(-|-|)
-		:: Functor .: Betwixt from to .: to .: f
-		=> Functor .: from .: Betwixt from to .: g
-		=> from source target -> to .: f (g source) .: f (g target)
-	(-|-|) m
-		= map @(Betwixt from to) @to
-		. map @from @(Betwixt from to)
-		.: m
+(-|-|) :: forall from to f g source target
+	.  Functor .: Betwixt from to .: to .: f
+	=> Functor .: from .: Betwixt from to .: g
+	=> from source target -> to .: f (g source) .: f (g target)
+(-|-|) m
+	= map @(Betwixt from to) @to
+	. map @from @(Betwixt from to)
+	.: m
 
-	(-|-|-|)
-		:: Functor .: from .: Betwixt from (Betwixt from to) .: h
-		=> Functor .: Betwixt from (Betwixt from to) .: Betwixt (Betwixt from to) to .: g
-		=> Functor .: Betwixt (Betwixt from to) to .: to .: f
-		=> from source target -> to .: f (g (h source)) .: f (g (h target))
-	(-|-|-|) m
-		= map @(Betwixt (Betwixt from to) to) @to
-		. map @(Betwixt from (Betwixt from to)) @(Betwixt (Betwixt from to) to)
-		. map @from @(Betwixt from (Betwixt from to))
-		.: m
+(-|-|-|) :: forall from to f g h source target
+	.  Functor .: from .: Betwixt from (Betwixt from to) .: h
+	=> Functor .: Betwixt from (Betwixt from to) .: Betwixt (Betwixt from to) to .: g
+	=> Functor .: Betwixt (Betwixt from to) to .: to .: f
+	=> from source target -> to .: f (g (h source)) .: f (g (h target))
+(-|-|-|) m
+	= map @(Betwixt (Betwixt from to) to) @to
+	. map @(Betwixt from (Betwixt from to)) @(Betwixt (Betwixt from to) to)
+	. map @from @(Betwixt from (Betwixt from to))
+	.: m
 
 class Component m f g where
 	component :: m .: f object .: g object
