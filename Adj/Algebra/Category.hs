@@ -5,7 +5,7 @@
 
 module Adj.Algebra.Category where
 
-import Adj.Auxiliary (type (.:), type (|.:|), Casting (Primary, (-=), (=-)))
+import Adj.Auxiliary (type (.:), type (|.:|), type (|.:.|), Casting (Primary, (-=), (=-)))
 
 infixr 9 .
 

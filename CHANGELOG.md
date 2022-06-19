@@ -109,7 +109,7 @@
 * Define `empty` method
 * Define `boring` method
 * Define `=-=` operator
-* Define `|.:|` type alias
+* Define `|.:|` type alias of `FG`
 * Rename `TU` scheme to `FG`
 * Define `FGF` scheme
 * Define `..:` operator
@@ -119,3 +119,4 @@
 * Define `......:` operator
 * Define `.......:` operator
 * Define `........:` operator
+* Define `|.:.|` type alias of `FGF` of `FGF`
