@@ -6,6 +6,13 @@ infixr 6 |.:|
 infixr 7 |.:.|
 
 type (.:) oo o = oo o
+type (..:) oo o = oo o
+type (...:) oo o = oo o
+type (....:) oo o = oo o
+type (.....:) oo o = oo o
+type (......:) oo o = oo o
+type (.......:) oo o = oo o
+type (........:) oo o = oo o
 
 class Casting m t where
 	{-# MINIMAL (=-), (-=) #-}

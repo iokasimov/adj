@@ -120,3 +120,10 @@
 * Define `.......:` operator
 * Define `........:` operator
 * Define `|.:.|` type alias of `FGF` of `FGF`
+* Define `..:` type operator
+* Define `...:` type operator
+* Define `....:` type operator
+* Define `.....:` type operator
+* Define `......:` type operator
+* Define `.......:` type operator
+* Define `........:` type operator
