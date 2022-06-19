@@ -27,6 +27,7 @@ library
     Adj.Program.Generation
     Adj.Program.Option
     Adj.Program.Progress
+    Adj.Program.Datastructure
   default-extensions:
     DataKinds, ConstraintKinds, ExistentialQuantification, GADTs, QuantifiedConstraints, InstanceSigs, StandaloneKindSignatures
     FlexibleContexts, FlexibleInstances, KindSignatures, StandaloneKindSignatures, LiberalTypeSynonyms, LambdaCase, FunctionalDependencies

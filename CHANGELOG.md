@@ -130,3 +130,4 @@
 * Define `-=-` operator
 
 # 0.0.7
+* Define `Adj.Program.Datastructure` module
