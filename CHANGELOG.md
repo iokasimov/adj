@@ -111,3 +111,4 @@
 * Define `=-=` operator
 * Define `|.:|` type alias
 * Rename `TU` scheme to `FG`
+* Define `FGF` scheme
