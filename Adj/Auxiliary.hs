@@ -11,9 +11,9 @@ class Casting m t where
 	(=-) :: m .: t a .: Primary t a
 	(-=) :: m .: Primary t a .: t a
 
-newtype TU ct cu t u a = TU (t (u a))
+newtype TU t u a = TU (t (u a))
 
-instance Casting (->) (TU ct cu t u) where
-	type Primary (TU ct cu t u) a = t (u a)
+instance Casting (->) (TU t u) where
+	type Primary (TU t u) a = t (u a)
 	(=-) ~(TU x) = x
 	(-=) = TU

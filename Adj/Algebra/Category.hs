@@ -10,8 +10,6 @@ import Adj.Auxiliary (type (.:), Casting (Primary, (-=), (=-)), TU)
 infixl 8 .:
 infixr 9 .
 
-infixr 6 <.:>, >.:>, <.:<, >.:<
-
 infixr 6 <-\-, -/->
 infixr 7 <--, -->
 
@@ -163,8 +161,8 @@ type family Adjunction source target f g where
 	Adjunction source target f g =
 		( Functor target source f
 		, Functor source target g
-		, Component .: Flat source .: (f <.:> g) .: Identity
-		, Component .: Flat target .: Identity .: (g <.:> f)
+		, Component .: Flat source .: (TU f g) .: Identity
+		, Component .: Flat target .: Identity .: (TU g f)
 		)
 
 type (-->) = Flat (->)
@@ -377,5 +375,5 @@ empty = component @(-->) @((-->) (Unit (:+:))) =- Flat absurd
 	=> m (Primary f source) (Primary f target) -> m (f source) (f target)
 (=-=) m = (-=) @m . m . (=-) @m
 
-instance (Casting m (TU cf cg f g), Category m, Functor m m f, Functor m m g) => Functor m m (TU cf cg f g) where
+instance (Casting m (TU f g), Category m, Functor m m f, Functor m m g) => Functor m m (TU f g) where
 	map m = (=-=) ((-|-|) @m @m @f @g m)
