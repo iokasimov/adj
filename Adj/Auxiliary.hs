@@ -2,7 +2,6 @@ module Adj.Auxiliary where
 
 infixl 8 .:, =-, -=
 
-infixr 7 |.:.|
 infixr 6 |.:|
 
 type (.:) oo o = oo o

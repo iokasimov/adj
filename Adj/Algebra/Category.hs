@@ -7,8 +7,16 @@ module Adj.Algebra.Category where
 
 import Adj.Auxiliary (type (.:), type (|.:|), Casting (Primary, (-=), (=-)))
 
-infixl 8 .:
 infixr 9 .
+
+infixl 8 .:
+infixl 7 ..:
+infixl 6 ...:
+infixl 5 ....:
+infixl 4 .....:
+infixl 3 ......:
+infixl 2 .......:
+infixl 1 ........:
 
 infixr 6 <-\-, -/->
 infixr 7 <--, -->
@@ -36,7 +44,14 @@ class Semigroupoid m where
 class Semigroupoid m => Category m where
 	identity :: m source source
 
-	(.:) :: m (m source target) (m source target)
+	(........:), (.......:), (......:), (.....:), (....:), (...:), (..:), (.:) :: m (m source target) (m source target)
+	(........:) = identity
+	(.......:) = identity
+	(......:) = identity
+	(.....:) = identity
+	(....:) = identity
+	(...:) = identity
+	(..:) = identity
 	(.:) = identity
 
 type family Betwixt from to = btw | btw -> from to where

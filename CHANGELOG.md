@@ -112,3 +112,10 @@
 * Define `|.:|` type alias
 * Rename `TU` scheme to `FG`
 * Define `FGF` scheme
+* Define `..:` operator
+* Define `...:` operator
+* Define `....:` operator
+* Define `.....:` operator
+* Define `......:` operator
+* Define `.......:` operator
+* Define `........:` operator
