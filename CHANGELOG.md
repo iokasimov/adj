@@ -138,3 +138,4 @@
 * Rename `-|-|-|` operator to `-|||-`
 * Define `-|--` operator
 * Define `--|--` operator
+* Define `-||--` operator
