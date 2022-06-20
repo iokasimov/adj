@@ -149,3 +149,5 @@
 * Define `Adj.Program.Controlflow.Implementation` module
 * Define `Adj.Program.Controlflow.Implementation.State` module
 * Define `State` type alias
+* Define `FFGH` scheme
+* Define `=!!??` type alias of `FFGH`

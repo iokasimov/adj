@@ -38,3 +38,12 @@ instance Casting (->) (FGF f g f') where
 	type Primary (FGF f g f') a = f (g (f' a))
 	(=-) ~(FGF x) = x
 	(-=) = FGF
+
+newtype FFGH f g h o = FFGH (f (g o) (h o))
+
+type (=!!??=) = FFGH
+
+instance Casting (->) (FFGH f g h) where
+	type Primary (FFGH f g h) o = f (g o) (h o)
+	(=-) ~(FFGH x) = x
+	(-=) = FFGH
