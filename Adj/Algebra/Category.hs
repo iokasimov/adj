@@ -106,6 +106,14 @@ class Functor from to f where
 	) => from source target -> to .: f (g source) o .: f (g target) o
 (-||--) m = (-=-) ((-||-) @from @to @((Dual f) o) m)
 
+(-|||--) :: forall from to f g h source target o .
+	( Category to, Casting to (Dual f o)
+	, Functor (Betwixt (Betwixt from to) to) to ((Dual f) o)
+	, Functor (Betwixt from (Betwixt from to)) (Betwixt (Betwixt from to) to) g
+	, Functor from (Betwixt from (Betwixt from to)) h
+	) => from source target -> to .: f (g (h source)) o .: f (g (h target)) o
+(-|||--) m = (-=-) ((-|||-) @from @to @((Dual f) o) m)
+
 (--|--) :: forall from to f source target o
 	. (Category to, Functor from to ((Flat f) o), Casting to (Flat f o))
 	=> from source target -> to .: f o source .: f o target
