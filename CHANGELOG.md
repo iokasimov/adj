@@ -136,3 +136,5 @@
 * Rename `-|` operator to `-|-`
 * Rename `-|-|` operator to `-||-`
 * Rename `-|-|-|` operator to `-|||-`
+* Define `-|--` operator
+* Define `--|--` operator

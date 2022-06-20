@@ -94,6 +94,16 @@ class Functor from to f where
 	. map @from @(Betwixt from (Betwixt from to))
 	.: m
 
+(-|--) :: forall from to f source target o
+	. (Category to, Functor from to ((Dual f) o), Casting to (Dual f o))
+	=> from source target -> to .: f source o .: f target o
+(-|--) m = (-=-) ((-|-) @from @to @((Dual f) o) m)
+
+(--|--) :: forall from to f source target o
+	. (Category to, Functor from to ((Flat f) o), Casting to (Flat f o))
+	=> from source target -> to .: f o source .: f o target
+(--|--) m = (-=-) ((-|-) @from @to @((Flat f) o) m)
+
 class Component m f g where
 	component :: m .: f object .: g object
 
