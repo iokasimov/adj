@@ -119,6 +119,13 @@ class Functor from to f where
 	=> from source target -> to .: f o source .: f o target
 (--|--) m = (-=-) ((-|-) @from @to @((Flat f) o) m)
 
+(--||--) :: forall from to f g source target o .
+	( Category to, Casting to (Flat f o)
+	, Functor (Betwixt from to) to ((Flat f) o)
+	, Functor from (Betwixt from to) g
+	) => from source target -> to .: f o (g source) .: f o (g target)
+(--||--) m = (-=-) ((-||-) @from @to @((Flat f) o) m)
+
 class Component m f g where
 	component :: m .: f object .: g object
 
