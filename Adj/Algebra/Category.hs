@@ -23,9 +23,17 @@ infixr 7 <--, -->
 
 infixr 7 :*:, :+:
 
-infixl 4 -|||-
+infixl 5 -|||-
 infixl 6 -||-
-infixl 8 -|-
+infixl 7 -|-
+
+infixl 4 -|||--
+infixl 5 -||--
+infixl 6 -|--
+
+infixl 3 --|||--
+infixl 4 --||--
+infixl 5 --|--
 
 {- |
 > * Associativity: f . (g . h) ≡ (f . g) . h
