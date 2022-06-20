@@ -23,9 +23,9 @@ infixr 7 <--, -->
 
 infixr 7 :*:, :+:
 
-infixl 4 -|-|-|
-infixl 6 -|-|
-infixl 8 -|
+infixl 4 -|||-
+infixl 6 -||-
+infixl 8 -|-
 
 {- |
 > * Associativity: f . (g . h) ≡ (f . g) . h
@@ -70,25 +70,25 @@ data Variance = Co | Contra
 class Functor from to f where
 	map :: from source target -> to .: f source .: f target
 
-(-|) :: forall from to f source target . Functor from to f
+(-|-) :: forall from to f source target . Functor from to f
 	=> from source target -> to .: f source .: f target
-(-|) = map @from @to
+(-|-) = map @from @to
 
-(-|-|) :: forall from to f g source target
+(-||-) :: forall from to f g source target
 	.  Functor .: Betwixt from to .: to .: f
 	=> Functor .: from .: Betwixt from to .: g
 	=> from source target -> to .: f (g source) .: f (g target)
-(-|-|) m
+(-||-) m
 	= map @(Betwixt from to) @to
 	. map @from @(Betwixt from to)
 	.: m
 
-(-|-|-|) :: forall from to f g h source target
+(-|||-) :: forall from to f g h source target
 	.  Functor .: from .: Betwixt from (Betwixt from to) .: h
 	=> Functor .: Betwixt from (Betwixt from to) .: Betwixt (Betwixt from to) to .: g
 	=> Functor .: Betwixt (Betwixt from to) to .: to .: f
 	=> from source target -> to .: f (g (h source)) .: f (g (h target))
-(-|-|-|) m
+(-|||-) m
 	= map @(Betwixt (Betwixt from to) to) @to
 	. map @(Betwixt from (Betwixt from to)) @(Betwixt (Betwixt from to) to)
 	. map @from @(Betwixt from (Betwixt from to))
@@ -239,7 +239,7 @@ instance Functor ((-/->) Identity) (-->) Identity where
 
 instance Covariant Functor (->) (->) g => Functor ((-/->) g) ((-/->) g) Identity where
 	map (Kleisli (Flat m)) = Kleisli . Flat .: \case
-		Identity x -> (-|) @_ @(-->) (Flat Identity) =- m x
+		Identity x -> (-|-) @_ @(-->) (Flat Identity) =- m x
 
 data Day m f g from to result where
 	Day :: from (f l) (g r)
@@ -353,25 +353,25 @@ instance Component (<--) ((-->) Terminal) (Dual (:*:) r) where
 (|->)
 	:: Covariant Functor (->) (->) f
 	=> f source -> (source -> target) -> f target
-x |-> m = (-|) @(-->) @(-->) (Flat m) =- x
+x |-> m = (-|-) @(-->) @(-->) (Flat m) =- x
 
 (|-|->)
 	:: Covariant Functor (->) (->) f
 	=> Covariant Functor (->) (->) g
 	=> f (g source) -> (source -> target) -> f (g target)
-x |-|-> m = (-|-|) @(-->) @(-->) (Flat m) =- x
+x |-|-> m = (-||-) @(-->) @(-->) (Flat m) =- x
 
 (|-|-|->)
 	:: Covariant Functor (->) (->) f
 	=> Covariant Functor (->) (->) g
 	=> Covariant Functor (->) (->) h
 	=> f (g (h source)) -> (source -> target) -> f (g (h target))
-x |-|-|-> m = (-|-|-|) @(-->) @(-->) (Flat m) =- x
+x |-|-|-> m = (-|||-) @(-->) @(-->) (Flat m) =- x
 
 (|-/->)
 	:: Bindable Functor (->) (->) f
 	=> f source -> (source -> f target) -> f target
-x |-/-> m = (-|) @_ @(-->) (Kleisli (Flat m)) =- x
+x |-/-> m = (-|-) @_ @(-->) (Kleisli (Flat m)) =- x
 
 (|-|-/->)
 	:: Covariant Functor (->) (->) f
@@ -397,7 +397,7 @@ empty = component @(-->) @((-->) (Unit (:+:))) =- Flat absurd
 (-=-) m = (=-) @m . m . (-=) @m
 
 instance (Casting m (f |.:| g), Category m, Functor m m f, Functor m m g) => Functor m m (f |.:| g) where
-	map m = (=-=) ((-|-|) @m @m @f @g m)
+	map m = (=-=) ((-||-) @m @m @f @g m)
 
 instance (Casting m ((|.:.|) f g f'), Category m, Functor m m f, Functor m m g, Functor m m f') => Functor m m ((|.:.|) f g f') where
-	map m = (=-=) ((-|-|-|) @m @m @f @g @f' m)
+	map m = (=-=) ((-|||-) @m @m @f @g @f' m)

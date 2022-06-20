@@ -133,3 +133,6 @@
 * Define `Adj.Program.Datastructure` module
 * Define `Adj.Program.Datastructure.Implementation` module
 * Define `Adj.Program.Datastructure.Implementation.List` module
+* Rename `-|` operator to `-|-`
+* Rename `-|-|` operator to `-||-`
+* Rename `-|-|-|` operator to `-|||-`
