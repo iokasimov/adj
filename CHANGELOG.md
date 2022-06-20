@@ -142,3 +142,5 @@
 * Define `-|||--` operator
 * Define `--||--` operator
 * Define `--|||--` operator
+* Rename `|.:|` type alias to `=!?=`
+* Rename `|.:.|` type alias to `=!?!=`
