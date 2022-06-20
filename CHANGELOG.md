@@ -133,6 +133,7 @@
 * Define `Adj.Program.Datastructure` module
 * Define `Adj.Program.Datastructure.Implementation` module
 * Define `Adj.Program.Datastructure.Implementation.List` module
+* Define `List` type alias
 * Rename `-|` operator to `-|-`
 * Rename `-|-|` operator to `-||-`
 * Rename `-|-|-|` operator to `-|||-`
@@ -147,3 +148,4 @@
 * Define `Adj.Program.Controlflow` module
 * Define `Adj.Program.Controlflow.Implementation` module
 * Define `Adj.Program.Controlflow.Implementation.State` module
+* Define `State` type alias
