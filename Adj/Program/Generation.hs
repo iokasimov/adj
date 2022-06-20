@@ -1,7 +1,7 @@
 module Adj.Program.Generation where
 
 import Adj.Auxiliary (Casting (Primary, (=-), (-=)))
-import Adj.Algebra (Category, (.), Functor (map), (-|-), (-|||-), (:*:), (:+:), Flat, Dual, (-=-), (=-=))
+import Adj.Algebra (Category, (.), Functor (map), (-|--), (--|||--), (:*:), (:+:), Flat, Dual, (=-=))
 
 newtype Generation p t a = Generation (p a (t (Generation p t a)))
 
@@ -20,8 +20,7 @@ instance
 	, forall a . Casting m (Dual p a)
 	) => Functor m m (Generation p t) where
 		map m = (=-=) @m @(Generation p t)
-			-- (((-?--) m) . ((--?--) ((-|-|) m)))
-			((-=-) @m @((Dual p) _) ((-|-) m) . (-=-) @m @((Flat p) _) ((-|||-) m))
+			((-|--) m . (--|||--) m)
 
 type Construction = Generation (:*:)
 
