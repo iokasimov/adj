@@ -1,5 +1,5 @@
 name:                adj
-version:             0.0.6
+version:             0.0.7
 synopsis:            Abstract algebra base library
 description:         Because programs could be so much better
 homepage:            https://github.com/iokasimov/adj
