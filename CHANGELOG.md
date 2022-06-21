@@ -156,3 +156,4 @@
 * Define `=----` operator
 
 # 0.0.8
+* Change `Generation` definition
