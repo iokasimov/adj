@@ -157,3 +157,4 @@
 
 # 0.0.8
 * Change `Generation` definition
+* Define `||` union constraint type from @rampion's package

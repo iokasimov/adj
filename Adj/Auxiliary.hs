@@ -1,3 +1,5 @@
+{-# LANGUAGE AllowAmbiguousTypes #-}
+
 module Adj.Auxiliary where
 
 infixl 8 .:, =-, -=
@@ -5,6 +7,8 @@ infixl 8 .:, =-, -=
 infixr 6 =!?=
 infixr 5 =!?!=
 infixr 4 =!!??=
+
+infixr 2 ||
 
 type (.:) oo o = oo o
 type (..:) oo o = oo o
@@ -14,6 +18,9 @@ type (.....:) oo o = oo o
 type (......:) oo o = oo o
 type (.......:) oo o = oo o
 type (........:) oo o = oo o
+
+class c || d where
+    resolve :: (c => r) -> (d => r) -> r
 
 class Casting m t where
 	{-# MINIMAL (=-), (-=) #-}
