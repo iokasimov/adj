@@ -5,7 +5,7 @@
 
 module Adj.Algebra.Category where
 
-import Adj.Auxiliary (type (.:), type (=!?=), type (=!?!=), Casting (Primary, (-=), (=-)))
+import Adj.Auxiliary (type (.:), type (=!?=), type (=!?!=), type (=!!??=), Casting (Primary, (-=), (=-)))
 
 infixr 9 .
 
@@ -444,8 +444,31 @@ empty = component @(-->) @((-->) (Unit (:+:))) =- Flat absurd
 	=> m (f source) (f target) -> m (Primary f source) (Primary f target)
 (-=-) m = (=-) @m . m . (-=) @m
 
-instance (Casting m (f =!?= g), Category m, Functor m m f, Functor m m g) => Functor m m (f =!?= g) where
+instance
+	( Category m
+	, Functor m m f
+	, Functor m m g
+	, Casting m (f =!?= g)
+	) => Functor m m (f =!?= g) where
 	map m = (=-=) ((-||-) @m @m @f @g m)
 
-instance (Casting m ((=!?!=) f g f'), Category m, Functor m m f, Functor m m g, Functor m m f') => Functor m m ((=!?!=) f g f') where
+instance
+	( Category m
+	, Functor m m f
+	, Functor m m g
+	, Functor m m f'
+	, Casting m ((=!?!=) f g f')
+	) => Functor m m ((=!?!=) f g f') where
 	map m = (=-=) ((-|||-) @m @m @f @g @f' m)
+
+instance
+	( Category m
+	, Functor m m g
+	, Functor m m h
+	, Casting m ((=!!??=) f g h)
+	, forall l . Casting m (Flat f (g l))
+	, forall r . Casting m (Dual f (h r))
+	, forall r . Functor m m ((Flat f) r)
+	, forall l . Functor m m ((Dual f) l)
+	) => Functor m m ((=!!??=) f g h) where
+	map m = (=-=) ((-||--) @m @m @f m . (--||--) @m @m @f m)
