@@ -2,8 +2,8 @@
 
 module Adj.Program.Generation where
 
-import Adj.Auxiliary (Casting (Primary, (=-), (-=)), type (=!?=), type (=!!??=), FFGH (FFGH))
-import Adj.Algebra (Category, (.), Functor (map), (-|--), (--|||--), (:*:), (:+:), Identity (Identity), Flat, Dual, (=-=))
+import Adj.Auxiliary (Casting (Primary, (=-), (-=)), type (=!?=), type (=!!??=))
+import Adj.Algebra (Category, Functor (map), (:*:), (:+:), Identity, Flat, Dual, (=-=))
 
 newtype Generation p f o = Generation
 	((=!!??=) p Identity (f =!?= Generation p f) o)

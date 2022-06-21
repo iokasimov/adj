@@ -5,7 +5,7 @@
 
 module Adj.Algebra.Category where
 
-import Adj.Auxiliary (type (.:), type (=!?=), type (=!?!=), type (=!!??=), Casting (Primary, (-=), (=-)))
+import Adj.Auxiliary (type (.:), type (=!?=), FG (FG), type (=!?!=), type (=!!??=), Casting (Primary, (-=), (=-)))
 
 infixr 9 .
 
@@ -397,6 +397,14 @@ instance Component (<--) ((-->) Terminal) (Flat (:*:) l) where
 instance Component (<--) ((-->) Terminal) (Dual (:*:) r) where
 	component = Dual .: \case
 		Dual (l :*: _) -> Flat .: \_ -> l
+
+instance Component (-->) (Flat (:*:) s =!?= (-->) s) Identity where
+	component = Flat .: \case
+		FG (Flat (s :*: Flat ms)) -> Identity .: ms s
+
+instance Component (-->) Identity ((-->) s =!?= Flat (:*:) s) where
+	component = Flat .: \case
+		Identity x -> FG . Flat .: \s -> Flat ...: s :*: x
 
 (|->)
 	:: Covariant Functor (->) (->) f
