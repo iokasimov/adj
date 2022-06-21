@@ -3,7 +3,6 @@ module Adj.Program.Generation where
 import Adj.Auxiliary (Casting (Primary, (=-), (-=)))
 import Adj.Algebra (Category, (.), Functor (map), (-|--), (--|||--), (:*:), (:+:), Flat, Dual, (=-=))
 
--- TODO: use =!!??= instead of newtype
 newtype Generation p t a = Generation (p a (t (Generation p t a)))
 
 instance Casting (->) (Generation p t) where

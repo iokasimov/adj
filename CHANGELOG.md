@@ -151,3 +151,6 @@
 * Define `State` type alias
 * Define `FFGH` scheme
 * Define `=!!??` type alias of `FFGH`
+* Define `=--` operator
+* Define `=---` operator
+* Define `=----` operator

@@ -444,6 +444,36 @@ empty = component @(-->) @((-->) (Unit (:+:))) =- Flat absurd
 	=> m (f source) (f target) -> m (Primary f source) (Primary f target)
 (-=-) m = (=-) @m . m . (-=) @m
 
+(=--) :: forall m f g o
+	. Semigroupoid m
+	=> Casting m f
+	=> Casting m g
+	=> g o ~ Primary f o
+	=> m .: f o .: Primary g o
+(=--) = (=-) @m . (=-) @m
+
+(=---) :: forall m f g h o
+	. Semigroupoid m
+	=> Casting m f
+	=> Casting m g
+	=> Casting m h
+	=> g o ~ Primary f o
+	=> h o ~ Primary g o
+	=> m .: f o .: Primary h o
+(=---) = (=-) @m . (=-) @m . (=-) @m
+
+(=----) :: forall m f g h i o
+	. Semigroupoid m
+	=> Casting m f
+	=> Casting m g
+	=> Casting m h
+	=> Casting m i
+	=> g o ~ Primary f o
+	=> h o ~ Primary g o
+	=> i o ~ Primary h o
+	=> m .: f o .: Primary i o
+(=----) = (=-) @m . (=-) @m . (=-) @m . (=-) @m
+
 instance
 	( Category m
 	, Functor m m f
