@@ -35,6 +35,10 @@ infixl 3 --|||--
 infixl 4 --||--
 infixl 5 --|--
 
+infixl 5 =----
+infixl 6 =---
+infixl 7 =-=, -=-, =--
+
 {- |
 > * Associativity: f . (g . h) ≡ (f . g) . h
 -}
