@@ -246,7 +246,13 @@ data (:*:) l r = l :*: r
 
 type (*:) = Flat (:*:)
 
+(*|) :: l -> r -> l *: r
+(*|) l r = Flat (l :*: r)
+
 type (:*) = Dual (:*:)
+
+(|*) :: r -> l -> r :* l
+(|*) r l = Dual (l :*: r)
 
 data (:+:) l r = This l | That r
 
@@ -304,7 +310,7 @@ instance Functor (-->) (-->) (Day (-->) f g from to) where
 
 instance Functor (-->) (-->) ((*:) l) where
 	map (Flat m) = Flat .: \case
-		Flat (l :*: r) -> Flat (l :*: m r)
+		Flat (l :*: r) -> l *| m r
 
 instance Functor ((-/->) ((*:) l)) (-->) ((*:) l) where
 	map (Kleisli (Flat m)) = Flat .: \case
@@ -322,7 +328,7 @@ instance Functor ((-/->) ((+:) l)) (-->) ((+:) l) where
 
 instance Functor (-->) (-->) ((:*) r) where
 	map (Flat m) = Flat .: \case
-		Dual (l :*: r) -> Dual (m l :*: r)
+		Dual (l :*: r) -> r |* m l
 
 instance Functor (-->) (-->) ((:+) r) where
 	map (Flat m) = Flat .: \case
@@ -402,11 +408,11 @@ instance Component (<--) ((-->) Terminal) (Dual (:*:) r) where
 	component = Dual .: \case
 		Dual (l :*: _) -> Flat .: \_ -> l
 
-instance Component (-->) (Flat (:*:) s =!?= (-->) s) Identity where
+instance Component (-->) ((*:) s =!?= (-->) s) Identity where
 	component = Flat .: \case
 		FG (Flat (s :*: Flat ms)) -> Identity .: ms s
 
-instance Component (-->) Identity ((-->) s =!?= Flat (:*:) s) where
+instance Component (-->) Identity ((-->) s =!?= (*:) s) where
 	component = Flat .: \case
 		Identity x -> FG . Flat .: \s -> Flat ...: s :*: x
 
