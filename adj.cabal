@@ -25,7 +25,7 @@ library
     Adj.Auxiliary
     Adj.Program
     Adj.Program.Generation
-    Adj.Program.Option
+    Adj.Program.Maybe
     Adj.Program.Progress
     Adj.Program.Controlflow
     Adj.Program.Controlflow.Implementation

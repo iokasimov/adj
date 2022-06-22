@@ -166,3 +166,4 @@
 * Define `*:` type alias
 * Remove `:*:.` type alias
 * Define `:*` type alias
+* Rename `Option` module and type to `Maybe`

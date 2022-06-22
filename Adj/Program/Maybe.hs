@@ -1,13 +1,13 @@
-module Adj.Program.Option where
+module Adj.Program.Maybe where
 
 import Adj.Algebra.Category ((:+:) (This, That), Terminal (Terminal))
 
-type Option = (:+:) Terminal
+type Maybe = (:+:) Terminal
 
-pattern Some :: a -> Option a
+pattern Some :: a -> Maybe a
 pattern Some x <- That x
 	where Some x = That x
 
-pattern None :: Option a
+pattern None :: Maybe a
 pattern None <- This Terminal
 	where None = This Terminal

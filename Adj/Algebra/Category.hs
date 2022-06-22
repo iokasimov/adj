@@ -22,6 +22,7 @@ infixr 6 <-\-, -/->
 infixr 7 <--, -->
 
 infixr 7 :*:, :+:
+infixr 8 :*, +:
 
 infixl 5 -|||-
 infixl 6 -||-
@@ -449,11 +450,11 @@ empty :: Monoidal Functor (:*:) (:+:) (-->) (-->) f => f o
 empty = component @(-->) @((-->) (Unit (:+:))) =- Flat absurd
 
 (=-=) :: forall m f source target . (Semigroupoid m, Casting m f)
-	=> m (Primary f source) (Primary f target) -> m (f source) (f target)
+	=> m .: Primary f source .: Primary f target -> m .: f source .: f target
 (=-=) m = (-=) @m . m . (=-) @m
 
 (-=-) :: forall m f source target . (Semigroupoid m, Casting m f)
-	=> m (f source) (f target) -> m (Primary f source) (Primary f target)
+	=> m .: f source .: f target -> m .: Primary f source .: Primary f target
 (-=-) m = (=-) @m . m . (-=) @m
 
 (=--) :: forall m f g o
@@ -508,8 +509,8 @@ instance
 	, Functor m m g
 	, Functor m m h
 	, Casting m ((=!!??=) f g h)
-	, forall l . Casting m (Flat f (g l))
-	, forall r . Casting m (Dual f (h r))
+	, forall l . Casting m (Flat f .: g l)
+	, forall r . Casting m (Dual f .: h r)
 	, forall r . Functor m m ((Flat f) r)
 	, forall l . Functor m m ((Dual f) l)
 	) => Functor m m ((=!!??=) f g h) where
