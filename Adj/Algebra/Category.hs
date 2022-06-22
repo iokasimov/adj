@@ -244,9 +244,9 @@ type (<-\-) t = Kleisli t (<--)
 
 data (:*:) l r = l :*: r
 
-type (:*:.) = Flat (:*:)
+type (*:) = Flat (:*:)
 
-type (.:*:) = Dual (:*:)
+type (:*) = Dual (:*:)
 
 data (:+:) l r = This l | That r
 
@@ -302,11 +302,11 @@ instance Functor (-->) (-->) (Day (-->) f g from to) where
 	map m = Flat .: \case
 		Day from to -> Day from .: m . to
 
-instance Functor (-->) (-->) ((:*:.) l) where
+instance Functor (-->) (-->) ((*:) l) where
 	map (Flat m) = Flat .: \case
 		Flat (l :*: r) -> Flat (l :*: m r)
 
-instance Functor ((-/->) ((:*:.) l)) (-->) ((:*:.) l) where
+instance Functor ((-/->) ((*:) l)) (-->) ((*:) l) where
 	map (Kleisli (Flat m)) = Flat .: \case
 		Flat (_ :*: r) -> m r
 
@@ -320,7 +320,7 @@ instance Functor ((-/->) ((+:) l)) (-->) ((+:) l) where
 		Flat (This l) -> Flat .: This l
 		Flat (That r) -> m r
 
-instance Functor (-->) (-->) ((.:*:) r) where
+instance Functor (-->) (-->) ((:*) r) where
 	map (Flat m) = Flat .: \case
 		Dual (l :*: r) -> Dual (m l :*: r)
 
@@ -334,7 +334,7 @@ instance Functor ((-/->) ((:+) r)) (-->) ((:+) r) where
 		Dual (This l) -> m l
 		Dual (That r) -> Dual .: That r
 
-instance Functor ((-/->) ((.:*:) r)) (-->) ((.:*:) r) where
+instance Functor ((-/->) ((:*) r)) (-->) ((:*) r) where
 	map (Kleisli (Flat m)) = Flat .: \case
 		Dual (l :*: _) -> m l
 
