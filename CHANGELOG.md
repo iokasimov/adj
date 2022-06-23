@@ -170,3 +170,4 @@
 * Change `Maybe` type definition
 * Change `Progress` type definition
 * Define `Adj.Program.Controlflow.Implementation.Store` module
+* Define `current` method
