@@ -171,3 +171,4 @@
 * Change `Progress` type definition
 * Define `Adj.Program.Controlflow.Implementation.Store` module
 * Define `current` method
+* Define `modify` method
