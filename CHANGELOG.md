@@ -167,3 +167,5 @@
 * Remove `:*:.` type alias
 * Define `:*` type alias
 * Rename `Option` module and type to `Maybe`
+* Change `Maybe` type definition
+* Change `Progress` type definition

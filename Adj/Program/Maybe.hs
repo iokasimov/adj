@@ -1,13 +1,13 @@
 module Adj.Program.Maybe where
 
-import Adj.Algebra.Category ((:+:) (This, That), Terminal (Terminal))
+import Adj.Algebra.Category (Flat (Flat), (:+:) (This, That), Terminal (Terminal))
 
-type Maybe = (:+:) Terminal
+type Maybe = Flat (:+:) Terminal
 
 pattern Some :: a -> Maybe a
-pattern Some x <- That x
-	where Some x = That x
+pattern Some x <- Flat (That x)
+	where Some x = Flat (That x)
 
 pattern None :: Maybe a
-pattern None <- This Terminal
-	where None = This Terminal
+pattern None <- Flat (This Terminal)
+	where None = Flat (This Terminal)
