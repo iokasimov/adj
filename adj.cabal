@@ -30,6 +30,7 @@ library
     Adj.Program.Controlflow
     Adj.Program.Controlflow.Implementation
     Adj.Program.Controlflow.Implementation.State
+    Adj.Program.Controlflow.Implementation.Store
     Adj.Program.Datastructure
     Adj.Program.Datastructure.Implementation
     Adj.Program.Datastructure.Implementation.List
