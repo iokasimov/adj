@@ -351,6 +351,18 @@ instance Covariant Functor (->) (->) f => Functor ((-/->) f) ((-/->) f) ((:*) r)
 	map (Kleisli (Flat m)) = Kleisli . Flat .: \case
 		Dual (l :*: r) -> m l |-> Dual . (:*: r)
 
+instance (Covariant Functor (->) (->) f, Monoidal Functor (:*:) (:*:) (-->) (-->) f)
+	=> Functor ((-/->) f) ((-/->) f) ((+:) l) where
+		map (Kleisli (Flat m)) = Kleisli . Flat .: \case
+			Flat (That r) -> m r |-> Flat . That
+			Flat (This l) -> point . Flat . This .: l
+
+instance (Covariant Functor (->) (->) f, Monoidal Functor (:*:) (:*:) (-->) (-->) f)
+	=> Functor ((-/->) f) ((-/->) f) ((:+) r) where
+		map (Kleisli (Flat m)) = Kleisli . Flat .: \case
+			Dual (This l) -> m l |-> Dual . This
+			Dual (That r) -> point . Dual . That .: r
+
 instance Component (-->) (Day (-->) Identity Identity (:*:) (:*:)) Identity where
 	component = Flat .: \case
 		Day (Identity l :*: Identity r) (Flat m) -> Identity .: m (l :*: r)
