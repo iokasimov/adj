@@ -343,6 +343,14 @@ instance Functor ((-/->) ((:*) r)) (-->) ((:*) r) where
 	map (Kleisli (Flat m)) = Flat .: \case
 		Dual (l :*: _) -> m l
 
+instance Covariant Functor (->) (->) f => Functor ((-/->) f) ((-/->) f) ((*:) l) where
+	map (Kleisli (Flat m)) = Kleisli . Flat .: \case
+		Flat (l :*: r) -> m r |-> Flat . (l :*:)
+
+instance Covariant Functor (->) (->) f => Functor ((-/->) f) ((-/->) f) ((:*) r) where
+	map (Kleisli (Flat m)) = Kleisli . Flat .: \case
+		Dual (l :*: r) -> m l |-> Dual . (:*: r)
+
 instance Component (-->) (Day (-->) Identity Identity (:*:) (:*:)) Identity where
 	component = Flat .: \case
 		Day (Identity l :*: Identity r) (Flat m) -> Identity .: m (l :*: r)
@@ -418,7 +426,7 @@ instance Component (-->) Identity ((-->) s =!?= (*:) s) where
 (|->)
 	:: Covariant Functor (->) (->) f
 	=> f source -> (source -> target) -> f target
-x |-> m = (-|-) @(-->) @(-->) (Flat m) =- x
+x |-> m = map @(-->) @(-->) (Flat m) =- x
 
 (|-|->)
 	:: Covariant Functor (->) (->) f
@@ -436,7 +444,7 @@ x |-|-|-> m = (-|||-) @(-->) @(-->) (Flat m) =- x
 (|-/->)
 	:: Bindable Functor (->) (->) f
 	=> f source -> (source -> f target) -> f target
-x |-/-> m = (-|-) @_ @(-->) (Kleisli (Flat m)) =- x
+x |-/-> m = map @_ @(-->) (Kleisli (Flat m)) =- x
 
 (|-|-/->)
 	:: Covariant Functor (->) (->) f
