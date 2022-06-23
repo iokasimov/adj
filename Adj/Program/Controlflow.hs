@@ -1,1 +1,3 @@
-module Adj.Program.Controlflow where
+module Adj.Program.Controlflow (module Exports) where
+
+import Adj.Program.Controlflow.Implementation as Exports
