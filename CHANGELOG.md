@@ -172,3 +172,5 @@
 * Define `Adj.Program.Controlflow.Implementation.Store` module
 * Define `current` method
 * Define `modify` method
+* Define `position` method
+* Define `retrofit` method
