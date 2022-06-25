@@ -22,7 +22,8 @@ infixr 6 <-\-, -/->
 infixr 7 <--, -->
 
 infixr 7 :*:, :+:
-infixr 8 :*, +:
+infixr 8 <:*:, :*:>
+infixr 8 <:+:, :+:>
 
 infixl 5 -|||-
 infixl 6 -||-
@@ -40,9 +41,9 @@ infixl 5 =----
 infixl 6 =---
 infixl 7 =-=, -=-, =--
 
-infixl 3 |-|-|-> 
-infixl 5 |-|-> 
-infixl 7 |-> 
+infixl 3 |-|-|->
+infixl 5 |-|->
+infixl 7 |->
 
 {- |
 > * Associativity: f . (g . h) ≡ (f . g) . h
@@ -249,15 +250,15 @@ type (<-\-) t = Kleisli t (<--)
 
 data (:*:) l r = l :*: r
 
-type (*:) = Flat (:*:)
+type (:*:>) = Flat (:*:)
 
-type (:*) = Dual (:*:)
+type (<:*:) = Dual (:*:)
 
 data (:+:) l r = This l | That r
 
-type (+:) = Flat (:+:)
+type (:+:>) = Flat (:+:)
 
-type (:+) = Dual (:+:)
+type (<:+:) = Dual (:+:)
 
 data Initial
 
@@ -307,58 +308,58 @@ instance Functor (-->) (-->) (Day (-->) f g from to) where
 	map m = Flat .: \case
 		Day from to -> Day from .: m . to
 
-instance Functor (-->) (-->) ((*:) l) where
+instance Functor (-->) (-->) ((:*:>) l) where
 	map (Flat m) = Flat .: \case
 		Flat (l :*: r) -> Flat (l :*: m r)
 
-instance Functor ((-/->) ((*:) l)) (-->) ((*:) l) where
+instance Functor ((-/->) ((:*:>) l)) (-->) ((:*:>) l) where
 	map (Kleisli (Flat m)) = Flat .: \case
 		Flat (_ :*: r) -> m r
 
-instance Functor (-->) (-->) ((+:) l) where
+instance Functor (-->) (-->) ((:+:>) l) where
 	map (Flat m) = Flat .: \case
 		Flat (This l) -> Flat .: This l
 		Flat (That r) -> Flat . That .: m r
 
-instance Functor ((-/->) ((+:) l)) (-->) ((+:) l) where
+instance Functor ((-/->) ((:+:>) l)) (-->) ((:+:>) l) where
 	map (Kleisli (Flat m)) = Flat .: \case
 		Flat (This l) -> Flat .: This l
 		Flat (That r) -> m r
 
-instance Functor (-->) (-->) ((:*) r) where
+instance Functor (-->) (-->) ((<:*:) r) where
 	map (Flat m) = Flat .: \case
 		Dual (l :*: r) -> Dual (m l :*: r)
 
-instance Functor (-->) (-->) ((:+) r) where
+instance Functor (-->) (-->) ((<:+:) r) where
 	map (Flat m) = Flat .: \case
 		Dual (This l) -> Dual . This .: m l
 		Dual (That r) -> Dual .: That r
 
-instance Functor ((-/->) ((:+) r)) (-->) ((:+) r) where
+instance Functor ((-/->) ((<:+:) r)) (-->) ((<:+:) r) where
 	map (Kleisli (Flat m)) = Flat .: \case
 		Dual (This l) -> m l
 		Dual (That r) -> Dual .: That r
 
-instance Functor ((-/->) ((:*) r)) (-->) ((:*) r) where
+instance Functor ((-/->) ((<:*:) r)) (-->) ((<:*:) r) where
 	map (Kleisli (Flat m)) = Flat .: \case
 		Dual (l :*: _) -> m l
 
-instance Covariant Functor (->) (->) f => Functor ((-/->) f) ((-/->) f) ((*:) l) where
+instance Covariant Functor (->) (->) f => Functor ((-/->) f) ((-/->) f) ((:*:>) l) where
 	map (Kleisli (Flat m)) = Kleisli . Flat .: \case
 		Flat (l :*: r) -> m r |-> Flat . (l :*:)
 
-instance Covariant Functor (->) (->) f => Functor ((-/->) f) ((-/->) f) ((:*) r) where
+instance Covariant Functor (->) (->) f => Functor ((-/->) f) ((-/->) f) ((<:*:) r) where
 	map (Kleisli (Flat m)) = Kleisli . Flat .: \case
 		Dual (l :*: r) -> m l |-> Dual . (:*: r)
 
 instance (Covariant Functor (->) (->) f, Monoidal Functor (:*:) (:*:) (-->) (-->) f)
-	=> Functor ((-/->) f) ((-/->) f) ((+:) l) where
+	=> Functor ((-/->) f) ((-/->) f) ((:+:>) l) where
 		map (Kleisli (Flat m)) = Kleisli . Flat .: \case
 			Flat (That r) -> m r |-> Flat . That
 			Flat (This l) -> point . Flat . This .: l
 
 instance (Covariant Functor (->) (->) f, Monoidal Functor (:*:) (:*:) (-->) (-->) f)
-	=> Functor ((-/->) f) ((-/->) f) ((:+) r) where
+	=> Functor ((-/->) f) ((-/->) f) ((<:+:) r) where
 		map (Kleisli (Flat m)) = Kleisli . Flat .: \case
 			Dual (This l) -> m l |-> Dual . This
 			Dual (That r) -> point . Dual . That .: r
@@ -367,43 +368,43 @@ instance Component (-->) (Day (-->) Identity Identity (:*:) (:*:)) Identity wher
 	component = Flat .: \case
 		Day (Identity l :*: Identity r) (Flat m) -> Identity .: m (l :*: r)
 
-instance Component (-->) (Day (-->) ((+:) l) ((+:) l) (:*:) (:*:)) ((+:) l) where
+instance Component (-->) (Day (-->) ((:+:>) l) ((:+:>) l) (:*:) (:*:)) ((:+:>) l) where
 	component = Flat .: \case
 		Day (Flat (That l) :*: Flat (That r)) (Flat m) -> Flat . That .: m (l :*: r)
 		Day (Flat (This l) :*: _) _ -> Flat . This .: l
 		Day (_ :*: Flat (This r)) _ -> Flat . This .: r
 
-instance Component (-->) (Day (-->) ((+:) l) Identity (:*:) (:*:)) ((+:) l) where
+instance Component (-->) (Day (-->) ((:+:>) l) Identity (:*:) (:*:)) ((:+:>) l) where
 	component = Flat .: \case
 		Day (Flat (That l) :*: Identity r) (Flat m) -> Flat . That .: m (l :*: r)
 		Day (Flat (This l) :*: _) _ -> Flat . This .: l
 
-instance Component (-->) (Day (-->) Identity ((+:) l) (:*:) (:*:)) ((+:) l) where
+instance Component (-->) (Day (-->) Identity ((:+:>) l) (:*:) (:*:)) ((:+:>) l) where
 	component = Flat .: \case
 		Day (Identity l :*: Flat (That r)) (Flat m) -> Flat . That .: m (l :*: r)
 		Day (_ :*: Flat (This r)) _ -> Flat . This .: r
 
-instance Component (-->) (Day (-->) Identity Identity (:*:) (:*:)) ((+:) l) where
+instance Component (-->) (Day (-->) Identity Identity (:*:) (:*:)) ((:+:>) l) where
 	component = Flat .: \case
 		Day (Identity l :*: Identity r) (Flat m) -> Flat . That .: m (l :*: r)
 
-instance Component (-->) (Day (-->) ((:+) r) ((:+) r) (:*:) (:*:)) ((:+) r) where
+instance Component (-->) (Day (-->) ((<:+:) r) ((<:+:) r) (:*:) (:*:)) ((<:+:) r) where
 	component = Flat .: \case
 		Day (Dual (This l) :*: Dual (This r)) (Flat m) -> Dual . This .: m (l :*: r)
 		Day (Dual (That l) :*: _) _ -> Dual . That .: l
 		Day (_ :*: Dual (That r)) _ -> Dual . That .: r
 
-instance Component (-->) (Day (-->) ((:+) r) Identity (:*:) (:*:)) ((:+) r) where
+instance Component (-->) (Day (-->) ((<:+:) r) Identity (:*:) (:*:)) ((<:+:) r) where
 	component = Flat .: \case
 		Day (Dual (This l) :*: Identity r) (Flat m) -> Dual . This .: m (l :*: r)
 		Day (Dual (That l) :*: _) _ -> Dual . That .: l
 
-instance Component (-->) (Day (-->) Identity ((:+) r) (:*:) (:*:)) ((:+) r) where
+instance Component (-->) (Day (-->) Identity ((<:+:) r) (:*:) (:*:)) ((<:+:) r) where
 	component = Flat .: \case
 		Day (Identity l :*: Dual (This r)) (Flat m) -> Dual . This .: m (l :*: r)
 		Day (_ :*: Dual (That r)) _ -> Dual . That .: r
 
-instance Component (-->) (Day (-->) Identity Identity (:*:) (:*:)) ((:+) r) where
+instance Component (-->) (Day (-->) Identity Identity (:*:) (:*:)) ((<:+:) r) where
 	component = Flat .: \case
 		Day (Identity l :*: Identity r) (Flat m) -> Dual . This .: m (l :*: r)
 
@@ -411,11 +412,11 @@ instance Component (-->) ((-->) Terminal) Identity where
 	component = Flat .: \case
 		Flat m -> Identity .: m Terminal
 
-instance Component (-->) ((-->) Terminal) ((+:) l) where
+instance Component (-->) ((-->) Terminal) ((:+:>) l) where
 	component = Flat .: \case
 		Flat m -> Flat . That .: m Terminal
 
-instance Component (-->) ((-->) Terminal) ((:+) r) where
+instance Component (-->) ((-->) Terminal) ((<:+:) r) where
 	component = Flat .: \case
 		Flat m -> Dual . This .: m Terminal
 
@@ -427,11 +428,11 @@ instance Component (<--) ((-->) Terminal) (Dual (:*:) r) where
 	component = Dual .: \case
 		Dual (l :*: _) -> Flat .: \_ -> l
 
-instance Component (-->) ((*:) s =!?= (-->) s) Identity where
+instance Component (-->) ((:*:>) s =!?= (-->) s) Identity where
 	component = Flat .: \case
 		FG (Flat (s :*: Flat ms)) -> Identity .: ms s
 
-instance Component (-->) Identity ((-->) s =!?= (*:) s) where
+instance Component (-->) Identity ((-->) s =!?= (:*:>) s) where
 	component = Flat .: \case
 		Identity x -> FG . Flat .: \s -> Flat ...: s :*: x
 

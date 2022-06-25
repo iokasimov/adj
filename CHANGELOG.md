@@ -159,13 +159,13 @@
 * Change `Generation` definition
 * Define `||` union constraint type from @rampion's package
 * Remove `.:+:` type alias
-* Define `+:` type alias
+* Define `:+:>` type alias
 * Remove `:+:.` type alias
-* Define `:+` type alias
+* Define `<:+:` type alias
 * Remove `.:*:` type alias
-* Define `*:` type alias
+* Define `:*:>` type alias
 * Remove `:*:.` type alias
-* Define `:*` type alias
+* Define `<:*:` type alias
 * Rename `Option` module and type to `Maybe`
 * Change `Maybe` type definition
 * Change `Progress` type definition
