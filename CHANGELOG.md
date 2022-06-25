@@ -175,3 +175,4 @@
 * Define `position` method
 * Define `retrofit` method
 * Define `Adj.Program.Controlflow.Implementation.Optics` module
+* Change `State` type definition

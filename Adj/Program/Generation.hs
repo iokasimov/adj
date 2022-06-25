@@ -13,7 +13,7 @@ instance Casting (->) (Generation p f) where
 	(=-) (Generation m) = m
 	(-=) m = Generation m
 
-instance 
+instance
 	( Category m
 	, Functor m m f
 	, Functor m m Identity
