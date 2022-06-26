@@ -1,10 +1,10 @@
 module Adj.Program.Controlflow.Implementation.Optics where
 
-import Adj.Auxiliary ((=-))
-import Adj.Algebra.Category (type (-->), (..:))
-import Adj.Program.Controlflow.Implementation.Store (Store, position)
+import Adj.Auxiliary ((=-), type (=!?=))
+import Adj.Algebra.Category (type (-->), type (:*:>), (.), (..:), Dual (Dual), extract)
 
-type Lens avaliable source target = source --> Store (avaliable target) source
+type Lens queried required source target =
+	source --> (((:*:>) (queried target) =!?= (-->) (required target)) source)
 
-view :: Lens avaliable source target -> source -> avaliable target
-view lens source = position ..: lens =- source
+view :: Lens queried required source target -> source -> queried target
+view lens source = extract . Dual . (=-) . (=-) ..: lens =- source
