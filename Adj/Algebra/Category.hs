@@ -217,9 +217,9 @@ type family Semimonoidal x source target from to f where
 
 type family Monoidal x source target from to f where
 	Monoidal Functor source target from to f =
-		( Component .: from .: Day (Flat to) f f source target .: f
-		, Component .: from .: Day (Flat to) Identity f source target .: f
-		, Component .: from .: Day (Flat to) f Identity source target .: f
+		( Component .: from .: Day to f f source target .: f
+		, Component .: from .: Day to Identity f source target .: f
+		, Component .: from .: Day to f Identity source target .: f
 		, Component .: from .: to (Unit target) .: f
 		)
 
@@ -407,6 +407,18 @@ instance Component (-->) (Day (-->) Identity ((<:+:) r) (:*:) (:*:)) ((<:+:) r) 
 instance Component (-->) (Day (-->) Identity Identity (:*:) (:*:)) ((<:+:) r) where
 	component = Flat .: \case
 		Day (Identity l :*: Identity r) (Flat m) -> Dual . This .: m (l :*: r)
+
+instance Component (<--) (Day (-->) ((<:*:) r) ((<:*:) r) (:*:) (:*:)) ((<:*:) r) where
+	component = Dual .: \case
+		Dual (l :*: r) -> Day (Dual (l :*: r) :*: Dual (l :*: r)) (Flat .: \(o :*: _) -> o)
+
+instance Component (<--) (Day (-->) ((<:*:) r) Identity (:*:) (:*:)) ((<:*:) r) where
+	component = Dual .: \case
+		Dual (l :*: r) -> Day (Dual (l :*: r) :*: Identity l) (Flat .: \(o :*: _) -> o)
+
+instance Component (<--) (Day (-->) Identity ((<:*:) r) (:*:) (:*:)) ((<:*:) r) where
+	component = Dual .: \case
+		Dual (l :*: r) -> Day (Identity l :*: Dual (l :*: r)) (Flat .: \(o :*: _) -> o)
 
 instance Component (-->) ((-->) Terminal) Identity where
 	component = Flat .: \case
