@@ -175,3 +175,5 @@
 * Change `State` type definition
 * Define `Lens` type
 * Define `view` method
+* Define `Prism` type
+* Define `review` method
