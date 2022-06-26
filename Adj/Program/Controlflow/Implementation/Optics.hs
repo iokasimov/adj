@@ -1,3 +1,7 @@
 module Adj.Program.Controlflow.Implementation.Optics where
 
--- We can recreate P_Q_T from Pandora with Flat and Dual wrappers
+import Adj.Auxiliary (type (=!!??=))
+import Adj.Algebra.Category (type (-->), Identity)
+import Adj.Program.Controlflow.Implementation.Store (Store)
+
+type Lens avaliable = (=!!??=) (-->) Identity (Store avaliable)
