@@ -169,11 +169,8 @@
 * Rename `Option` module and type to `Maybe`
 * Change `Maybe` type definition
 * Change `Progress` type definition
-* Define `Adj.Program.Controlflow.Implementation.Store` module
 * Define `current` method
 * Define `modify` method
-* Define `position` method
-* Define `retrofit` method
 * Define `Adj.Program.Controlflow.Implementation.Optics` module
 * Change `State` type definition
 * Define `Lens` type
