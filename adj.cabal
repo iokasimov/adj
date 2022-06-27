@@ -22,6 +22,7 @@ library
     Adj
     Adj.Algebra
     Adj.Algebra.Category
+    Adj.Algebra.Set
     Adj.Auxiliary
     Adj.Program
     Adj.Program.Primitive
