@@ -25,6 +25,7 @@ library
     Adj.Auxiliary
     Adj.Program
     Adj.Program.Primitive
+    Adj.Program.Primitive.Boolean
     Adj.Program.Primitive.Generation
     Adj.Program.Primitive.Maybe
     Adj.Program.Primitive.Progress
