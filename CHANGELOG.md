@@ -177,3 +177,5 @@
 * Define `view` method
 * Define `Prism` type
 * Define `review` method
+
+# 0.0.9
