@@ -179,3 +179,7 @@
 * Define `review` method
 
 # 0.0.9
+* Define `Adj.Program.Primitive` module
+* Move `Adj.Program.Maybe` to `Adj.Program.Primitive` module
+* Move `Adj.Program.Progress` to `Adj.Program.Primitive` module
+* Move `Adj.Program.Generation` to `Adj.Program.Primitive` module

@@ -1,6 +1,6 @@
 {-# LANGUAGE UndecidableInstances #-}
 
-module Adj.Program.Generation where
+module Adj.Program.Primitive.Generation where
 
 import Adj.Auxiliary (Casting (Primary, (=-), (-=)), type (=!?=), type (=!!??=))
 import Adj.Algebra (Category, Functor (map), (:*:), (:+:), Identity, Flat, Dual, (=-=))

@@ -1,4 +1,4 @@
-module Adj.Program.Maybe where
+module Adj.Program.Primitive.Maybe where
 
 import Adj.Algebra.Category (Flat (Flat), (:+:) (This, That), Terminal (Terminal))
 

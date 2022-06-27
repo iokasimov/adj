@@ -1,4 +1,4 @@
-module Adj.Program.Progress where
+module Adj.Program.Primitive.Progress where
 
 import Adj.Algebra.Category (Flat (Flat), (:+:) (This, That))
 
