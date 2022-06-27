@@ -220,7 +220,7 @@ type family Monoidal x source target from to f where
 		( Component .: from .: Day to f f source target .: f
 		, Component .: from .: Day to Identity f source target .: f
 		, Component .: from .: Day to f Identity source target .: f
-		, Component .: from .: to (Unit target) .: f
+		, Component .: from .: to (Neutral target) .: f
 		)
 
 type family Bindable x source target f where
@@ -266,9 +266,9 @@ data Terminal = Terminal
 boring :: o -> Terminal
 boring _ = Terminal
 
-type family Unit p = r | r -> p where
-	Unit (:*:) = Terminal
-	Unit (:+:) = Initial
+type family Neutral p = r | r -> p where
+	Neutral (:*:) = Terminal
+	Neutral (:+:) = Initial
 
 instance Semigroupoid (->) where
 	g . f = \x -> g (f x)
@@ -474,13 +474,13 @@ x |-/-> m = map @_ @(-->) (Kleisli (Flat m)) =- x
 x |-|-/-> m = x |-> (|-/-> m)
 
 point :: Monoidal Functor (:*:) (:*:) (-->) (-->) f => o -> f o
-point x = component @(-->) @((-->) (Unit (:*:))) =- (Flat .: \Terminal -> x)
+point x = component @(-->) @((-->) (Neutral (:*:))) =- (Flat .: \Terminal -> x)
 
 extract :: Monoidal Functor (:*:) (:*:) (<--) (-->) f => f o -> o
-extract x = component @(<--) @((-->) (Unit (:*:))) =- x =- Terminal
+extract x = component @(<--) @((-->) (Neutral (:*:))) =- x =- Terminal
 
 empty :: Monoidal Functor (:*:) (:+:) (-->) (-->) f => f o
-empty = component @(-->) @((-->) (Unit (:+:))) =- Flat absurd
+empty = component @(-->) @((-->) (Neutral (:+:))) =- Flat absurd
 
 (=-=) :: forall m f source target . (Semigroupoid m, Casting m f)
 	=> m .: Primary f source .: Primary f target -> m .: f source .: f target
