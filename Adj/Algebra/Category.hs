@@ -261,13 +261,13 @@ data Void
 absurd :: Void -> o
 absurd x = case x of {}
 
-data Terminal = Terminal
+data Unit = Unit
 
-boring :: o -> Terminal
-boring _ = Terminal
+boring :: o -> Unit
+boring _ = Unit
 
 type family Neutral p = r | r -> p where
-	Neutral (:*:) = Terminal
+	Neutral (:*:) = Unit
 	Neutral (:+:) = Void
 
 instance Semigroupoid (->) where
@@ -416,23 +416,23 @@ instance Component (<--) (Day (-->) Identity ((<:*:) r) (:*:) (:*:)) ((<:*:) r) 
 	component = Dual .: \case
 		Dual (l :*: r) -> Day (Identity l :*: Dual (l :*: r)) (Flat .: \(o :*: _) -> o)
 
-instance Component (-->) ((-->) Terminal) Identity where
+instance Component (-->) ((-->) Unit) Identity where
 	component = Flat .: \case
-		Flat m -> Identity .: m Terminal
+		Flat m -> Identity .: m Unit
 
-instance Component (-->) ((-->) Terminal) ((:+:>) l) where
+instance Component (-->) ((-->) Unit) ((:+:>) l) where
 	component = Flat .: \case
-		Flat m -> Flat . That .: m Terminal
+		Flat m -> Flat . That .: m Unit
 
-instance Component (-->) ((-->) Terminal) ((<:+:) r) where
+instance Component (-->) ((-->) Unit) ((<:+:) r) where
 	component = Flat .: \case
-		Flat m -> Dual . This .: m Terminal
+		Flat m -> Dual . This .: m Unit
 
-instance Component (<--) ((-->) Terminal) (Flat (:*:) l) where
+instance Component (<--) ((-->) Unit) (Flat (:*:) l) where
 	component = Dual .: \case
 		Flat (_ :*: r) -> Flat .: \_ -> r
 
-instance Component (<--) ((-->) Terminal) (Dual (:*:) r) where
+instance Component (<--) ((-->) Unit) (Dual (:*:) r) where
 	component = Dual .: \case
 		Dual (l :*: _) -> Flat .: \_ -> l
 
@@ -474,10 +474,10 @@ x |-/-> m = map @_ @(-->) (Kleisli (Flat m)) =- x
 x |-|-/-> m = x |-> (|-/-> m)
 
 point :: Monoidal Functor (:*:) (:*:) (-->) (-->) f => o -> f o
-point x = component @(-->) @((-->) (Neutral (:*:))) =- (Flat .: \Terminal -> x)
+point x = component @(-->) @((-->) (Neutral (:*:))) =- (Flat .: \Unit -> x)
 
 extract :: Monoidal Functor (:*:) (:*:) (<--) (-->) f => f o -> o
-extract x = component @(<--) @((-->) (Neutral (:*:))) =- x =- Terminal
+extract x = component @(<--) @((-->) (Neutral (:*:))) =- x =- Unit
 
 empty :: Monoidal Functor (:*:) (:+:) (-->) (-->) f => f o
 empty = component @(-->) @((-->) (Neutral (:+:))) =- Flat absurd

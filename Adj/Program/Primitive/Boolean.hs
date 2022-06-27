@@ -1,14 +1,14 @@
 module Adj.Program.Primitive.Boolean where
 
-import Adj.Algebra.Category (Terminal (Terminal))
+import Adj.Algebra.Category (Unit (Unit))
 import Adj.Algebra.Set ((:+:) (This, That))
 
-type Boolean = Terminal :+: Terminal
+type Boolean = Unit :+: Unit
 
 pattern True :: Boolean
-pattern True <- This Terminal
-	where True = This Terminal
+pattern True <- This Unit
+	where True = This Unit
 
 pattern False :: Boolean
-pattern False <- That Terminal
-	where False = That Terminal
+pattern False <- That Unit
+	where False = That Unit

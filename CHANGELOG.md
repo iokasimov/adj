@@ -187,4 +187,5 @@
 * Define `Adj.Algebra.Set` module
 * Move `:*:`, `:+:` to `Adj.Algebra.Set` module
 * Rename `Unit` type family to `Neutral`
-* Reame `Initial` datatype to `Void`
+* Rename `Initial` datatype to `Void`
+* Rename `Terminal` datatype to `Unit`
