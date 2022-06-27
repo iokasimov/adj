@@ -256,9 +256,9 @@ type (:+:>) = Flat (:+:)
 
 type (<:+:) = Dual (:+:)
 
-data Initial
+data Void
 
-absurd :: Initial -> o
+absurd :: Void -> o
 absurd x = case x of {}
 
 data Terminal = Terminal
@@ -268,7 +268,7 @@ boring _ = Terminal
 
 type family Neutral p = r | r -> p where
 	Neutral (:*:) = Terminal
-	Neutral (:+:) = Initial
+	Neutral (:+:) = Void
 
 instance Semigroupoid (->) where
 	g . f = \x -> g (f x)
