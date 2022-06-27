@@ -1,6 +1,7 @@
 module Adj.Program.Primitive.Boolean where
 
-import Adj.Algebra.Category ((:+:) (This, That), Terminal (Terminal))
+import Adj.Algebra.Category (Terminal (Terminal))
+import Adj.Algebra.Set ((:+:) (This, That))
 
 type Boolean = Terminal :+: Terminal
 

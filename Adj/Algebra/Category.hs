@@ -6,6 +6,7 @@
 module Adj.Algebra.Category where
 
 import Adj.Auxiliary (type (.:), type (=!?=), FG (FG), type (=!?!=), type (=!!??=), Casting (Primary, (-=), (=-)))
+import Adj.Algebra.Set ((:*:) ((:*:)), (:+:) (This, That))
 
 infixr 9 .
 
@@ -21,7 +22,6 @@ infixl 1 ........:
 infixr 6 <-\-, -/->
 infixr 7 <--, -->
 
-infixr 7 :*:, :+:
 infixr 8 <:*:, :*:>
 infixr 8 <:+:, :+:>
 
@@ -248,13 +248,9 @@ type (-/->) t = Kleisli t (-->)
 
 type (<-\-) t = Kleisli t (<--)
 
-data (:*:) l r = l :*: r
-
 type (:*:>) = Flat (:*:)
 
 type (<:*:) = Dual (:*:)
-
-data (:+:) l r = This l | That r
 
 type (:+:>) = Flat (:+:)
 

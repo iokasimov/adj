@@ -1,6 +1,7 @@
 module Adj.Program.Primitive.Progress where
 
-import Adj.Algebra.Category (Flat (Flat), (:+:) (This, That))
+import Adj.Algebra.Category (Flat (Flat))
+import Adj.Algebra.Set ((:+:) (This, That))
 
 type Progress stop = Flat (:+:) stop
 

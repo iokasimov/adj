@@ -1,7 +1,8 @@
 module Adj.Program.Controlflow.Implementation.Optics where
 
 import Adj.Auxiliary ((=-), type (=!?=), FG (FG))
-import Adj.Algebra.Category (type (<--), type (-->), type (:*:>), type (:+:>), (.), (..:), Dual (Dual), Flat (Flat), (:+:) (This, That), extract)
+import Adj.Algebra.Category (type (<--), type (-->), type (:*:>), type (:+:>), (.), (..:), Dual (Dual), Flat (Flat), extract)
+import Adj.Algebra.Set ((:+:) (This, That))
 
 type Lens queried required source target =
 	source --> (((:*:>) (queried target) =!?= (-->) (required target)) source)

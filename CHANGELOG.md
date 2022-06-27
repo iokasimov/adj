@@ -185,3 +185,4 @@
 * Move `Adj.Program.Generation` to `Adj.Program.Primitive` module
 * Define `Adj.Program.Primitive.Boolean` module
 * Define `Adj.Algebra.Set` module
+* Move `:*:`, `:+:` to `Adj.Algebra.Set` module
