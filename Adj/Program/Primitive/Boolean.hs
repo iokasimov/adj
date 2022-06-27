@@ -1,7 +1,6 @@
 module Adj.Program.Primitive.Boolean where
 
-import Adj.Algebra.Category (Unit (Unit))
-import Adj.Algebra.Set ((:+:) (This, That))
+import Adj.Algebra.Set ((:+:) (This, That), Unit (Unit))
 
 type Boolean = Unit :+: Unit
 

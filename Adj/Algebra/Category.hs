@@ -1,12 +1,11 @@
 {-# OPTIONS_GHC -fno-warn-orphans #-}
 {-# LANGUAGE AllowAmbiguousTypes #-}
 {-# LANGUAGE UndecidableInstances #-}
-{-# LANGUAGE EmptyCase #-}
 
 module Adj.Algebra.Category where
 
 import Adj.Auxiliary (type (.:), type (=!?=), FG (FG), type (=!?!=), type (=!!??=), Casting (Primary, (-=), (=-)))
-import Adj.Algebra.Set ((:*:) ((:*:)), (:+:) (This, That))
+import Adj.Algebra.Set ((:*:) ((:*:)), (:+:) (This, That), Unit (Unit), Neutral, absurd)
 
 infixr 9 .
 
@@ -255,20 +254,6 @@ type (<:*:) = Dual (:*:)
 type (:+:>) = Flat (:+:)
 
 type (<:+:) = Dual (:+:)
-
-data Void
-
-absurd :: Void -> o
-absurd x = case x of {}
-
-data Unit = Unit
-
-boring :: o -> Unit
-boring _ = Unit
-
-type family Neutral p = r | r -> p where
-	Neutral (:*:) = Unit
-	Neutral (:+:) = Void
 
 instance Semigroupoid (->) where
 	g . f = \x -> g (f x)

@@ -1,7 +1,7 @@
 module Adj.Program.Primitive.Maybe where
 
-import Adj.Algebra.Category (Flat (Flat), Unit (Unit))
-import Adj.Algebra.Set ((:+:) (This, That))
+import Adj.Algebra.Category (Flat (Flat))
+import Adj.Algebra.Set ((:+:) (This, That), Unit (Unit))
 
 type Maybe = Flat (:+:) Unit
 

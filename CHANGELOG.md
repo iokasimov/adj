@@ -185,7 +185,12 @@
 * Move `Adj.Program.Generation` to `Adj.Program.Primitive` module
 * Define `Adj.Program.Primitive.Boolean` module
 * Define `Adj.Algebra.Set` module
-* Move `:*:`, `:+:` to `Adj.Algebra.Set` module
+* Move `:*:` to `Adj.Algebra.Set` module
+* Move `:+:` to `Adj.Algebra.Set` module
 * Rename `Unit` type family to `Neutral`
 * Rename `Initial` datatype to `Void`
 * Rename `Terminal` datatype to `Unit`
+* Move `Unit` to `Adj.Algebra.Set` module
+* Move `Void` to `Adj.Algebra.Set` module
+* Move `absurd` to `Adj.Algebra.Set` module
+* Move `boring` to `Adj.Algebra.Set` module
