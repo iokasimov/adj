@@ -38,20 +38,20 @@ class Semigroup o where
 > * Left absorption: x + zero ≡ x
 -}
 
-class Semigroup a => Monoid a where
+class Semigroup o => Monoid o where
 	{-# MINIMAL zero #-}
-	zero :: a
+	zero :: o
 
 {- |
 > * Right absorption: x + invert x ≡ zero
 > * Left absorption: invert x + x ≡ zero
 -}
 
-class Monoid a => Group a where
+class Monoid o => Group o where
 	{-# MINIMAL invert #-}
-	invert :: a -> a
+	invert :: o -> o
 
-	(-) :: a -> a -> a
+	(-) :: o -> o -> o
 	x - y = x + invert y
 
 {- |
@@ -61,7 +61,6 @@ class Monoid a => Group a where
 > * Negation: x /= y ≡ invert (x == y)
 -}
 
--- TODO: Monoid => Group => Setoid
 class Setoid o where
 	(==) :: o -> o -> Unit :+: Unit
 
@@ -75,14 +74,26 @@ class Setoid o where
 > * Right distributivity: (y + z) * x ≡ y * x + z * x
 -}
 
-class Semigroup a => Ringoid a where
+class Semigroup o => Ringoid o where
 	{-# MINIMAL (*) #-}
-	(*) :: a -> a -> a
+	(*) :: o -> o -> o
 
 {- |
 > When providing a new instance, you should ensure it satisfies:
 > * Additive identity is a multiplicative annihilator: zero * x = x  * zero = zero
 -}
 
-class (Monoid a, Ringoid a) => Quasiring a where
-	one :: a
+class (Monoid o, Ringoid o) => Quasiring o where
+	{-# MINIMAL one #-}
+	one :: o
+
+instance Setoid Unit where
+	_ == _ = This Unit
+
+instance (Setoid l, Setoid r) => Setoid (l :+: r) where
+	This l == This r = l == r
+	That l == That r = l == r
+	_ == _ = That Unit
+
+instance (Setoid l, Setoid r) => Setoid (l :*: r) where
+	(ll :*: lr) == (rl :*: rr) = (ll == rl) == (lr == rr)
