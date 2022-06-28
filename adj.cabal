@@ -38,9 +38,33 @@ library
     Adj.Program.Datastructure.Implementation
     Adj.Program.Datastructure.Implementation.List
   default-extensions:
-    DataKinds, ConstraintKinds, ExistentialQuantification, GADTs, QuantifiedConstraints, InstanceSigs, StandaloneKindSignatures
-    FlexibleContexts, FlexibleInstances, KindSignatures, StandaloneKindSignatures, LiberalTypeSynonyms, LambdaCase, FunctionalDependencies
-    MultiParamTypeClasses, NoImplicitPrelude, PackageImports, PolyKinds, RankNTypes, ViewPatterns, PatternSynonyms, DerivingVia
-    ScopedTypeVariables, TypeApplications, TypeFamilies, TypeFamilyDependencies, TypeOperators
+    DataKinds
+    ConstraintKinds
+    ExistentialQuantification
+    GADTs
+    QuantifiedConstraints
+    InstanceSigs
+    StandaloneKindSignatures
+    FlexibleContexts
+    FlexibleInstances
+    KindSignatures
+    StandaloneKindSignatures
+    LiberalTypeSynonyms
+    LambdaCase
+    FunctionalDependencies
+    MultiParamTypeClasses
+    NoImplicitPrelude
+    PackageImports
+    PolyKinds
+    RankNTypes
+    ViewPatterns
+    PatternSynonyms
+    DerivingVia
+    StandaloneDeriving
+    ScopedTypeVariables
+    TypeApplications
+    TypeFamilies
+    TypeFamilyDependencies
+    TypeOperators
   default-language: Haskell2010
   ghc-options: -Wall -fno-warn-tabs -fno-warn-unticked-promoted-constructors -fprint-potential-instances

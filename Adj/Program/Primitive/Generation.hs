@@ -7,7 +7,9 @@ import Adj.Algebra (Category, Functor (map), Setoid, (:*:), (:+:), Identity, Fla
 
 newtype Generation p f o = Generation
 	((=!!??=) p Identity (f =!?= Generation p f) o)
-	deriving Setoid via (Structural (Generation p f o))
+
+deriving via (Structural ((=!!??=) p Identity (f =!?= Generation p f) o))
+	instance Setoid (p (Identity o) ((=!?=) f (Generation p f) o)) => Setoid (Generation p f o)
 
 instance Casting (->) (Generation p f) where
 	type Primary (Generation p f) o = (=!!??=) p Identity (f =!?= Generation p f) o

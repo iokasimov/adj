@@ -29,7 +29,7 @@ class Casting m t where
 	(=-) :: m .: t a .: Primary t a
 	(-=) :: m .: Primary t a .: t a
 
-newtype FG f g a = FG (f (g a))
+newtype FG f g o = FG (f (g o))
 
 type (=!?=) = FG
 
