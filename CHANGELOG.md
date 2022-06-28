@@ -201,3 +201,5 @@
 * Define `Ringoid` typeclass
 * Define `Quasiring` typeclass
 * Define `Structural` wrapper for deriving
+* Define `=:*:=` type alias
+* Define `=:+:=` type alias

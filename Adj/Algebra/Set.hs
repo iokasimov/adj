@@ -104,6 +104,15 @@ instance (Setoid l, Setoid r) => Setoid (l :+: r) where
 instance (Setoid l, Setoid r) => Setoid (l :*: r) where
 	(ll :*: lr) == (rl :*: rr) = (ll == rl) == (lr == rr)
 
-deriving via (Structural (f (g o))) instance Setoid (f (g o)) => Setoid ((=!?=) f g o)
-deriving via (Structural (f (g (f' o)))) instance Setoid (f (g (f' o))) => Setoid ((=!?!=) f g f' o)
-deriving via (Structural (f (g o) (h o))) instance Setoid (f (g o) (h o)) => Setoid ((=!!??=) f g h o)
+deriving via (Structural (f (g o))) instance
+	Setoid (f (g o)) => Setoid ((=!?=) f g o)
+
+deriving via (Structural (f (g (f' o)))) instance
+	Setoid (f (g (f' o))) => Setoid ((=!?!=) f g f' o)
+
+type (=:*:=) = (=!!??=) (:*:)
+
+type (=:+:=) = (=!!??=) (:+:)
+
+deriving via (Structural (f (g o) (h o))) instance
+	Setoid (f (g o) (h o)) => Setoid ((=!!??=) f g h o)

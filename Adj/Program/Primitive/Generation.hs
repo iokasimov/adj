@@ -30,7 +30,6 @@ instance
 	) => Functor m m (Generation p f) where
 	map m = (=-=) (map @m m)
 
-
 type Construction = Generation (:*:)
 
 type Instruction = Generation (:+:)
