@@ -195,3 +195,4 @@
 * Move `absurd` to `Adj.Algebra.Set` module
 * Move `boring` to `Adj.Algebra.Set` module
 * Define `Setoid` typeclass
+* Define `Semigroup` typeclass

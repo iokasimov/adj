@@ -4,6 +4,7 @@ module Adj.Algebra.Set where
 
 infixr 7 :*:, :+:, =/=
 infixr 8 ==
+infixr 9 +
 
 -- Cartesian product
 data (:*:) l r = l :*: r
@@ -24,6 +25,14 @@ absurd x = case x of {}
 type family Neutral p = r | r -> p where
 	Neutral (:*:) = Unit
 	Neutral (:+:) = Void
+
+{- |
+> When providing a new instance, you should ensure it satisfies:
+> * Associativity: x + (y + z) ≡ (x + y) + z
+-}
+
+class Semigroup o where
+	(+) :: o -> o -> o
 
 {- |
 > * Reflexivity: x == x ≡ True
