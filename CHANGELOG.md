@@ -199,3 +199,4 @@
 * Define `Monoid` typeclass
 * Define `Group` typeclass
 * Define `Ringoid` typeclass
+* Define `Quasiring` typeclass

@@ -78,3 +78,11 @@ class Setoid o where
 class Semigroup a => Ringoid a where
 	{-# MINIMAL (*) #-}
 	(*) :: a -> a -> a
+
+{- |
+> When providing a new instance, you should ensure it satisfies:
+> * Additive identity is a multiplicative annihilator: zero * x = x  * zero = zero
+-}
+
+class (Monoid a, Ringoid a) => Quasiring a where
+	one :: a
