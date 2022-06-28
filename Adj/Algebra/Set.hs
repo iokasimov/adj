@@ -2,7 +2,8 @@
 
 module Adj.Algebra.Set where
 
-infixr 7 :*:, :+:
+infixr 7 :*:, :+:, =/=
+infixr 8 ==
 
 -- Cartesian product
 data (:*:) l r = l :*: r
@@ -24,11 +25,18 @@ type family Neutral p = r | r -> p where
 	Neutral (:*:) = Unit
 	Neutral (:+:) = Void
 
+{- |
+> * Reflexivity: x == x ≡ True
+> * Symmetry: x == y ≡ y == x
+> * Transitivity: x == y * y == z ≡ True --> x == z ≡ True
+> * Negation: x /= y ≡ invert (x == y)
+-}
+
+-- TODO: Monoid => Group => Setoid
 class Setoid o where
 	(==) :: o -> o -> Unit :+: Unit
 
-	(/=) :: o -> o -> Unit :+: Unit
-	x /= y = case x == y of
+	(=/=) :: o -> o -> Unit :+: Unit
+	x =/= y = case x == y of
 		This _ -> That Unit
 		That _ -> This Unit
-
