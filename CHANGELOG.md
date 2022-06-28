@@ -197,3 +197,4 @@
 * Define `Setoid` typeclass
 * Define `Semigroup` typeclass
 * Define `Monoid` typeclass
+* Define `Group` typeclass

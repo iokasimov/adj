@@ -43,6 +43,18 @@ class Semigroup a => Monoid a where
 	zero :: a
 
 {- |
+> * Right absorption: x + invert x ≡ zero
+> * Left absorption: invert x + x ≡ zero
+-}
+
+class Monoid a => Group a where
+	{-# MINIMAL invert #-}
+	invert :: a -> a
+
+	(-) :: a -> a -> a
+	x - y = x + invert y
+
+{- |
 > * Reflexivity: x == x ≡ True
 > * Symmetry: x == y ≡ y == x
 > * Transitivity: x == y * y == z ≡ True --> x == z ≡ True
