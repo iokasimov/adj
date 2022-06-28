@@ -2,6 +2,8 @@
 
 module Adj.Algebra.Set where
 
+import Adj.Auxiliary (Structural (Structural))
+
 infixr 7 :*:, :+:, =/=
 infixr 8 ==
 infixr 9 +, *
@@ -86,6 +88,9 @@ class Semigroup o => Ringoid o where
 class (Monoid o, Ringoid o) => Quasiring o where
 	{-# MINIMAL one #-}
 	one :: o
+
+instance Setoid o => Setoid (Structural o) where
+	Structural l == Structural r = l == r
 
 instance Setoid Unit where
 	_ == _ = This Unit

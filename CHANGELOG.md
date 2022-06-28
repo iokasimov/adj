@@ -200,3 +200,4 @@
 * Define `Group` typeclass
 * Define `Ringoid` typeclass
 * Define `Quasiring` typeclass
+* Define `Structural` wrapper for deriving

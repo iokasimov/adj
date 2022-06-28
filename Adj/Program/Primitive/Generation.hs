@@ -2,11 +2,12 @@
 
 module Adj.Program.Primitive.Generation where
 
-import Adj.Auxiliary (Casting (Primary, (=-), (-=)), type (=!?=), type (=!!??=))
-import Adj.Algebra (Category, Functor (map), (:*:), (:+:), Identity, Flat, Dual, (=-=))
+import Adj.Auxiliary (Casting (Primary, (=-), (-=)), type (=!?=), type (=!!??=), Structural (Structural))
+import Adj.Algebra (Category, Functor (map), Setoid, (:*:), (:+:), Identity, Flat, Dual, (=-=))
 
 newtype Generation p f o = Generation
 	((=!!??=) p Identity (f =!?= Generation p f) o)
+	deriving Setoid via (Structural (Generation p f o))
 
 instance Casting (->) (Generation p f) where
 	type Primary (Generation p f) o = (=!!??=) p Identity (f =!?= Generation p f) o
