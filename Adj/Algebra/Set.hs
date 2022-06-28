@@ -4,7 +4,7 @@ module Adj.Algebra.Set where
 
 infixr 7 :*:, :+:, =/=
 infixr 8 ==
-infixr 9 +
+infixr 9 +, *
 
 -- Cartesian product
 data (:*:) l r = l :*: r
@@ -69,3 +69,12 @@ class Setoid o where
 	x =/= y = case x == y of
 		This _ -> That Unit
 		That _ -> This Unit
+
+{- |
+> * Left distributivity: x * (y + z) ≡ x * y + x * z
+> * Right distributivity: (y + z) * x ≡ y * x + z * x
+-}
+
+class Semigroup a => Ringoid a where
+	{-# MINIMAL (*) #-}
+	(*) :: a -> a -> a

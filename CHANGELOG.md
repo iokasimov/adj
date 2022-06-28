@@ -198,3 +198,4 @@
 * Define `Semigroup` typeclass
 * Define `Monoid` typeclass
 * Define `Group` typeclass
+* Define `Ringoid` typeclass
