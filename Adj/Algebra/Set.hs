@@ -27,12 +27,20 @@ type family Neutral p = r | r -> p where
 	Neutral (:+:) = Void
 
 {- |
-> When providing a new instance, you should ensure it satisfies:
 > * Associativity: x + (y + z) ≡ (x + y) + z
 -}
 
 class Semigroup o where
 	(+) :: o -> o -> o
+
+{- |
+> * Right absorption: zero + x ≡ x
+> * Left absorption: x + zero ≡ x
+-}
+
+class Semigroup a => Monoid a where
+	{-# MINIMAL zero #-}
+	zero :: a
 
 {- |
 > * Reflexivity: x == x ≡ True

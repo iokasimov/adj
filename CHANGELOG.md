@@ -196,3 +196,4 @@
 * Move `boring` to `Adj.Algebra.Set` module
 * Define `Setoid` typeclass
 * Define `Semigroup` typeclass
+* Define `Monoid` typeclass
