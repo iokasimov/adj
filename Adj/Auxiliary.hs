@@ -56,4 +56,13 @@ instance Casting (->) (FFGH f g h) where
 	(=-) ~(FFGH x) = x
 	(-=) = FFGH
 
+newtype FGG f gg g o = FGG (f (gg g o))
+
+type (=!??=) = FGG
+
+instance Casting (->) (FGG f gg g) where
+	type Primary (FGG f gg g) o = f (gg g o)
+	(=-) ~(FGG x) = x
+	(-=) = FGG
+
 newtype Structural o = Structural o

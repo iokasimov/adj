@@ -203,3 +203,4 @@
 * Define `Structural` wrapper for deriving
 * Define `=:*:=` type alias
 * Define `=:+:=` type alias
+* Define `FGG` scheme
