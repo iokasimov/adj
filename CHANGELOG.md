@@ -208,3 +208,5 @@
 
 # 0.1.0
 * Define `Construct` pattern
+* Define `Instruct` pattern
+* Define `Load` pattern
