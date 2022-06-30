@@ -210,3 +210,4 @@
 * Define `Construct` pattern
 * Define `Instruct` pattern
 * Define `Load` pattern
+* Change `Functor` typeclass definition

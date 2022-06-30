@@ -83,8 +83,7 @@ data Variance = Co | Contra
 > * Composition preserving: map (f . g) ≡ map f . map g
 -}
 
--- TODO: Semigroupoid or Category or one of them?
-class Functor from to f where
+class (Category from, Category to) => Functor from to f where
 	map :: from source target -> to .: f source .: f target
 
 (-|-) :: forall from to f source target . Functor from to f
@@ -204,7 +203,7 @@ instance (Category target, Functor (Kleisli f target) target f, Component target
 
 type family Covariant x source target f where
 	Covariant Functor source target f =
-		Functor .: Flat source .: Flat target .: f
+		(Category source, Category target, Functor .: Flat source .: Flat target .: f)
 
 type family Contravariant x source target f where
 	Contravariant Functor source target f =
@@ -272,11 +271,11 @@ instance Functor (-->) (-->) Identity where
 	map (Flat m) = Flat .: \case
 		Identity x -> Identity .: m x
 
-instance Functor ((-/->) Identity) (-->) Identity where
+instance (Component (-->) Identity Identity, Casting (-->) Identity) => Functor ((-/->) Identity) (-->) Identity where
 	map (Kleisli (Flat m)) = Flat .: \case
 		Identity x -> m x
 
-instance Covariant Functor (->) (->) g => Functor ((-/->) g) ((-/->) g) Identity where
+instance (Covariant Functor (->) (->) g, Bindable Functor (->) (->) g) => Functor ((-/->) g) ((-/->) g) Identity where
 	map (Kleisli (Flat m)) = Kleisli . Flat .: \case
 		Identity x -> (-|-) @_ @(-->) (Flat Identity) =- m x
 
@@ -293,7 +292,11 @@ instance Functor (-->) (-->) ((:*:>) l) where
 	map (Flat m) = Flat .: \case
 		Flat (l :*: r) -> Flat (l :*: m r)
 
-instance Functor ((-/->) ((:*:>) l)) (-->) ((:*:>) l) where
+instance 
+	( Bindable Functor (->) (->) ((:*:>) l)
+	, Component (-->) Identity ((:*:>) l)
+	, Casting (-->) Identity
+	) => Functor ((-/->) ((:*:>) l)) (-->) ((:*:>) l) where
 	map (Kleisli (Flat m)) = Flat .: \case
 		Flat (_ :*: r) -> m r
 
@@ -302,7 +305,11 @@ instance Functor (-->) (-->) ((:+:>) l) where
 		Flat (This l) -> Flat .: This l
 		Flat (That r) -> Flat . That .: m r
 
-instance Functor ((-/->) ((:+:>) l)) (-->) ((:+:>) l) where
+instance
+	( Bindable Functor (->) (->) ((:+:>) l)
+	, Component (-->) Identity ((:+:>) l)
+	, Casting (-->) Identity
+	) => Functor ((-/->) ((:+:>) l)) (-->) ((:+:>) l) where
 	map (Kleisli (Flat m)) = Flat .: \case
 		Flat (This l) -> Flat .: This l
 		Flat (That r) -> m r
@@ -316,30 +323,37 @@ instance Functor (-->) (-->) ((<:+:) r) where
 		Dual (This l) -> Dual . This .: m l
 		Dual (That r) -> Dual .: That r
 
-instance Functor ((-/->) ((<:+:) r)) (-->) ((<:+:) r) where
+instance
+	( Component (-->) Identity ((<:+:) r)
+	, Casting (-->) Identity
+	) => Functor ((-/->) ((<:+:) r)) (-->) ((<:+:) r) where
 	map (Kleisli (Flat m)) = Flat .: \case
 		Dual (This l) -> m l
 		Dual (That r) -> Dual .: That r
 
-instance Functor ((-/->) ((<:*:) r)) (-->) ((<:*:) r) where
+instance
+	( Component (-->) Identity ((<:*:) r)
+	, Bindable Functor (->) (->) ((<:*:) r)
+	, Casting (-->) Identity
+	) => Functor ((-/->) ((<:*:) r)) (-->) ((<:*:) r) where
 	map (Kleisli (Flat m)) = Flat .: \case
 		Dual (l :*: _) -> m l
 
-instance Covariant Functor (->) (->) f => Functor ((-/->) f) ((-/->) f) ((:*:>) l) where
+instance (Covariant Functor (->) (->) f, Bindable Functor (->) (->) f) => Functor ((-/->) f) ((-/->) f) ((:*:>) l) where
 	map (Kleisli (Flat m)) = Kleisli . Flat .: \case
 		Flat (l :*: r) -> m r |-> Flat . (l :*:)
 
-instance Covariant Functor (->) (->) f => Functor ((-/->) f) ((-/->) f) ((<:*:) r) where
+instance (Covariant Functor (->) (->) f, Bindable Functor (->) (->) f) => Functor ((-/->) f) ((-/->) f) ((<:*:) r) where
 	map (Kleisli (Flat m)) = Kleisli . Flat .: \case
 		Dual (l :*: r) -> m l |-> Dual . (:*: r)
 
-instance (Covariant Functor (->) (->) f, Monoidal Functor (:*:) (:*:) (-->) (-->) f)
+instance (Covariant Functor (->) (->) f, Bindable Functor (->) (->) f, Monoidal Functor (:*:) (:*:) (-->) (-->) f)
 	=> Functor ((-/->) f) ((-/->) f) ((:+:>) l) where
 		map (Kleisli (Flat m)) = Kleisli . Flat .: \case
 			Flat (That r) -> m r |-> Flat . That
 			Flat (This l) -> point . Flat . This .: l
 
-instance (Covariant Functor (->) (->) f, Monoidal Functor (:*:) (:*:) (-->) (-->) f)
+instance (Covariant Functor (->) (->) f, Bindable Functor (->) (->) f, Monoidal Functor (:*:) (:*:) (-->) (-->) f)
 	=> Functor ((-/->) f) ((-/->) f) ((<:+:) r) where
 		map (Kleisli (Flat m)) = Kleisli . Flat .: \case
 			Dual (This l) -> m l |-> Dual . This
@@ -533,3 +547,7 @@ instance
 	, forall l . Functor m m ((Dual f) l)
 	) => Functor m m ((=!!??=) f g h) where
 	map m = (=-=) ((-||--) @m @m @f m . (--||--) @m @m @f m)
+
+instance Casting (->) f => Casting (-->) f where
+	(=-) = Flat (=-)
+	(-=) = Flat (-=)
