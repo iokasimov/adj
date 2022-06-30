@@ -207,3 +207,4 @@
 * Define `Adj.Program.Datastructure.Implementation.Tree` module
 
 # 0.1.0
+* Define `Construct` pattern

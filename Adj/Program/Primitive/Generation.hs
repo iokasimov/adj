@@ -2,8 +2,8 @@
 
 module Adj.Program.Primitive.Generation where
 
-import Adj.Auxiliary (Casting (Primary, (=-), (-=)), type (=!?=), type (=!!??=), Structural (Structural))
-import Adj.Algebra (Category, Functor (map), Setoid, (:*:), (:+:), Identity, Flat, Dual, (=-=))
+import Adj.Auxiliary (Casting (Primary, (=-), (-=)), type (=!?=), FG (FG), FFGH (FFGH), type (=!!??=), Structural (Structural))
+import Adj.Algebra (Semigroupoid ((.)), Category ((...:)), Functor (map), Setoid, (:*:) ((:*:)), (:+:), Identity (Identity), Flat, Dual, (=-=))
 
 newtype Generation p f o = Generation
 	((=!!??=) p Identity (f =!?= Generation p f) o)
@@ -31,5 +31,9 @@ instance
 	map m = (=-=) (map @m m)
 
 type Construction = Generation (:*:)
+
+pattern Construct :: o -> f (Construction f o) -> Construction f o
+pattern Construct x xs <- Generation (FFGH (Identity x :*: FG xs))
+	where Construct x xs = Generation . FFGH ...: Identity x :*: FG xs
 
 type Instruction = Generation (:+:)
