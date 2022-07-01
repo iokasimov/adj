@@ -476,6 +476,12 @@ x |-/-> m = map @_ @(-->) (Kleisli (Flat m)) =- x
 	=> f (g source) -> (source -> g target) -> f (g target)
 x |-|-/-> m = x |-> (|-/-> m)
 
+(|-/-/>)
+	:: forall f g source target . Traversable Functor (->) (->) g f
+	=> f source -> (source -> g target) -> g (f target)
+x |-/-/> m = case map @((-/->) g) @((-/->) g) (Kleisli (Flat m)) of
+	Kleisli (Flat m') -> m' x
+
 point :: Monoidal Functor (:*:) (:*:) (-->) (-->) f => o -> f o
 point x = component @(-->) @((-->) (Neutral (:*:))) =- (Flat .: \Unit -> x)
 
@@ -555,3 +561,7 @@ instance
 instance Casting (->) f => Casting (-->) f where
 	(=-) = Flat (=-)
 	(-=) = Flat (-=)
+
+instance (Casting (->) f, Monoidal Functor (:*:) (:*:) (-->) (-->) g) => Casting ((-/->) g) f where
+	(=-) = Kleisli . Flat .: point . (=-)
+	(-=) = Kleisli . Flat .: point . (-=)
