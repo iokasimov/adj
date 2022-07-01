@@ -2,17 +2,18 @@
 
 module Adj.Program.Primitive.Generation where
 
-import Adj.Auxiliary (Casting (Primary, (=-), (-=)), type (=!?=), FG (FG), FFGH (FFGH), type (=!!??=), Structural (Structural))
+import Adj.Auxiliary (Casted, Casting ((=-), (-=)), type (=!?=), FG (FG), FFGH (FFGH), type (=!!??=), Structural (Structural))
 import Adj.Algebra (Semigroupoid ((.)), Category ((.:), (...:)), Functor (map), Setoid, (:*:) ((:*:)), (:+:) (This, That), Identity (Identity), Flat, Dual, (=-=))
 
 newtype Generation p f o = Generation
 	((=!!??=) p Identity (f =!?= Generation p f) o)
 
+type instance Casted (Generation p f) o = (=!!??=) p Identity (f =!?= Generation p f) o
+
 deriving via (Structural ((=!!??=) p Identity (f =!?= Generation p f) o))
 	instance Setoid (p (Identity o) ((=!?=) f (Generation p f) o)) => Setoid (Generation p f o)
 
 instance Casting (->) (Generation p f) where
-	type Primary (Generation p f) o = (=!!??=) p Identity (f =!?= Generation p f) o
 	(=-) (Generation m) = m
 	(-=) m = Generation m
 

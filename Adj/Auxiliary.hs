@@ -22,19 +22,20 @@ type (........:) oo o = oo o
 class c || d where
     resolve :: (c => r) -> (d => r) -> r
 
+type family Casted (f :: * -> *) a
+
 class Casting m t where
 	{-# MINIMAL (=-), (-=) #-}
-	type Primary t a
-
-	(=-) :: m .: t a .: Primary t a
-	(-=) :: m .: Primary t a .: t a
+	(=-) :: m .: t a .: Casted t a
+	(-=) :: m .: Casted t a .: t a
 
 newtype FG f g o = FG (f (g o))
 
 type (=!?=) = FG
 
+type instance Casted (f =!?= g) a = f (g a)
+
 instance Casting (->) (FG f g) where
-	type Primary (f =!?= g) a = f (g a)
 	(=-) ~(FG x) = x
 	(-=) = FG
 
@@ -42,8 +43,9 @@ newtype FGF f g f' o = FGF (f (g (f' o)))
 
 type (=!?!=) = FGF
 
+type instance Casted (FGF f g f') a = f (g (f' a))
+
 instance Casting (->) (FGF f g f') where
-	type Primary (FGF f g f') a = f (g (f' a))
 	(=-) ~(FGF x) = x
 	(-=) = FGF
 
@@ -51,8 +53,9 @@ newtype FFGH f g h o = FFGH (f (g o) (h o))
 
 type (=!!??=) = FFGH
 
+type instance Casted (FFGH f g h) o = f (g o) (h o)
+
 instance Casting (->) (FFGH f g h) where
-	type Primary (FFGH f g h) o = f (g o) (h o)
 	(=-) ~(FFGH x) = x
 	(-=) = FFGH
 
@@ -60,8 +63,9 @@ newtype FGG f gg g o = FGG (f (gg g o))
 
 type (=!??=) = FGG
 
+type instance Casted (FGG f gg g) o = f (gg g o)
+
 instance Casting (->) (FGG f gg g) where
-	type Primary (FGG f gg g) o = f (gg g o)
 	(=-) ~(FGG x) = x
 	(-=) = FGG
 

@@ -4,7 +4,7 @@
 
 module Adj.Algebra.Category where
 
-import Adj.Auxiliary (type (.:), type (=!?=), FG (FG), type (=!?!=), type (=!!??=), Casting (Primary, (-=), (=-)))
+import Adj.Auxiliary (type (.:), type (=!?=), FG (FG), type (=!?!=), type (=!!??=), Casted, Casting ((-=), (=-)))
 import Adj.Algebra.Set ((:*:) ((:*:)), (:+:) (This, That), Unit (Unit), Neutral, absurd)
 
 infixr 9 .
@@ -162,8 +162,9 @@ class (Functor from to f, Functor from to g) => Transformation from to f g where
 
 newtype Flat m source target = Flat (m source target)
 
+type instance Casted (Flat m source) target = m source target
+
 instance Casting (->) (Flat m source) where
-	type Primary (Flat m source) target = m source target
 	(=-) (Flat m) = m
 	(-=) m = Flat m
 
@@ -175,8 +176,9 @@ instance Category morhism => Category (Flat morhism) where
 
 newtype Dual m source target = Dual (m target source)
 
+type instance Casted (Dual m target) source = m source target
+
 instance Casting (->) (Dual m target) where
-	type Primary (Dual m target) source = m source target
 	(=-) (Dual m) = m
 	(-=) m = Dual m
 
@@ -189,8 +191,9 @@ instance Category morhism => Category (Dual morhism) where
 newtype Kleisli f m source target =
 	Kleisli (m source .: f target)
 
+type instance Casted (Kleisli f (->) source) target = source -> f target
+
 instance Casting (->) (Kleisli f (->) source) where
-	type Primary (Kleisli f (->) source) target = source -> f target
 	(=-) (Kleisli m) = m
 	(-=) m = Kleisli m
 
@@ -262,8 +265,9 @@ instance Category (->) where
 
 newtype Identity o = Identity o
 
+type instance Casted Identity o = o
+
 instance Casting (->) Identity where
-	type Primary Identity o = o
 	(=-) (Identity x) = x
 	(-=) x = Identity x
 
@@ -482,19 +486,19 @@ empty :: Monoidal Functor (:*:) (:+:) (-->) (-->) f => f o
 empty = component @(-->) @((-->) (Neutral (:+:))) =- Flat absurd
 
 (=-=) :: forall m f source target . (Semigroupoid m, Casting m f)
-	=> m .: Primary f source .: Primary f target -> m .: f source .: f target
+	=> m .: Casted f source .: Casted f target -> m .: f source .: f target
 (=-=) m = (-=) @m . m . (=-) @m
 
 (-=-) :: forall m f source target . (Semigroupoid m, Casting m f)
-	=> m .: f source .: f target -> m .: Primary f source .: Primary f target
+	=> m .: f source .: f target -> m .: Casted f source .: Casted f target
 (-=-) m = (=-) @m . m . (-=) @m
 
 (=--) :: forall m f g o
 	. Semigroupoid m
 	=> Casting m f
 	=> Casting m g
-	=> g o ~ Primary f o
-	=> m .: f o .: Primary g o
+	=> g o ~ Casted f o
+	=> m .: f o .: Casted g o
 (=--) = (=-) @m . (=-) @m
 
 (=---) :: forall m f g h o
@@ -502,9 +506,9 @@ empty = component @(-->) @((-->) (Neutral (:+:))) =- Flat absurd
 	=> Casting m f
 	=> Casting m g
 	=> Casting m h
-	=> g o ~ Primary f o
-	=> h o ~ Primary g o
-	=> m .: f o .: Primary h o
+	=> g o ~ Casted f o
+	=> h o ~ Casted g o
+	=> m .: f o .: Casted h o
 (=---) = (=-) @m . (=-) @m . (=-) @m
 
 (=----) :: forall m f g h i o
@@ -513,10 +517,10 @@ empty = component @(-->) @((-->) (Neutral (:+:))) =- Flat absurd
 	=> Casting m g
 	=> Casting m h
 	=> Casting m i
-	=> g o ~ Primary f o
-	=> h o ~ Primary g o
-	=> i o ~ Primary h o
-	=> m .: f o .: Primary i o
+	=> g o ~ Casted f o
+	=> h o ~ Casted g o
+	=> i o ~ Casted h o
+	=> m .: f o .: Casted i o
 (=----) = (=-) @m . (=-) @m . (=-) @m . (=-) @m
 
 instance
