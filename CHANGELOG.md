@@ -213,3 +213,4 @@
 * Change `Functor` typeclass definition
 * Replace `Primary` associated type family with `Casted` open type family
 * Define `|-/-/>` operator
+* Define `|-/-/-/>` operator

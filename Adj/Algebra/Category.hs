@@ -482,6 +482,13 @@ x |-|-/-> m = x |-> (|-/-> m)
 x |-/-/> m = case map @((-/->) g) @((-/->) g) (Kleisli (Flat m)) of
 	Kleisli (Flat m') -> m' x
 
+(|-/-/-/>)
+	:: forall f g h source target
+	. (Traversable Functor (->) (->) g h, Traversable Functor (->) (->) g f)
+	=> f (h source) -> (source -> g target) -> g (f (h target))
+x |-/-/-/> m = case (map @((-/->) g) @((-/->) g) . map @((-/->) g) @((-/->) g)) (Kleisli (Flat m)) of
+	Kleisli (Flat m') -> m' x
+
 point :: Monoidal Functor (:*:) (:*:) (-->) (-->) f => o -> f o
 point x = component @(-->) @((-->) (Neutral (:*:))) =- (Flat .: \Unit -> x)
 
