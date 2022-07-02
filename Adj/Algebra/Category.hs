@@ -41,7 +41,7 @@ infixl 7 =-=, -=-, =--
 
 infixl 4 -|||->
 infixl 5 -||->
-infixl 6 -|->
+infixl 6 -|->, -/->
 
 {- |
 > * Associativity: f . (g . h) ≡ (f . g) . h
@@ -460,16 +460,16 @@ x -||-> m = (-||-) @(-->) @(-->) (Flat m) =- x
 	=> f (g (h source)) -> (source -> target) -> f (g (h target))
 x -|||-> m = (-|||-) @(-->) @(-->) (Flat m) =- x
 
-(-|-/->)
+(-/->)
 	:: Bindable Functor (->) (->) f
 	=> f source -> (source -> f target) -> f target
-x -|-/-> m = map @_ @(-->) (Kleisli (Flat m)) =- x
+x -/-> m = map @_ @(-->) (Kleisli (Flat m)) =- x
 
 (-|-|-/->)
 	:: Covariant Functor (->) (->) f
 	=> Bindable Functor (->) (->) g
 	=> f (g source) -> (source -> g target) -> f (g target)
-x -|-|-/-> m = x -|-> (-|-/-> m)
+x -|-|-/-> m = x -|-> (-/-> m)
 
 (-|-/-/>)
 	:: forall f g source target . Traversable Functor (->) (->) g f
