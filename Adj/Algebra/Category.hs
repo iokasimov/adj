@@ -40,8 +40,8 @@ infixl 5 =----
 infixl 6 =---
 infixl 7 =-=, -=-, =--
 
-infixl 3 |-|-|->
-infixl 5 |-|->
+infixl 2 -|-|-|->
+infixl 4 -|-|->
 infixl 6 -|->
 
 {- |
@@ -452,41 +452,41 @@ instance Component (-->) Identity ((-->) s =!?= (:*:>) s) where
 	=> f source -> (source -> target) -> f target
 x -|-> m = map @(-->) @(-->) (Flat m) =- x
 
-(|-|->)
+(-|-|->)
 	:: Covariant Functor (->) (->) f
 	=> Covariant Functor (->) (->) g
 	=> f (g source) -> (source -> target) -> f (g target)
-x |-|-> m = (-||-) @(-->) @(-->) (Flat m) =- x
+x -|-|-> m = (-||-) @(-->) @(-->) (Flat m) =- x
 
-(|-|-|->)
+(-|-|-|->)
 	:: Covariant Functor (->) (->) f
 	=> Covariant Functor (->) (->) g
 	=> Covariant Functor (->) (->) h
 	=> f (g (h source)) -> (source -> target) -> f (g (h target))
-x |-|-|-> m = (-|||-) @(-->) @(-->) (Flat m) =- x
+x -|-|-|-> m = (-|||-) @(-->) @(-->) (Flat m) =- x
 
-(|-/->)
+(-|-/->)
 	:: Bindable Functor (->) (->) f
 	=> f source -> (source -> f target) -> f target
-x |-/-> m = map @_ @(-->) (Kleisli (Flat m)) =- x
+x -|-/-> m = map @_ @(-->) (Kleisli (Flat m)) =- x
 
-(|-|-/->)
+(-|-|-/->)
 	:: Covariant Functor (->) (->) f
 	=> Bindable Functor (->) (->) g
 	=> f (g source) -> (source -> g target) -> f (g target)
-x |-|-/-> m = x -|-> (|-/-> m)
+x -|-|-/-> m = x -|-> (-|-/-> m)
 
-(|-/-/>)
+(-|-/-/>)
 	:: forall f g source target . Traversable Functor (->) (->) g f
 	=> f source -> (source -> g target) -> g (f target)
-x |-/-/> m = case map @((-/->) g) @((-/->) g) (Kleisli (Flat m)) of
+x -|-/-/> m = case map @((-/->) g) @((-/->) g) (Kleisli (Flat m)) of
 	Kleisli (Flat m') -> m' x
 
-(|-/-/-/>)
+(-|-/-/-/>)
 	:: forall f g h source target
 	. (Traversable Functor (->) (->) g h, Traversable Functor (->) (->) g f)
 	=> f (h source) -> (source -> g target) -> g (f (h target))
-x |-/-/-/> m = case (map @((-/->) g) @((-/->) g) . map @((-/->) g) @((-/->) g)) (Kleisli (Flat m)) of
+x -|-/-/-/> m = case (map @((-/->) g) @((-/->) g) . map @((-/->) g) @((-/->) g)) (Kleisli (Flat m)) of
 	Kleisli (Flat m') -> m' x
 
 point :: Monoidal Functor (:*:) (:*:) (-->) (-->) f => o -> f o

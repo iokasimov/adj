@@ -212,6 +212,10 @@
 * Define `Load` pattern
 * Change `Functor` typeclass definition
 * Replace `Primary` associated type family with `Casted` open type family
-* Define `|-/-/>` operator
-* Define `|-/-/-/>` operator
+* Define `-|-/-/>` operator
+* Define `-|-/-/-/>` operator
 * Rename `|->` operator to `-|->`
+* Rename `|-|->` operator to `-|-|->`
+* Rename `|-|-|->` operator to `-|-|-|->`
+* Rename `|-/->` operator to `-|-/->`
+* Rename `|-|-/->` operator to `-|-|-/->`
