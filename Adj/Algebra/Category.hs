@@ -40,8 +40,8 @@ infixl 5 =----
 infixl 6 =---
 infixl 7 =-=, -=-, =--
 
-infixl 2 -|-|-|->
-infixl 4 -|-|->
+infixl 4 -|||->
+infixl 5 -||->
 infixl 6 -|->
 
 {- |
@@ -452,18 +452,18 @@ instance Component (-->) Identity ((-->) s =!?= (:*:>) s) where
 	=> f source -> (source -> target) -> f target
 x -|-> m = map @(-->) @(-->) (Flat m) =- x
 
-(-|-|->)
+(-||->)
 	:: Covariant Functor (->) (->) f
 	=> Covariant Functor (->) (->) g
 	=> f (g source) -> (source -> target) -> f (g target)
-x -|-|-> m = (-||-) @(-->) @(-->) (Flat m) =- x
+x -||-> m = (-||-) @(-->) @(-->) (Flat m) =- x
 
-(-|-|-|->)
+(-|||->)
 	:: Covariant Functor (->) (->) f
 	=> Covariant Functor (->) (->) g
 	=> Covariant Functor (->) (->) h
 	=> f (g (h source)) -> (source -> target) -> f (g (h target))
-x -|-|-|-> m = (-|||-) @(-->) @(-->) (Flat m) =- x
+x -|||-> m = (-|||-) @(-->) @(-->) (Flat m) =- x
 
 (-|-/->)
 	:: Bindable Functor (->) (->) f

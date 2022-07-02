@@ -215,7 +215,8 @@
 * Define `-|-/-/>` operator
 * Define `-|-/-/-/>` operator
 * Rename `|->` operator to `-|->`
-* Rename `|-|->` operator to `-|-|->`
-* Rename `|-|-|->` operator to `-|-|-|->`
+* Rename `|-|->` operator to `-||->`
+* Rename `|-|-|->` operator to `-|||->`
 * Rename `|-/->` operator to `-|-/->`
 * Rename `|-|-/->` operator to `-|-|-/->`
+
