@@ -42,7 +42,7 @@ infixl 7 =-=, -=-, =--
 
 infixl 3 |-|-|->
 infixl 5 |-|->
-infixl 7 |->
+infixl 6 -|->
 
 {- |
 > * Associativity: f . (g . h) ≡ (f . g) . h
@@ -345,22 +345,22 @@ instance
 
 instance (Covariant Functor (->) (->) f, Bindable Functor (->) (->) f) => Functor ((-/->) f) ((-/->) f) ((:*:>) l) where
 	map (Kleisli (Flat m)) = Kleisli . Flat .: \case
-		Flat (l :*: r) -> m r |-> Flat . (l :*:)
+		Flat (l :*: r) -> m r -|-> Flat . (l :*:)
 
 instance (Covariant Functor (->) (->) f, Bindable Functor (->) (->) f) => Functor ((-/->) f) ((-/->) f) ((<:*:) r) where
 	map (Kleisli (Flat m)) = Kleisli . Flat .: \case
-		Dual (l :*: r) -> m l |-> Dual . (:*: r)
+		Dual (l :*: r) -> m l -|-> Dual . (:*: r)
 
 instance (Covariant Functor (->) (->) f, Bindable Functor (->) (->) f, Monoidal Functor (:*:) (:*:) (-->) (-->) f)
 	=> Functor ((-/->) f) ((-/->) f) ((:+:>) l) where
 		map (Kleisli (Flat m)) = Kleisli . Flat .: \case
-			Flat (That r) -> m r |-> Flat . That
+			Flat (That r) -> m r -|-> Flat . That
 			Flat (This l) -> point . Flat . This .: l
 
 instance (Covariant Functor (->) (->) f, Bindable Functor (->) (->) f, Monoidal Functor (:*:) (:*:) (-->) (-->) f)
 	=> Functor ((-/->) f) ((-/->) f) ((<:+:) r) where
 		map (Kleisli (Flat m)) = Kleisli . Flat .: \case
-			Dual (This l) -> m l |-> Dual . This
+			Dual (This l) -> m l -|-> Dual . This
 			Dual (That r) -> point . Dual . That .: r
 
 instance Component (-->) (Day (-->) Identity Identity (:*:) (:*:)) Identity where
@@ -447,10 +447,10 @@ instance Component (-->) Identity ((-->) s =!?= (:*:>) s) where
 	component = Flat .: \case
 		Identity x -> FG . Flat .: \s -> Flat ...: s :*: x
 
-(|->)
+(-|->)
 	:: Covariant Functor (->) (->) f
 	=> f source -> (source -> target) -> f target
-x |-> m = map @(-->) @(-->) (Flat m) =- x
+x -|-> m = map @(-->) @(-->) (Flat m) =- x
 
 (|-|->)
 	:: Covariant Functor (->) (->) f
@@ -474,7 +474,7 @@ x |-/-> m = map @_ @(-->) (Kleisli (Flat m)) =- x
 	:: Covariant Functor (->) (->) f
 	=> Bindable Functor (->) (->) g
 	=> f (g source) -> (source -> g target) -> f (g target)
-x |-|-/-> m = x |-> (|-/-> m)
+x |-|-/-> m = x -|-> (|-/-> m)
 
 (|-/-/>)
 	:: forall f g source target . Traversable Functor (->) (->) g f
