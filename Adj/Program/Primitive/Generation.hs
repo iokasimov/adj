@@ -17,19 +17,20 @@ instance Casting (->) (Generation p f) where
 	(=-) (Generation m) = m
 	(-=) m = Generation m
 
-instance
-	( Category m
-	, Functor m m f
-	, Functor m m Identity
-	, Casting m (Generation p f)
-	, Casting m (f =!?= Generation p f)
-	, Casting m ((=!!??=) p Identity (f =!?= Generation p f))
-	, forall r . Casting m (Flat p (Identity r))
-	, forall l . Casting m (Dual p ((f =!?= Generation p f) l))
-	, forall r . Functor m m ((Flat p) r)
-	, forall l . Functor m m ((Dual p) l)
-	) => Functor m m (Generation p f) where
-	map m = (=-=) (map @m m)
+-- TODO: requires instance Functor m m ((=!!??=) f g h)
+-- instance
+-- 	( Category m
+-- 	, Functor m m f
+-- 	, Functor m m Identity
+-- 	, Casting m (Generation p f)
+-- 	, Casting m (f =!?= Generation p f)
+-- 	, Casting m ((=!!??=) p Identity (f =!?= Generation p f))
+-- 	, forall r . Casting m (Flat p (Identity r))
+-- 	, forall l . Casting m (Dual p ((f =!?= Generation p f) l))
+-- 	, forall r . Functor m m ((Flat p) r)
+-- 	, forall l . Functor m m ((Dual p) l)
+-- 	) => Functor m m (Generation p f) where
+-- 	map m = (=-=) (map @m m)
 
 type Construction = Generation (:*:)
 

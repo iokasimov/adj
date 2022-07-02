@@ -222,3 +222,4 @@
 * Remove `-/->` type operator
 * Remove `<-\-` type operator
 * Define `-|-<` operator
+* Change `Betwixt` type family definition

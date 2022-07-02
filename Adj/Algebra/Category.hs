@@ -72,8 +72,11 @@ class Semigroupoid m => Category m where
 	(..:) = identity
 	(.:) = identity
 
-type family Betwixt from to = btw | btw -> from to where
-	Betwixt category category = category
+type family Betwixt from to = btw where
+	Betwixt (Flat m) (Flat m) = Flat m
+	Betwixt (Flat m) (Dual m) = Dual m
+	Betwixt (Dual m) (Flat m) = Dual m
+	Betwixt (Dual m) (Dual m) = Flat m
 
 data Variance = Co | Contra
 
@@ -463,12 +466,6 @@ x -|-< m = map @(-->) @(<--) (Flat m) =- x
 	=> f (g source) -> (source -> target) -> f (g target)
 x -||-> m = (-||-) @(-->) @(-->) (Flat m) =- x
 
-(-||-<)
-	:: Covariant Functor (->) (->) f
-	=> Covariant Functor (->) (->) g
-	=> f (g source) -> (source -> target) -> f (g target)
-x -||-< m = (-||-) @(-->) @(-->) (Flat m) =- x
-
 (-|||->)
 	:: Covariant Functor (->) (->) f
 	=> Covariant Functor (->) (->) g
@@ -551,6 +548,8 @@ instance
 	( Category m
 	, Functor m m f
 	, Functor m m g
+	, Functor (Betwixt m m) m f
+	, Functor m (Betwixt m m) g
 	, Casting m (f =!?= g)
 	) => Functor m m (f =!?= g) where
 	map m = (=-=) ((-||-) @m @m @f @g m)
@@ -560,21 +559,29 @@ instance
 	, Functor m m f
 	, Functor m m g
 	, Functor m m f'
+	, Functor (Betwixt (Betwixt m m) m) m f
+	, Functor m (Betwixt m (Betwixt m m)) f'
+	, Functor (Betwixt m (Betwixt m m)) (Betwixt (Betwixt m m) m) g
 	, Casting m ((=!?!=) f g f')
 	) => Functor m m ((=!?!=) f g f') where
 	map m = (=-=) ((-|||-) @m @m @f @g @f' m)
 
-instance
-	( Category m
-	, Functor m m g
-	, Functor m m h
-	, Casting m ((=!!??=) f g h)
-	, forall l . Casting m (Flat f .: g l)
-	, forall r . Casting m (Dual f .: h r)
-	, forall r . Functor m m ((Flat f) r)
-	, forall l . Functor m m ((Dual f) l)
-	) => Functor m m ((=!!??=) f g h) where
-	map m = (=-=) ((-||--) @m @m @f m . (--||--) @m @m @f m)
+-- TODO: there is a problem with type variables
+-- instance
+	-- ( Category m
+	-- , Functor m m g
+	-- , Functor m m h
+	-- , Functor m (Betwixt m m) h
+	-- , Functor m (Betwixt m m) g
+	-- , Functor (Betwixt m m) m (Flat f (g l))
+	-- , Functor (Betwixt m m) m (Dual f (h r))
+	-- , Casting m ((=!!??=) f g h)
+	-- , forall l . Casting m (Flat f .: g l)
+	-- , forall r . Casting m (Dual f .: h r)
+	-- , forall r . Functor m m ((Flat f) r)
+	-- , forall l . Functor m m ((Dual f) l)
+	-- -- ) => Functor m m ((=!!??=) f g h) where
+	-- map m = (=-=) @_ @_ ((-||--) @m @m @f @g m . (--||--) @m @m @f @h m)
 
 instance Casting (->) f => Casting (-->) f where
 	(=-) = Flat (=-)
