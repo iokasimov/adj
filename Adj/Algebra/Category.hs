@@ -18,7 +18,6 @@ infixl 3 ......:
 infixl 2 .......:
 infixl 1 ........:
 
-infixr 6 <-\-, -/->
 infixr 7 <--, -->
 
 infixr 8 <:*:, :*:>
@@ -245,10 +244,6 @@ type (-->) = Flat (->)
 
 type (<--) = Dual (->)
 
-type (-/->) t = Kleisli t (-->)
-
-type (<-\-) t = Kleisli t (<--)
-
 type (:*:>) = Flat (:*:)
 
 type (<:*:) = Dual (:*:)
@@ -275,11 +270,11 @@ instance Functor (-->) (-->) Identity where
 	map (Flat m) = Flat .: \case
 		Identity x -> Identity .: m x
 
-instance (Component (-->) Identity Identity, Casting (-->) Identity) => Functor ((-/->) Identity) (-->) Identity where
+instance (Component (-->) Identity Identity, Casting (-->) Identity) => Functor (Kleisli Identity (-->)) (-->) Identity where
 	map (Kleisli (Flat m)) = Flat .: \case
 		Identity x -> m x
 
-instance (Covariant Functor (->) (->) g, Bindable Functor (->) (->) g) => Functor ((-/->) g) ((-/->) g) Identity where
+instance (Covariant Functor (->) (->) g, Bindable Functor (->) (->) g) => Functor (Kleisli g (-->)) (Kleisli g (-->)) Identity where
 	map (Kleisli (Flat m)) = Kleisli . Flat .: \case
 		Identity x -> (-|-) @_ @(-->) (Flat Identity) =- m x
 
@@ -300,7 +295,7 @@ instance
 	( Bindable Functor (->) (->) ((:*:>) l)
 	, Component (-->) Identity ((:*:>) l)
 	, Casting (-->) Identity
-	) => Functor ((-/->) ((:*:>) l)) (-->) ((:*:>) l) where
+	) => Functor (Kleisli ((:*:>) l) (-->)) (-->) ((:*:>) l) where
 	map (Kleisli (Flat m)) = Flat .: \case
 		Flat (_ :*: r) -> m r
 
@@ -313,7 +308,7 @@ instance
 	( Bindable Functor (->) (->) ((:+:>) l)
 	, Component (-->) Identity ((:+:>) l)
 	, Casting (-->) Identity
-	) => Functor ((-/->) ((:+:>) l)) (-->) ((:+:>) l) where
+	) => Functor (Kleisli ((:+:>) l) (-->)) (-->) ((:+:>) l) where
 	map (Kleisli (Flat m)) = Flat .: \case
 		Flat (This l) -> Flat .: This l
 		Flat (That r) -> m r
@@ -330,7 +325,7 @@ instance Functor (-->) (-->) ((<:+:) r) where
 instance
 	( Component (-->) Identity ((<:+:) r)
 	, Casting (-->) Identity
-	) => Functor ((-/->) ((<:+:) r)) (-->) ((<:+:) r) where
+	) => Functor (Kleisli ((<:+:) r) (-->)) (-->) ((<:+:) r) where
 	map (Kleisli (Flat m)) = Flat .: \case
 		Dual (This l) -> m l
 		Dual (That r) -> Dual .: That r
@@ -339,26 +334,26 @@ instance
 	( Component (-->) Identity ((<:*:) r)
 	, Bindable Functor (->) (->) ((<:*:) r)
 	, Casting (-->) Identity
-	) => Functor ((-/->) ((<:*:) r)) (-->) ((<:*:) r) where
+	) => Functor (Kleisli ((<:*:) r) (-->)) (-->) ((<:*:) r) where
 	map (Kleisli (Flat m)) = Flat .: \case
 		Dual (l :*: _) -> m l
 
-instance (Covariant Functor (->) (->) f, Bindable Functor (->) (->) f) => Functor ((-/->) f) ((-/->) f) ((:*:>) l) where
+instance (Covariant Functor (->) (->) f, Bindable Functor (->) (->) f) => Functor (Kleisli f (-->)) (Kleisli f (-->)) ((:*:>) l) where
 	map (Kleisli (Flat m)) = Kleisli . Flat .: \case
 		Flat (l :*: r) -> m r -|-> Flat . (l :*:)
 
-instance (Covariant Functor (->) (->) f, Bindable Functor (->) (->) f) => Functor ((-/->) f) ((-/->) f) ((<:*:) r) where
+instance (Covariant Functor (->) (->) f, Bindable Functor (->) (->) f) => Functor (Kleisli f (-->)) (Kleisli f (-->)) ((<:*:) r) where
 	map (Kleisli (Flat m)) = Kleisli . Flat .: \case
 		Dual (l :*: r) -> m l -|-> Dual . (:*: r)
 
 instance (Covariant Functor (->) (->) f, Bindable Functor (->) (->) f, Monoidal Functor (:*:) (:*:) (-->) (-->) f)
-	=> Functor ((-/->) f) ((-/->) f) ((:+:>) l) where
+	=> Functor (Kleisli f (-->)) (Kleisli f (-->)) ((:+:>) l) where
 		map (Kleisli (Flat m)) = Kleisli . Flat .: \case
 			Flat (That r) -> m r -|-> Flat . That
 			Flat (This l) -> point . Flat . This .: l
 
 instance (Covariant Functor (->) (->) f, Bindable Functor (->) (->) f, Monoidal Functor (:*:) (:*:) (-->) (-->) f)
-	=> Functor ((-/->) f) ((-/->) f) ((<:+:) r) where
+	=> Functor (Kleisli f (-->)) (Kleisli f (-->)) ((<:+:) r) where
 		map (Kleisli (Flat m)) = Kleisli . Flat .: \case
 			Dual (This l) -> m l -|-> Dual . This
 			Dual (That r) -> point . Dual . That .: r
@@ -479,14 +474,14 @@ x -|-|-/-> m = x -|-> (-|-/-> m)
 (-|-/-/>)
 	:: forall f g source target . Traversable Functor (->) (->) g f
 	=> f source -> (source -> g target) -> g (f target)
-x -|-/-/> m = case map @((-/->) g) @((-/->) g) (Kleisli (Flat m)) of
+x -|-/-/> m = case map @(Kleisli g (-->)) @(Kleisli g (-->)) (Kleisli (Flat m)) of
 	Kleisli (Flat m') -> m' x
 
 (-|-/-/-/>)
 	:: forall f g h source target
 	. (Traversable Functor (->) (->) g h, Traversable Functor (->) (->) g f)
 	=> f (h source) -> (source -> g target) -> g (f (h target))
-x -|-/-/-/> m = case (map @((-/->) g) @((-/->) g) . map @((-/->) g) @((-/->) g)) (Kleisli (Flat m)) of
+x -|-/-/-/> m = case (map @(Kleisli g (-->)) @(Kleisli g (-->)) . map @(Kleisli g (-->)) @(Kleisli g (-->))) (Kleisli (Flat m)) of
 	Kleisli (Flat m') -> m' x
 
 point :: Monoidal Functor (:*:) (:*:) (-->) (-->) f => o -> f o
@@ -569,6 +564,6 @@ instance Casting (->) f => Casting (-->) f where
 	(=-) = Flat (=-)
 	(-=) = Flat (-=)
 
-instance (Casting (->) f, Monoidal Functor (:*:) (:*:) (-->) (-->) g) => Casting ((-/->) g) f where
+instance (Casting (->) f, Monoidal Functor (:*:) (:*:) (-->) (-->) g) => Casting (Kleisli g (-->)) f where
 	(=-) = Kleisli . Flat .: point . (=-)
 	(-=) = Kleisli . Flat .: point . (-=)
