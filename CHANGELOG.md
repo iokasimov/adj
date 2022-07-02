@@ -221,3 +221,4 @@
 * Rename `|-|-/->` operator to `-|-|-/->`
 * Remove `-/->` type operator
 * Remove `<-\-` type operator
+* Define `-|-<` operator
