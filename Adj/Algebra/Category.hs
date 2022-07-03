@@ -39,7 +39,7 @@ infixl 5 =----
 infixl 6 =---
 infixl 7 =-=, -=-, =--
 
-infixr 4 -|||->
+infixr 4 -|||->, -||/->
 infixr 5 -||->, -|/->
 infixr 6 -|->, -|-<
 
@@ -478,11 +478,11 @@ x -|||-> m = (-|||-) @(-->) @(-->) (Flat m) =- x
 	=> f source -> (source -> f target) -> f target
 x -|/-> m = map @(Kleisli f (-->)) @(-->) (Kleisli (Flat m)) =- x
 
-(-|-|-/->)
+(-||/->)
 	:: Covariant Functor (->) (->) f
 	=> Bindable Functor (->) (->) g
 	=> f (g source) -> (source -> g target) -> f (g target)
-x -|-|-/-> m = x -|-> (-|/-> m)
+x -||/-> m = x -|-> (-|/-> m)
 
 (-|-/-/>)
 	:: forall f g source target . Traversable Functor (->) (->) g f
