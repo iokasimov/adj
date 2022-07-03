@@ -4,7 +4,7 @@
 
 module Adj.Algebra.Category where
 
-import Adj.Auxiliary (type (.:), type (=!?=), FG (FG), type (=!?!=), type (=!!??=), Casted, Casting ((-=), (=-)))
+import Adj.Auxiliary (type (.:), type (=!?=), FG (FG), type (=!?!=), Casted, Casting ((-=), (=-)))
 import Adj.Algebra.Set ((:*:) ((:*:)), (:+:) (This, That), Unit (Unit), Neutral, absurd)
 
 infixr 9 .
@@ -39,9 +39,9 @@ infixl 5 =----
 infixl 6 =---
 infixl 7 =-=, -=-, =--
 
-infixl 4 -|||->
-infixl 5 -||->
-infixl 6 -|->, -/->
+infixr 4 -|||->
+infixr 5 -||->
+infixr 6 -|->, -|-<, -/->
 
 {- |
 > * Associativity: f . (g . h) ≡ (f . g) . h
@@ -88,9 +88,9 @@ data Variance = Co | Contra
 class (Category from, Category to) => Functor from to f where
 	map :: from source target -> to .: f source .: f target
 
-(-|-) :: forall from to f source target . Functor from to f
+(-|-) :: Functor from to f
 	=> from source target -> to .: f source .: f target
-(-|-) = map @from @to
+(-|-) = map
 
 (-||-) :: forall from to f g source target
 	.  Functor .: Betwixt from to .: to .: f
@@ -118,14 +118,14 @@ class (Category from, Category to) => Functor from to f where
 (-|--) m = (-=-) ((-|-) @from @to @((Dual f) o) m)
 
 (-||--) :: forall from to f g source target o .
-	( Category to, Casting to (Dual f o)
+	( Casting to (Dual f o)
 	, Functor (Betwixt from to) to ((Dual f) o)
 	, Functor from (Betwixt from to) g
 	) => from source target -> to .: f (g source) o .: f (g target) o
-(-||--) m = (-=-) ((-||-) @from @to @((Dual f) o) m)
+(-||--) m = (-=-) @to ((-||-) @from @to @((Dual f) o) @g @source @target m)
 
 (-|||--) :: forall from to f g h source target o .
-	( Category to, Casting to (Dual f o)
+	( Casting to (Dual f o)
 	, Functor (Betwixt (Betwixt from to) to) to ((Dual f) o)
 	, Functor (Betwixt from (Betwixt from to)) (Betwixt (Betwixt from to) to) g
 	, Functor from (Betwixt from (Betwixt from to)) h
@@ -563,23 +563,6 @@ instance
 	, Casting to ((=!?!=) f g f')
 	) => Functor from to ((=!?!=) f g f') where
 	map m = (=-=) ((-|||-) @from @to @f @g @f' m)
-
--- TODO: there is a problem with type variables
--- instance
-	-- ( Category m
-	-- , Functor m m g
-	-- , Functor m m h
-	-- , Functor m (Betwixt m m) h
-	-- , Functor m (Betwixt m m) g
-	-- , Functor (Betwixt m m) m (Flat f (g l))
-	-- , Functor (Betwixt m m) m (Dual f (h r))
-	-- , Casting m ((=!!??=) f g h)
-	-- , forall l . Casting m (Flat f .: g l)
-	-- , forall r . Casting m (Dual f .: h r)
-	-- , forall r . Functor m m ((Flat f) r)
-	-- , forall l . Functor m m ((Dual f) l)
-	-- -- ) => Functor m m ((=!!??=) f g h) where
-	-- map m = (=-=) @_ @_ ((-||--) @m @m @f @g m . (--||--) @m @m @f @h m)
 
 instance Casting (->) f => Casting (-->) f where
 	(=-) = Flat (=-)
