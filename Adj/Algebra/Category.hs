@@ -39,7 +39,7 @@ infixl 5 =----
 infixl 6 =---
 infixl 7 =-=, -=-, =--
 
-infixr 4 -|||->, -||/->
+infixr 4 -|||->, -||/->, -/|/->
 infixr 5 -||->, -|/->
 infixr 6 -|->, -|-<
 
@@ -484,17 +484,17 @@ x -|/-> m = map @(Kleisli f (-->)) @(-->) (Kleisli (Flat m)) =- x
 	=> f (g source) -> (source -> g target) -> f (g target)
 x -||/-> m = x -|-> (-|/-> m)
 
-(-|-/-/>)
+(-/|/->)
 	:: forall f g source target . Traversable Functor (->) (->) g f
 	=> f source -> (source -> g target) -> g (f target)
-x -|-/-/> m = case map @(Kleisli g (-->)) @(Kleisli g (-->)) (Kleisli (Flat m)) of
+x -/|/-> m = case map @(Kleisli g (-->)) @(Kleisli g (-->)) (Kleisli (Flat m)) of
 	Kleisli (Flat m') -> m' x
 
-(-|-/-/-/>)
+(-//|//->)
 	:: forall f g h source target
 	. (Traversable Functor (->) (->) g h, Traversable Functor (->) (->) g f)
 	=> f (h source) -> (source -> g target) -> g (f (h target))
-x -|-/-/-/> m = case (map @(Kleisli g (-->)) @(Kleisli g (-->)) . map @(Kleisli g (-->)) @(Kleisli g (-->))) (Kleisli (Flat m)) of
+x -//|//-> m = case (map @(Kleisli g (-->)) @(Kleisli g (-->)) . map @(Kleisli g (-->)) @(Kleisli g (-->))) (Kleisli (Flat m)) of
 	Kleisli (Flat m') -> m' x
 
 point :: Monoidal Functor (:*:) (:*:) (-->) (-->) f => o -> f o
