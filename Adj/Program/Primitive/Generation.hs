@@ -3,7 +3,7 @@
 module Adj.Program.Primitive.Generation where
 
 import Adj.Auxiliary (Casted, Casting ((=-), (-=)), type (=!?=), FG (FG), FFGH (FFGH), type (=!!??=), Structural (Structural))
-import Adj.Algebra (Semigroupoid ((.)), Category ((.:), (...:), (....:)), Functor (map), Covariant, Setoid, (:*:) ((:*:)), (:+:) (This, That), Identity (Identity), type (-->), Flat (Flat), (-|->))
+import Adj.Algebra (Semigroupoid ((.)), Category ((.:), (...:), (....:)), Functor (map), Covariant, Component (component), Setoid, (:*:) ((:*:)), (:+:) (This, That), Identity (Identity), type (-->), Flat (Flat), (-|->))
 
 newtype Generation p f o = Generation
 	((=!!??=) p Identity (f =!?= Generation p f) o)
@@ -44,3 +44,7 @@ instance Covariant Functor (->) (->) f => Functor (-->) (-->) (Instruction f) wh
 	map (Flat m) = Flat .: \case
 		Generation (FFGH (This x)) -> Generation . FFGH . This ....: x -|-> m
 		Generation (FFGH (That xs)) -> Generation . FFGH . That ....: xs -|-> m
+
+instance Covariant Functor (->) (->) f => Component (-->) f (Instruction f) where
+	component = Flat .: \x -> Generation . FFGH . That . FG
+		....: x -|-> Generation . FFGH . This . Identity
