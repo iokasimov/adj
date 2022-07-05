@@ -78,8 +78,6 @@ type family Betwixt from to = btw where
 	Betwixt (Dual m) (Flat m) = Dual m
 	Betwixt (Dual m) (Dual m) = Flat m
 
-data Variance = Co | Contra
-
 {- |
 > * Identity preserving: map identity ≡ identity
 > * Composition preserving: map (f . g) ≡ map f . map g
@@ -92,6 +90,7 @@ class (Category from, Category to) => Functor from to f where
 	=> from source target -> to .: f source .: f target
 (-|-) = map
 
+-- TODO: using Betwixt doesn't seem to be correct here
 (-||-) :: forall from to f g source target
 	.  Functor .: Betwixt from to .: to .: f
 	=> Functor .: from .: Betwixt from to .: g
@@ -223,6 +222,7 @@ type family Semimonoidal x source target from to f where
 	Semimonoidal Functor source target from to f =
 		Component .: from .: Day to f f source target .: f
 
+-- TODO: need to add a Functor constraint
 type family Monoidal x source target from to f where
 	Monoidal Functor source target from to f =
 		( Component .: from .: Day to f f source target .: f

@@ -3,7 +3,8 @@
 module Adj.Program.Primitive.Generation where
 
 import Adj.Auxiliary (Casted, Casting ((=-), (-=)), type (=!?=), FG (FG), FFGH (FFGH), type (=!!??=), Structural (Structural))
-import Adj.Algebra (Semigroupoid ((.)), Category ((.:), (...:), (....:)), Functor (map), Covariant, Component (component), Setoid, (:*:) ((:*:)), (:+:) (This, That), Identity (Identity), type (-->), Flat (Flat), (-|->))
+import Adj.Algebra.Category (Semigroupoid ((.)), Category ((.:), (...:), (....:), (.....:)), Functor (map), Covariant, Component (component), Identity (Identity), Day (Day), type (-->), Flat (Flat), (-|->), (-||->))
+import Adj.Algebra.Set (Setoid, (:*:) ((:*:)), (:+:) (This, That))
 
 newtype Generation p f o = Generation
 	((=!!??=) p Identity (f =!?= Generation p f) o)
