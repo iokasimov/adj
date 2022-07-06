@@ -27,11 +27,11 @@ infixl 5 -|||-
 infixl 6 -||-
 infixl 7 -|-
 
--- infixl 4 -|||--
+infixl 4 -|||--
 infixl 5 -||--
 infixl 6 -|--
 
--- infixl 3 --|||--
+infixl 3 --|||--
 infixl 4 --||--
 infixl 5 --|--
 
@@ -109,13 +109,13 @@ class (Category from, Category to) => Functor from to f where
 	) => from source target -> to .: f (g source) o .: f (g target) o
 (-||--) m = (-=-) @to ((-||-) @from @between @to @((Dual f) o) @g @source @target m)
 
--- (-|||--) :: forall from to f g h source target o .
-	-- ( Casting to (Dual f o)
-	-- , Functor (Betwixt between to) to ((Dual f) o)
-	-- , Functor (Betwixt from between (Betwixt between to) g
-	-- , Functor from (Betwixt from between h
-	-- ) => from source target -> to .: f (g (h source)) o .: f (g (h target)) o
--- (-|||--) m = (-=-) ((-|||-) @from @to @((Dual f) o) m)
+(-|||--) :: forall from between between' to f g h source target o .
+	( Casting to (Dual f o)
+	, Functor .: from .: between .: h
+	, Functor .: between .: between' .: g
+	, Functor .: between' .: to .: Dual f o
+	) => from source target -> to .: f (g (h source)) o .: f (g (h target)) o
+(-|||--) m = (-=-) ((-|||-) @from @between @between' @to @((Dual f) o) m)
 
 (--|--) :: forall from to f source target o
 	. (Category to, Functor from to ((Flat f) o), Casting to (Flat f o))
@@ -124,18 +124,18 @@ class (Category from, Category to) => Functor from to f where
 
 (--||--) :: forall from between to f g source target o .
 	( Category to, Casting to (Flat f o)
-	, Functor between to ((Flat f) o)
 	, Functor from between g
+	, Functor between to ((Flat f) o)
 	) => from source target -> to .: f o (g source) .: f o (g target)
 (--||--) m = (-=-) ((-||-) @from @between @to @((Flat f) o) m)
 
--- (--|||--) :: forall from to f g h source target o .
-	-- ( Category to, Casting to (Flat f o)
-	-- , Functor (Betwixt between to) to ((Flat f) o)
-	-- , Functor (Betwixt from between (Betwixt between to) g
-	-- , Functor from (Betwixt from between h
-	-- ) => from source target -> to .: f o (g (h source)) .: f o (g (h target))
--- (--|||--) m = (-=-) ((-|||-) @from @to @((Flat f) o) m)
+(--|||--) :: forall from between between' to f g h source target o .
+	( Category to, Casting to (Flat f o)
+	, Functor .: from .: between .: h
+	, Functor .: between .: between' .: g
+	, Functor .: between' .: to .: Flat f o
+	) => from source target -> to .: f o (g (h source)) .: f o (g (h target))
+(--|||--) m = (-=-) ((-|||-) @from @between @between' @to @((Flat f) o) m)
 
 class Component m f g where
 	component :: m .: f object .: g object
