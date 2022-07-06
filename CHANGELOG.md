@@ -224,3 +224,4 @@
 * Define `-|-<` operator
 * Change `Betwixt` type family definition
 
+# 0.1.1
