@@ -27,11 +27,11 @@ infixl 5 -|||-
 infixl 6 -||-
 infixl 7 -|-
 
-infixl 4 -|||--
+-- infixl 4 -|||--
 infixl 5 -||--
 infixl 6 -|--
 
-infixl 3 --|||--
+-- infixl 3 --|||--
 infixl 4 --||--
 infixl 5 --|--
 
@@ -72,12 +72,6 @@ class Semigroupoid m => Category m where
 	(..:) = identity
 	(.:) = identity
 
-type family Betwixt from to = btw where
-	Betwixt (Flat m) (Flat m) = Flat m
-	Betwixt (Flat m) (Dual m) = Dual m
-	Betwixt (Dual m) (Flat m) = Dual m
-	Betwixt (Dual m) (Dual m) = Flat m
-
 {- |
 > * Identity preserving: map identity ≡ identity
 > * Composition preserving: map (f . g) ≡ map f . map g
@@ -86,70 +80,62 @@ type family Betwixt from to = btw where
 class (Category from, Category to) => Functor from to f where
 	map :: from source target -> to .: f source .: f target
 
-(-|-) :: Functor from to f
+(-|-) :: forall from to f source target . Functor from to f
 	=> from source target -> to .: f source .: f target
-(-|-) = map
+(-|-) = map @from @to @f
 
--- TODO: using Betwixt doesn't seem to be correct here
-(-||-) :: forall from to f g source target
-	.  Functor .: Betwixt from to .: to .: f
-	=> Functor .: from .: Betwixt from to .: g
+(-||-) :: forall from between to f g source target
+	.  Functor .: from .: between .: g
+	=> Functor .: between .: to .: f
 	=> from source target -> to .: f (g source) .: f (g target)
-(-||-) m
-	= map @(Betwixt from to) @to
-	. map @from @(Betwixt from to)
-	.: m
+(-||-) m = map @between @to @f . map @from @between @g .: m
 
-(-|||-) :: forall from to f g h source target
-	.  Functor .: from .: Betwixt from (Betwixt from to) .: h
-	=> Functor .: Betwixt from (Betwixt from to) .: Betwixt (Betwixt from to) to .: g
-	=> Functor .: Betwixt (Betwixt from to) to .: to .: f
+(-|||-) :: forall from between between' to f g h source target
+	.  Functor .: from .: between .: h
+	=> Functor .: between .: between' .: g
+	=> Functor .: between' .: to .: f
 	=> from source target -> to .: f (g (h source)) .: f (g (h target))
-(-|||-) m
-	= map @(Betwixt (Betwixt from to) to) @to
-	. map @(Betwixt from (Betwixt from to)) @(Betwixt (Betwixt from to) to)
-	. map @from @(Betwixt from (Betwixt from to))
-	.: m
+(-|||-) m = map @between' @to @f . map @between @between' @g . map @from @between @h .: m
 
 (-|--) :: forall from to f source target o
 	. (Category to, Functor from to ((Dual f) o), Casting to (Dual f o))
 	=> from source target -> to .: f source o .: f target o
 (-|--) m = (-=-) ((-|-) @from @to @((Dual f) o) m)
 
-(-||--) :: forall from to f g source target o .
+(-||--) :: forall from between to f g source target o .
 	( Casting to (Dual f o)
-	, Functor (Betwixt from to) to ((Dual f) o)
-	, Functor from (Betwixt from to) g
+	, Functor between to ((Dual f) o)
+	, Functor from between g
 	) => from source target -> to .: f (g source) o .: f (g target) o
-(-||--) m = (-=-) @to ((-||-) @from @to @((Dual f) o) @g @source @target m)
+(-||--) m = (-=-) @to ((-||-) @from @between @to @((Dual f) o) @g @source @target m)
 
-(-|||--) :: forall from to f g h source target o .
-	( Casting to (Dual f o)
-	, Functor (Betwixt (Betwixt from to) to) to ((Dual f) o)
-	, Functor (Betwixt from (Betwixt from to)) (Betwixt (Betwixt from to) to) g
-	, Functor from (Betwixt from (Betwixt from to)) h
-	) => from source target -> to .: f (g (h source)) o .: f (g (h target)) o
-(-|||--) m = (-=-) ((-|||-) @from @to @((Dual f) o) m)
+-- (-|||--) :: forall from to f g h source target o .
+	-- ( Casting to (Dual f o)
+	-- , Functor (Betwixt between to) to ((Dual f) o)
+	-- , Functor (Betwixt from between (Betwixt between to) g
+	-- , Functor from (Betwixt from between h
+	-- ) => from source target -> to .: f (g (h source)) o .: f (g (h target)) o
+-- (-|||--) m = (-=-) ((-|||-) @from @to @((Dual f) o) m)
 
 (--|--) :: forall from to f source target o
 	. (Category to, Functor from to ((Flat f) o), Casting to (Flat f o))
 	=> from source target -> to .: f o source .: f o target
 (--|--) m = (-=-) ((-|-) @from @to @((Flat f) o) m)
 
-(--||--) :: forall from to f g source target o .
+(--||--) :: forall from between to f g source target o .
 	( Category to, Casting to (Flat f o)
-	, Functor (Betwixt from to) to ((Flat f) o)
-	, Functor from (Betwixt from to) g
+	, Functor between to ((Flat f) o)
+	, Functor from between g
 	) => from source target -> to .: f o (g source) .: f o (g target)
-(--||--) m = (-=-) ((-||-) @from @to @((Flat f) o) m)
+(--||--) m = (-=-) ((-||-) @from @between @to @((Flat f) o) m)
 
-(--|||--) :: forall from to f g h source target o .
-	( Category to, Casting to (Flat f o)
-	, Functor (Betwixt (Betwixt from to) to) to ((Flat f) o)
-	, Functor (Betwixt from (Betwixt from to)) (Betwixt (Betwixt from to) to) g
-	, Functor from (Betwixt from (Betwixt from to)) h
-	) => from source target -> to .: f o (g (h source)) .: f o (g (h target))
-(--|||--) m = (-=-) ((-|||-) @from @to @((Flat f) o) m)
+-- (--|||--) :: forall from to f g h source target o .
+	-- ( Category to, Casting to (Flat f o)
+	-- , Functor (Betwixt between to) to ((Flat f) o)
+	-- , Functor (Betwixt from between (Betwixt between to) g
+	-- , Functor from (Betwixt from between h
+	-- ) => from source target -> to .: f o (g (h source)) .: f o (g (h target))
+-- (--|||--) m = (-=-) ((-|||-) @from @to @((Flat f) o) m)
 
 class Component m f g where
 	component :: m .: f object .: g object
@@ -464,14 +450,14 @@ x -|-< m = map @(-->) @(<--) (Flat m) =- x
 	:: Covariant Functor (->) (->) f
 	=> Covariant Functor (->) (->) g
 	=> f (g source) -> (source -> target) -> f (g target)
-x -||-> m = (-||-) @(-->) @(-->) (Flat m) =- x
+x -||-> m = (-||-) @(-->) @(-->) @(-->) (Flat m) =- x
 
 (-|||->)
 	:: Covariant Functor (->) (->) f
 	=> Covariant Functor (->) (->) g
 	=> Covariant Functor (->) (->) h
 	=> f (g (h source)) -> (source -> target) -> f (g (h target))
-x -|||-> m = (-|||-) @(-->) @(-->) (Flat m) =- x
+x -|||-> m = (-|||-) @(-->) @(-->) @(-->) @(-->) (Flat m) =- x
 
 (-|/->) :: forall f source target
 	. Bindable Functor (->) (->) f
@@ -545,24 +531,19 @@ empty = component @(-->) @((-->) (Neutral (:+:))) =- Flat absurd
 (=----) = (=-) @m . (=-) @m . (=-) @m . (=-) @m
 
 instance
-	( Functor from to f
-	, Functor from to g
-	, Functor (Betwixt from to) to f
-	, Functor from (Betwixt from to) g
+	( Functor between to f
+	, Functor from between g
 	, Casting to (f =!?= g)
 	) => Functor from to (f =!?= g) where
-	map m = (=-=) ((-||-) @from @to @f @g m)
+	map m = (=-=) ((-||-) @from @between @to @f @g m)
 
 instance
-	( Functor from to f
-	, Functor from to g
-	, Functor from to f'
-	, Functor (Betwixt (Betwixt from to) to) to f
-	, Functor from (Betwixt from (Betwixt from to)) f'
-	, Functor (Betwixt from (Betwixt from to)) (Betwixt (Betwixt from to) to) g
+	( Functor from between f'
+	, Functor between between' g
+	, Functor between' to f
 	, Casting to ((=!?!=) f g f')
 	) => Functor from to ((=!?!=) f g f') where
-	map m = (=-=) ((-|||-) @from @to @f @g @f' m)
+	map m = (=-=) ((-|||-) @from @between @between' @to @f @g @f' m)
 
 instance Casting (->) f => Casting (-->) f where
 	(=-) = Flat (=-)
