@@ -199,9 +199,13 @@ instance
 
 type Covariant functor source target = functor .: Flat source .: Flat target
 
-type Opposite functor source target = functor .: Dual source .: Dual target
-
 type Contravariant functor source target = functor .: Flat source .: Dual target
+
+type family OP direction where
+	OP (Flat category) = Dual category
+	OP (Dual category) = Flat category
+	OP (Kleisli f (Flat category)) = Kleisli f (Dual category)
+	OP (Kleisli f (Dual category)) = Kleisli f (Flat category)
 
 type family Semimonoidal x source target from to f where
 	Semimonoidal Functor source target from to f =

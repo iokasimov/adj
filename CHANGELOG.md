@@ -230,5 +230,5 @@
 * Define `-><-` operator
 * Make `Covariant` type family a type alias
 * Make `Contravariant` type family a type alias
-* Define `Opposite` type alias
+* Define `OP` type family
 
