@@ -199,6 +199,8 @@ instance
 
 type Covariant functor source target = functor .: Flat source .: Flat target
 
+type Opposite functor source target = functor .: Dual source .: Dual target
+
 type Contravariant functor source target = functor .: Flat source .: Dual target
 
 type family Semimonoidal x source target from to f where
