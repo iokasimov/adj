@@ -41,7 +41,8 @@ infixl 7 =-=, -=-, =--
 
 infixr 4 -|||->, -||/->, -/|/->
 infixr 5 -||->, -|/->
-infixr 6 -|->, -|-<
+infixr 6 -|-<
+infixr 7 ->-
 
 {- |
 > * Associativity: f . (g . h) ≡ (f . g) . h
@@ -334,22 +335,22 @@ instance
 
 instance (Covariant Functor (->) (->) f, Bindable Functor (->) (->) f) => Functor (Kleisli f (-->)) (Kleisli f (-->)) ((:*:>) l) where
 	map (Kleisli (Flat m)) = Kleisli . Flat .: \case
-		Flat (l :*: r) -> m r -|-> Flat . (l :*:)
+		Flat (l :*: r) -> Flat . (l :*:) ->- m r
 
 instance (Covariant Functor (->) (->) f, Bindable Functor (->) (->) f) => Functor (Kleisli f (-->)) (Kleisli f (-->)) ((<:*:) r) where
 	map (Kleisli (Flat m)) = Kleisli . Flat .: \case
-		Dual (l :*: r) -> m l -|-> Dual . (:*: r)
+		Dual (l :*: r) -> Dual . (:*: r) ->- m l
 
 instance (Covariant Functor (->) (->) f, Bindable Functor (->) (->) f, Monoidal Functor (:*:) (:*:) (-->) (-->) f)
 	=> Functor (Kleisli f (-->)) (Kleisli f (-->)) ((:+:>) l) where
 		map (Kleisli (Flat m)) = Kleisli . Flat .: \case
-			Flat (That r) -> m r -|-> Flat . That
+			Flat (That r) -> Flat . That ->- m r
 			Flat (This l) -> point . Flat . This .: l
 
 instance (Covariant Functor (->) (->) f, Bindable Functor (->) (->) f, Monoidal Functor (:*:) (:*:) (-->) (-->) f)
 	=> Functor (Kleisli f (-->)) (Kleisli f (-->)) ((<:+:) r) where
 		map (Kleisli (Flat m)) = Kleisli . Flat .: \case
-			Dual (This l) -> m l -|-> Dual . This
+			Dual (This l) -> Dual . This ->- m l
 			Dual (That r) -> point . Dual . That .: r
 
 instance Component (-->) (Day (-->) Identity Identity (:*:) (:*:)) Identity where
@@ -436,10 +437,10 @@ instance Component (-->) Identity ((-->) s =!?= (:*:>) s) where
 	component = Flat .: \case
 		Identity x -> FG . Flat .: \s -> Flat ...: s :*: x
 
-(-|->)
+(->-)
 	:: Covariant Functor (->) (->) f
-	=> f source -> (source -> target) -> f target
-x -|-> m = map @(-->) @(-->) (Flat m) =- x
+	=> (source -> target) -> f source -> f target
+m ->- x = map @(-->) @(-->) (Flat m) =- x
 
 (-|-<)
 	:: Contravariant Functor (->) (->) f
@@ -468,7 +469,7 @@ x -|/-> m = map @(Kleisli f (-->)) @(-->) (Kleisli (Flat m)) =- x
 	:: Covariant Functor (->) (->) f
 	=> Bindable Functor (->) (->) g
 	=> f (g source) -> (source -> g target) -> f (g target)
-x -||/-> m = x -|-> (-|/-> m)
+x -||/-> m = (-|/-> m) ->- x
 
 (-/|/->)
 	:: forall f g source target . Traversable Functor (->) (->) g f

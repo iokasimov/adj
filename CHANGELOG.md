@@ -226,3 +226,4 @@
 
 # 0.1.1
 * Remove `Betwixt` type famyly
+* Rename `-|->` operator to `->-` and flip arguments
