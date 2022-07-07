@@ -228,3 +228,5 @@
 * Remove `Betwixt` type famyly
 * Rename `-|->` operator to `->-` and flip arguments
 * Define `-><-` operator
+* Make `Covariant` type family a type alias 
+* Make `Contravariant` type family a type alias 

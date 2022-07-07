@@ -197,13 +197,9 @@ instance
 	) => Category (Kleisli f target) where
 	identity = Kleisli .: component @_ @Identity @f . (-=) @_ . identity
 
-type family Covariant x source target f where
-	Covariant Functor source target f =
-		(Category source, Category target, Functor .: Flat source .: Flat target .: f)
+type Covariant functor source target = functor .: Flat source .: Flat target
 
-type family Contravariant x source target f where
-	Contravariant Functor source target f =
-		Functor .: Flat source .: Dual target .: f
+type Contravariant functor source target = functor .: Flat source .: Dual target
 
 type family Semimonoidal x source target from to f where
 	Semimonoidal Functor source target from to f =
