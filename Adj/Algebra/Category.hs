@@ -453,6 +453,12 @@ x -|-< m = map @(-->) @(<--) (Flat m) =- x
 	=> f (g source) -> (source -> target) -> f (g target)
 x -||-> m = (-||-) @(-->) @(-->) @(-->) (Flat m) =- x
 
+(-><-)
+	:: Contravariant Functor (->) (->) f
+	=> Covariant Functor (->) (->) g
+	=> (source -> target) -> f (g target) -> f (g source)
+m -><- x = (-||-) @(-->) @(-->) @(<--) (Flat m) =- x
+
 (-|||->)
 	:: Covariant Functor (->) (->) f
 	=> Covariant Functor (->) (->) g
