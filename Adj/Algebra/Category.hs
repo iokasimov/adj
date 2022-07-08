@@ -39,10 +39,10 @@ infixl 5 =----
 infixl 6 =---
 infixl 7 =-=, -=-, =--
 
-infixr 4 -||/->, -/|/->
-infixr 5 ->>>-, -|/->
-infixr 6 ->>-, -><-, -<>-
-infixr 7 ->-, -<-
+infixl 4 -||/->, -/|/->
+infixl 5 ->>>-, -->--, -|/->
+infixl 6 ->>-, -><-, -<>-
+infixl 7 ->-, -<-
 
 {- |
 > * Associativity: f . (g . h) ≡ (f . g) . h
@@ -485,6 +485,11 @@ m -<<- x = (-||-) @(<--) @(-->) @(<--) (Dual m) =- x
 	=> Covariant Natural Functor (->) (->) h
 	=> (source -> target) -> f (g (h source)) -> f (g (h target))
 m ->>>- x = (-|||-) @(-->) @(-->) @(-->) @(-->) (Flat m) =- x
+
+(-->--)
+	:: Covariant Natural Functor (->) (->) (Flat f o)
+	=> (source -> target) -> f o source -> f o target
+m -->-- x = (--|--) @(-->) @(-->) (Flat m) =- x
 
 -- TOOD: define -<<<-, -><<-, -><>-, -<<>-, -<>>-, -<><-
 
