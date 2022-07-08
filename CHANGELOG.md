@@ -234,3 +234,4 @@
 * Define `Functoriality` datatype
 * Rename `-|-<` operator to `-<-` and flip arguments
 * Define `-<>-` operator
+* Rename `-||->` operator to `->>-` and flip arguments

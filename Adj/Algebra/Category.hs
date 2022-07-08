@@ -40,7 +40,8 @@ infixl 6 =---
 infixl 7 =-=, -=-, =--
 
 infixr 4 -|||->, -||/->, -/|/->
-infixr 5 -||->, -|/->
+infixr 5 -|/->
+infixr 6 ->>-, -><-, -<>-
 infixr 7 ->-, -<-
 
 {- |
@@ -454,11 +455,11 @@ m ->- x = map @(-->) @(-->) (Flat m) =- x
 	=> (source -> target) -> f target -> f source
 m -<- x = map @(-->) @(<--) (Flat m) =- x
 
-(-||->)
+(->>-)
 	:: Covariant Natural Functor (->) (->) f
 	=> Covariant Natural Functor (->) (->) g
 	=> f (g source) -> (source -> target) -> f (g target)
-x -||-> m = (-||-) @(-->) @(-->) @(-->) (Flat m) =- x
+x ->>- m = (-||-) @(-->) @(-->) @(-->) (Flat m) =- x
 
 (-><-)
 	:: Contravariant Natural Functor (->) (->) f
