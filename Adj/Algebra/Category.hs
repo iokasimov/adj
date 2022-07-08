@@ -39,8 +39,8 @@ infixl 5 =----
 infixl 6 =---
 infixl 7 =-=, -=-, =--
 
-infixr 4 -|||->, -||/->, -/|/->
-infixr 5 -|/->
+infixr 4 -||/->, -/|/->
+infixr 5 ->>>-, -|/->
 infixr 6 ->>-, -><-, -<>-
 infixr 7 ->-, -<-
 
@@ -479,12 +479,12 @@ m -<>- x = (-||-) @(<--) @(-->) @(-->) (Dual m) =- x
 	=> (source -> target) -> f (g source) -> f (g target)
 m -<<- x = (-||-) @(<--) @(-->) @(<--) (Dual m) =- x
 
-(-|||->)
+(->>>-)
 	:: Covariant Natural Functor (->) (->) f
 	=> Covariant Natural Functor (->) (->) g
 	=> Covariant Natural Functor (->) (->) h
-	=> f (g (h source)) -> (source -> target) -> f (g (h target))
-x -|||-> m = (-|||-) @(-->) @(-->) @(-->) @(-->) (Flat m) =- x
+	=> (source -> target) -> f (g (h source)) -> f (g (h target))
+m ->>>- x = (-|||-) @(-->) @(-->) @(-->) @(-->) (Flat m) =- x
 
 (-|/->) :: forall f source target
 	. Bindable Functor (->) (->) f
