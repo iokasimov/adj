@@ -473,6 +473,12 @@ m -><- x = (-||-) @(-->) @(-->) @(<--) (Flat m) =- x
 	=> (source -> target) -> f (g target) -> f (g source)
 m -<>- x = (-||-) @(<--) @(-->) @(-->) (Dual m) =- x
 
+(-<<-)
+	:: Contravariant Natural Functor (->) (->) f
+	=> Contravariant Opposite Functor (->) (->) g
+	=> (source -> target) -> f (g source) -> f (g target)
+m -<<- x = (-||-) @(<--) @(-->) @(<--) (Dual m) =- x
+
 (-|||->)
 	:: Covariant Natural Functor (->) (->) f
 	=> Covariant Natural Functor (->) (->) g
