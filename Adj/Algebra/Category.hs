@@ -486,23 +486,29 @@ m -<<- x = (-||-) @(<--) @(-->) @(<--) (Dual m) =- x
 	=> (source -> target) -> f (g (h source)) -> f (g (h target))
 m ->>>- x = (-|||-) @(-->) @(-->) @(-->) @(-->) (Flat m) =- x
 
+-- TOOD: define -<<<-, -><<-, -><>-, -<<>-, -<>>-, -<><-
+
+-- TODO: rename according to new notation
 (-|/->) :: forall f source target
 	. Bindable Functor (->) (->) f
 	=> f source -> (source -> f target) -> f target
 x -|/-> m = map @(Kleisli f (-->)) @(-->) (Kleisli (Flat m)) =- x
 
+-- TODO: rename according to new notation
 (-||/->)
 	:: Covariant Natural Functor (->) (->) f
 	=> Bindable Functor (->) (->) g
 	=> f (g source) -> (source -> g target) -> f (g target)
 x -||/-> m = (-|/-> m) ->- x
 
+-- TODO: rename according to new notation
 (-/|/->)
 	:: forall f g source target . Traversable Functor (->) (->) g f
 	=> f source -> (source -> g target) -> g (f target)
 x -/|/-> m = case map @(Kleisli g (-->)) @(Kleisli g (-->)) (Kleisli (Flat m)) of
 	Kleisli (Flat m') -> m' x
 
+-- TODO: rename according to new notation
 (-//|//->)
 	:: forall f g h source target
 	. (Traversable Functor (->) (->) g h, Traversable Functor (->) (->) g f)
