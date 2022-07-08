@@ -41,7 +41,7 @@ infixl 7 =-=, -=-, =--
 
 infixl 4 -||/->, -/|/->
 infixl 5 ->>>-, -->--, -|/->
-infixl 6 ->>-, -><-, -<>-
+infixl 6 ->>-, -><-, -<>-, ->--
 infixl 7 ->-, -<-
 
 {- |
@@ -490,6 +490,11 @@ m ->>>- x = (-|||-) @(-->) @(-->) @(-->) @(-->) (Flat m) =- x
 	:: Covariant Natural Functor (->) (->) (Flat f o)
 	=> (source -> target) -> f o source -> f o target
 m -->-- x = (--|--) @(-->) @(-->) (Flat m) =- x
+
+(->--)
+	:: Covariant Natural Functor (->) (->) (Dual f o)
+	=> (source -> target) -> f source o -> f target o
+m ->-- x = (-|--) @(-->) @(-->) (Flat m) =- x
 
 -- TOOD: define -<<<-, -><<-, -><>-, -<<>-, -<>>-, -<><-
 
