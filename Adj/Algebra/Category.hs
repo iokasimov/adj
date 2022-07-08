@@ -458,8 +458,8 @@ m -<- x = map @(-->) @(<--) (Flat m) =- x
 (->>-)
 	:: Covariant Natural Functor (->) (->) f
 	=> Covariant Natural Functor (->) (->) g
-	=> f (g source) -> (source -> target) -> f (g target)
-x ->>- m = (-||-) @(-->) @(-->) @(-->) (Flat m) =- x
+	=> (source -> target) -> f (g source) -> f (g target)
+m ->>- x = (-||-) @(-->) @(-->) @(-->) (Flat m) =- x
 
 (-><-)
 	:: Contravariant Natural Functor (->) (->) f
