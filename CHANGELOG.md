@@ -233,3 +233,4 @@
 * Define `OP` type family
 * Define `Functoriality` datatype
 * Rename `-|-<` operator to `-<-` and flip arguments
+* Define `-<>-` operator
