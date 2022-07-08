@@ -239,3 +239,4 @@
 * Rename `-|||->` operator to `->>>-` and flip arguments
 * Define `-->--` operator
 * Define `->--` operator
+* Define `->>--` operator
