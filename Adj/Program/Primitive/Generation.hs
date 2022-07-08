@@ -3,7 +3,7 @@
 module Adj.Program.Primitive.Generation where
 
 import Adj.Auxiliary (Casted, Casting ((=-), (-=)), type (=!?=), FG (FG), FFGH (FFGH), type (=!!??=), Structural (Structural))
-import Adj.Algebra.Category (Semigroupoid ((.)), Category ((.:), (...:), (....:)), Functor, Covariant, Component (component), Identity (Identity), type (-->), Flat (Flat), (->-))
+import Adj.Algebra.Category (Semigroupoid ((.)), Category ((.:), (...:), (....:)), Functor, Functoriality (Natural), Covariant, Component (component), Identity (Identity), type (-->), Flat (Flat), (->-))
 import Adj.Algebra.Set (Setoid, (:*:) ((:*:)), (:+:) (This, That))
 
 newtype Generation p f o = Generation
@@ -34,6 +34,6 @@ pattern Load :: o -> Instruction f o
 pattern Load x <- Generation (FFGH (This (Identity x)))
 	where Load x = Generation . FFGH . This .: Identity x
 
-instance Covariant Functor (->) (->) f => Component (-->) f (Instruction f) where
+instance Covariant Natural Functor (->) (->) f => Component (-->) f (Instruction f) where
 	component = Flat .: \x -> Generation . FFGH . That . FG
 		....: Generation . FFGH . This . Identity ->- x

@@ -228,7 +228,8 @@
 * Remove `Betwixt` type famyly
 * Rename `-|->` operator to `->-` and flip arguments
 * Define `-><-` operator
-* Make `Covariant` type family a type alias
-* Make `Contravariant` type family a type alias
+* Change `Covariant` type family definition
+* Change `Contravariant` type family definition
 * Define `OP` type family
+* Define `Functoriality` datatype
 
