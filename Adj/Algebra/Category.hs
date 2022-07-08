@@ -41,8 +41,7 @@ infixl 7 =-=, -=-, =--
 
 infixr 4 -|||->, -||/->, -/|/->
 infixr 5 -||->, -|/->
-infixr 6 -|-<
-infixr 7 ->-
+infixr 7 ->-, -<-
 
 {- |
 > * Associativity: f . (g . h) ≡ (f . g) . h
@@ -450,10 +449,10 @@ instance Component (-->) Identity ((-->) s =!?= (:*:>) s) where
 	=> (source -> target) -> f source -> f target
 m ->- x = map @(-->) @(-->) (Flat m) =- x
 
-(-|-<)
+(-<-)
 	:: Contravariant Natural Functor (->) (->) f
-	=> f target -> (source -> target) -> f source
-x -|-< m = map @(-->) @(<--) (Flat m) =- x
+	=> (source -> target) -> f target -> f source
+m -<- x = map @(-->) @(<--) (Flat m) =- x
 
 (-||->)
 	:: Covariant Natural Functor (->) (->) f
