@@ -1,22 +1,30 @@
+{-# LANGUAGE AllowAmbiguousTypes #-}
 {-# LANGUAGE UndecidableInstances #-}
 
 module Adj.Program.Primitive.Generation where
 
 import Adj.Auxiliary (Casted, Casting ((=-), (-=)), type (=!?=), FG (FG), FFGH (FFGH), type (=!!??=), Structural (Structural))
-import Adj.Algebra.Category (Semigroupoid ((.)), Category ((.:), (...:), (....:)), Functor, Functoriality (Natural), Covariant, Component (component), Identity (Identity), type (-->), Flat (Flat), (->-))
+import Adj.Algebra.Category (Semigroupoid ((.)), Category ((.:), (...:), (....:)), Functor (map), Functoriality (Natural), Covariant, Component (component), Identity (Identity), type (-->), Flat (Flat), Dual, (->-), (->>-), (->>--), (-->--), (=-=))
 import Adj.Algebra.Set (Setoid, (:*:) ((:*:)), (:+:) (This, That))
 
-newtype Generation p f o = Generation
-	((=!!??=) p Identity (f =!?= Generation p f) o)
+newtype Generation f g o = Generation
+	((=!!??=) f Identity (g =!?= Generation f g) o)
 
-type instance Casted (Generation p f) o = (=!!??=) p Identity (f =!?= Generation p f) o
+type instance Casted (Generation f g) o = (=!!??=) f Identity (g =!?= Generation f g) o
 
-deriving via (Structural ((=!!??=) p Identity (f =!?= Generation p f) o))
-	instance Setoid (p (Identity o) ((=!?=) f (Generation p f) o)) => Setoid (Generation p f o)
+deriving via (Structural ((=!!??=) f Identity (g =!?= Generation f g) o))
+	instance Setoid (f (Identity o) ((=!?=) g (Generation f g) o)) => Setoid (Generation f g o)
 
-instance Casting (->) (Generation p f) where
+instance Casting (->) (Generation f g) where
 	(=-) (Generation m) = m
 	(-=) m = Generation m
+
+instance
+	( forall o . Functor (-->) (-->) (Flat f o)
+	, forall o . Functor (-->) (-->) (Dual f o)
+	, Covariant Natural Functor (->) (->) g
+	) => Functor (-->) (-->) (Generation f g) where
+	map (Flat m) = Flat . (=-=) . (=-=) .: (->>--) m . (-->--) ((=-=) (m ->>-))
 
 type Construction = Generation (:*:)
 

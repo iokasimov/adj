@@ -294,7 +294,7 @@ instance Functor (-->) (-->) ((:*:>) l) where
 	map (Flat m) = Flat .: \case
 		Flat (l :*: r) -> Flat (l :*: m r)
 
-instance 
+instance
 	( Bindable Functor (->) (->) ((:*:>) l)
 	, Component (-->) Identity ((:*:>) l)
 	, Casting (-->) Identity
