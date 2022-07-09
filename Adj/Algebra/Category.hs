@@ -592,6 +592,16 @@ instance
 	) => Functor from to (f =!?= g) where
 	map m = (=-=) ((-||-) @from @between @to @f @g m)
 
+-- TODO: find a way to simplify this instance
+instance
+	( Component (-->) (Day (-->) f f (:*:) (:*:)) f
+	, Component (-->) (Day (-->) g g (:*:) (:*:)) g
+	, Covariant Natural Functor (->) (->) f
+	) => Component (-->) (Day (-->) (f =!?= g) (f =!?= g) (:*:) (:*:)) (f =!?= g) where
+	component = Flat .: \(Day (FG l :*: FG r) m) ->
+		FG ...: (=-) (component @(-->) @(Day (-->) g g (:*:) (:*:)) @g) . (\x -> Day x m)
+			->- (=-) (component @(-->) @(Day (-->) f f (:*:) (:*:)) @f) (Day (l :*: r) identity)
+
 instance
 	( Functor from between f'
 	, Functor between between' g
