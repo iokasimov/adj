@@ -603,6 +603,26 @@ instance
 			->- (=-) (component @(-->) @(Day (-->) f f (:*:) (:*:)) @f) (Day (l :*: r) identity)
 
 instance
+	( Covariant Natural Functor (->) (->) f
+	, Covariant Natural Functor (->) (->) g
+	) => Component (-->) (Day (-->) (f =!?= g) Identity (:*:) (:*:)) (f =!?= g) where
+	component = Flat .: \(Day (FG l :*: Identity r) m) ->
+		FG ....: (m =-) . (:*: r) ->>- l
+
+instance
+	( Covariant Natural Functor (->) (->) f
+	, Covariant Natural Functor (->) (->) g
+	) => Component (-->) (Day (-->) Identity (f =!?= g) (:*:) (:*:)) (f =!?= g) where
+	component = Flat .: \(Day (Identity l :*: FG r) m) ->
+		FG ....: (m =-) . (l :*:) ->>- r
+
+instance
+	( Monoidal Functor (:*:) (:*:) (-->) (-->) f
+	, Monoidal Functor (:*:) (:*:) (-->) (-->) g
+	) => Component (-->) ((-->) Unit) (f =!?= g) where
+	component = Flat .: \(Flat m) -> FG . point @f . point @g .: m Unit
+
+instance
 	( Functor from between f'
 	, Functor between between' g
 	, Functor between' to f
