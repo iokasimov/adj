@@ -242,3 +242,5 @@
 * Define `->>--` operator
 * Define `-->>--` operator
 * Rename `-/|/->` operator to `-/>/-`
+
+# 0.1.2
