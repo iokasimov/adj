@@ -244,3 +244,4 @@
 * Rename `-/|/->` operator to `-/>/-`
 
 # 0.1.2
+* Rename `-|/->` operator to `-/>-` and flip arguments
