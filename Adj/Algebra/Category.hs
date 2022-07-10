@@ -39,7 +39,7 @@ infixl 6 =---
 infixl 7 =-=, -=-, =--
 
 infixl 2 --/>>/--
-infixl 3 -/>>/--
+infixl 3 --/>/--, -/>>/--
 infixl 4 -->>--
 infixl 5 ->>>-, -->--, ->>--, -/>>-, -/>/-
 infixl 6 ->>-, -><-, -<>-, ->--, -/>-
@@ -531,6 +531,13 @@ m -/>>- x = (m -/>-) ->- x
 	=> (source -> g target) -> f source -> g (f target)
 m -/>/- x = case map @((-/->) _) @((-/->) _) (Kleisli (Flat m)) of
 	Kleisli (Flat m') -> m' x
+
+(--/>/--)
+	:: Traversable Functor (->) (->) h (Flat f o)
+	=> Traversable Functor (->) (->) h g
+	=> Covariant Natural Functor (->) (->) h
+	=> (source -> h target) -> f o source -> h (f o target)
+m --/>/-- x = (=-) ->- (m -/>/- Flat x)
 
 (--/>>/--)
 	:: Traversable Functor (->) (->) h (Flat f o)
