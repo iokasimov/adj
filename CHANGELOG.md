@@ -247,3 +247,4 @@
 * Rename `-|/->` operator to `-/>-` and flip arguments
 * Rename `-||/->` operator to `-/>>-` and flip arguments
 * Define `--/>>/--` operator
+* Define `-/>>/--` operator

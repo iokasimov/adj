@@ -39,6 +39,8 @@ infixl 5 =----
 infixl 6 =---
 infixl 7 =-=, -=-, =--
 
+infixl 2 --/>>/--
+infixl 3 -/>>/--
 infixl 4 -->>--
 infixl 5 ->>>-, -->--, ->>--, -/>>-, -/>/-
 infixl 6 ->>-, -><-, -<>-, ->--, -/>-
@@ -527,6 +529,13 @@ m -/>>- x = (m -/>-) ->- x
 	=> Covariant Natural Functor (->) (->) h
 	=> (source -> h target) -> f o (g source) -> h (f o (g target))
 m --/>>/-- x = (=-) ->- ((m -/>/-) -/>/- Flat x)
+
+(-/>>/--)
+	:: Traversable Functor (->) (->) h (Dual f o)
+	=> Traversable Functor (->) (->) h g
+	=> Covariant Natural Functor (->) (->) h
+	=> (source -> h target) -> f (g source) o -> h (f (g target) o)
+m -/>>/-- x = (=-) ->- ((m -/>/-) -/>/- Dual x)
 
 (-/>/-)
 	:: Traversable Functor (->) (->) g f
