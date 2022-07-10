@@ -570,6 +570,18 @@ m -/>>/-- x = (=-) ->- ((m -/>/-) -/>/- Dual x)
 x -//|//-> m = case (map @((-/->) g) @((-/->) g) . map @((-/->) g) @((-/->) g)) (Kleisli (Flat m)) of
 	Kleisli (Flat m') -> m' x
 
+(|*|) :: forall f l r o
+	. Semimonoidal Functor (:*:) (:*:) (-->) (-->) f
+	=> f l -> f r -> (l -> r -> o) -> f o
+l |*| r = \m -> component @(-->) @(Day (-->) _ _ _ _)
+	=- Day (l :*: r) (Flat .: \(l' :*: r') -> m l' r')
+
+(|+|) :: forall f l r o
+	. Semimonoidal Functor (:+:) (:+:) (-->) (-->) f
+	=> (l -> o) -> (r -> o) -> (f l :+: f r) -> f o
+l |+| r = \lr -> component @(-->) @(Day (-->) _ _ _ _)
+	=- Day lr (Flat .: \case { This l' -> l l'; That r' -> r r' })
+
 point :: Monoidal Functor (:*:) (:*:) (-->) (-->) f => o -> f o
 point x = component @(-->) @((-->) (Neutral (:*:))) =- (Flat .: \Unit -> x)
 

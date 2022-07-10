@@ -253,3 +253,6 @@
 * Define `--/>/--` operator
 * Define `-/>/--` operator
 * Change `Semimonoidal` type family definition
+* Define `|*|` operator
+* Define `|+|` operator
+
