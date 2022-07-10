@@ -26,6 +26,13 @@ instance
 	) => Functor (-->) (-->) (Generation f g) where
 	map (Flat m) = Flat . (=-=) . (=-=) .: (->>--) m . (-->--) ((=-=) (m ->>-))
 
+-- instance
+	-- ( forall o . Functor (-->) (-->) (Flat f o)
+	-- , forall o . Functor (-->) (-->) (Dual f o)
+	-- , Covariant Natural Functor (->) (->) g
+	-- ) => Functor (Kleisli h (-->)) (Kleisli h (-->)) (Generation f g) where
+	-- map (Flat m) = Flat . (=-=) . (=-=) .: (->>--) m . (-->--) ((=-=) (m ->>-))
+
 type Construction = Generation (:*:)
 
 pattern Construct :: o -> f (Construction f o) -> Construction f o

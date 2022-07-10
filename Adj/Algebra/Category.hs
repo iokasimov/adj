@@ -8,7 +8,6 @@ import Adj.Auxiliary (type (.:), type (=!?=), FG (FG), type (=!?!=), type (=!!??
 import Adj.Algebra.Set ((:*:) ((:*:)), (:+:) (This, That), Unit (Unit), Neutral, absurd)
 
 infixr 9 .
-
 infixl 8 .:
 infixl 7 ..:
 infixl 6 ...:
@@ -249,6 +248,10 @@ type (-->) = Flat (->)
 
 type (<--) = Dual (->)
 
+type (-/->) f = Kleisli f (-->)
+
+type (<-\-) f = Kleisli f (<--)
+
 type (:*:>) = Flat (:*:)
 
 type (<:*:) = Dual (:*:)
@@ -275,11 +278,11 @@ instance Functor (-->) (-->) Identity where
 	map (Flat m) = Flat .: \case
 		Identity x -> Identity .: m x
 
-instance (Component (-->) Identity Identity, Casting (-->) Identity) => Functor (Kleisli Identity (-->)) (-->) Identity where
+instance (Component (-->) Identity Identity, Casting (-->) Identity) => Functor ((-/->) Identity) (-->) Identity where
 	map (Kleisli (Flat m)) = Flat .: \case
 		Identity x -> m x
 
-instance (Covariant Natural Functor (->) (->) g, Bindable Functor (->) (->) g) => Functor (Kleisli g (-->)) (Kleisli g (-->)) Identity where
+instance (Covariant Natural Functor (->) (->) g, Bindable Functor (->) (->) g) => Functor ((-/->) g) ((-/->) g) Identity where
 	map (Kleisli (Flat m)) = Kleisli . Flat .: \case
 		Identity x -> (-|-) @_ @(-->) (Flat Identity) =- m x
 
@@ -300,7 +303,7 @@ instance
 	( Bindable Functor (->) (->) ((:*:>) l)
 	, Component (-->) Identity ((:*:>) l)
 	, Casting (-->) Identity
-	) => Functor (Kleisli ((:*:>) l) (-->)) (-->) ((:*:>) l) where
+	) => Functor ((-/->) ((:*:>) l)) (-->) ((:*:>) l) where
 	map (Kleisli (Flat m)) = Flat .: \case
 		Flat (_ :*: r) -> m r
 
@@ -313,7 +316,7 @@ instance
 	( Bindable Functor (->) (->) ((:+:>) l)
 	, Component (-->) Identity ((:+:>) l)
 	, Casting (-->) Identity
-	) => Functor (Kleisli ((:+:>) l) (-->)) (-->) ((:+:>) l) where
+	) => Functor ((-/->) ((:+:>) l)) (-->) ((:+:>) l) where
 	map (Kleisli (Flat m)) = Flat .: \case
 		Flat (This l) -> Flat .: This l
 		Flat (That r) -> m r
@@ -330,7 +333,7 @@ instance Functor (-->) (-->) ((<:+:) r) where
 instance
 	( Component (-->) Identity ((<:+:) r)
 	, Casting (-->) Identity
-	) => Functor (Kleisli ((<:+:) r) (-->)) (-->) ((<:+:) r) where
+	) => Functor ((-/->) ((<:+:) r)) (-->) ((<:+:) r) where
 	map (Kleisli (Flat m)) = Flat .: \case
 		Dual (This l) -> m l
 		Dual (That r) -> Dual .: That r
@@ -339,26 +342,26 @@ instance
 	( Component (-->) Identity ((<:*:) r)
 	, Bindable Functor (->) (->) ((<:*:) r)
 	, Casting (-->) Identity
-	) => Functor (Kleisli ((<:*:) r) (-->)) (-->) ((<:*:) r) where
+	) => Functor ((-/->) ((<:*:) r)) (-->) ((<:*:) r) where
 	map (Kleisli (Flat m)) = Flat .: \case
 		Dual (l :*: _) -> m l
 
-instance (Covariant Natural Functor (->) (->) f, Bindable Functor (->) (->) f) => Functor (Kleisli f (-->)) (Kleisli f (-->)) ((:*:>) l) where
+instance (Covariant Natural Functor (->) (->) f, Bindable Functor (->) (->) f) => Functor ((-/->) f) ((-/->) f) ((:*:>) l) where
 	map (Kleisli (Flat m)) = Kleisli . Flat .: \case
 		Flat (l :*: r) -> Flat . (l :*:) ->- m r
 
-instance (Covariant Natural Functor (->) (->) f, Bindable Functor (->) (->) f) => Functor (Kleisli f (-->)) (Kleisli f (-->)) ((<:*:) r) where
+instance (Covariant Natural Functor (->) (->) f, Bindable Functor (->) (->) f) => Functor ((-/->) f) ((-/->) f) ((<:*:) r) where
 	map (Kleisli (Flat m)) = Kleisli . Flat .: \case
 		Dual (l :*: r) -> Dual . (:*: r) ->- m l
 
 instance (Covariant Natural Functor (->) (->) f, Bindable Functor (->) (->) f, Monoidal Functor (:*:) (:*:) (-->) (-->) f)
-	=> Functor (Kleisli f (-->)) (Kleisli f (-->)) ((:+:>) l) where
+	=> Functor ((-/->) f) ((-/->) f) ((:+:>) l) where
 		map (Kleisli (Flat m)) = Kleisli . Flat .: \case
 			Flat (That r) -> Flat . That ->- m r
 			Flat (This l) -> point . Flat . This .: l
 
 instance (Covariant Natural Functor (->) (->) f, Bindable Functor (->) (->) f, Monoidal Functor (:*:) (:*:) (-->) (-->) f)
-	=> Functor (Kleisli f (-->)) (Kleisli f (-->)) ((<:+:) r) where
+	=> Functor ((-/->) f) ((-/->) f) ((<:+:) r) where
 		map (Kleisli (Flat m)) = Kleisli . Flat .: \case
 			Dual (This l) -> Dual . This ->- m l
 			Dual (That r) -> point . Dual . That .: r
@@ -515,13 +518,19 @@ m -->>-- x = (--||--) @(-->) @(-->) @(-->) (Flat m) =- x
 (-/>-) :: forall f source target
 	. Bindable Functor (->) (->) f
 	=> (source -> f target) -> f source -> f target
-m -/>- x = map @(Kleisli f (-->)) @(-->) (Kleisli (Flat m)) =- x
+m -/>- x = map @((-/->) f) @(-->) (Kleisli (Flat m)) =- x
 
 (-/>>-)
 	:: Covariant Natural Functor (->) (->) f
 	=> Bindable Functor (->) (->) g
 	=> (source -> g target) -> f (g source) -> f (g target)
 m -/>>- x = (m -/>-) ->- x
+
+(-/>/-)
+	:: Traversable Functor (->) (->) g f
+	=> (source -> g target) -> f source -> g (f target)
+m -/>/- x = case map @((-/->) _) @((-/->) _) (Kleisli (Flat m)) of
+	Kleisli (Flat m') -> m' x
 
 (--/>>/--)
 	:: Traversable Functor (->) (->) h (Flat f o)
@@ -537,18 +546,12 @@ m --/>>/-- x = (=-) ->- ((m -/>/-) -/>/- Flat x)
 	=> (source -> h target) -> f (g source) o -> h (f (g target) o)
 m -/>>/-- x = (=-) ->- ((m -/>/-) -/>/- Dual x)
 
-(-/>/-)
-	:: Traversable Functor (->) (->) g f
-	=> (source -> g target) -> f source -> g (f target)
-m -/>/- x = case map @(Kleisli _ (-->)) @(Kleisli _ (-->)) (Kleisli (Flat m)) of
-	Kleisli (Flat m') -> m' x
-
 -- TODO: rename according to new notation
 (-//|//->)
 	:: forall f g h source target
 	. (Traversable Functor (->) (->) g h, Traversable Functor (->) (->) g f)
 	=> f (h source) -> (source -> g target) -> g (f (h target))
-x -//|//-> m = case (map @(Kleisli g (-->)) @(Kleisli g (-->)) . map @(Kleisli g (-->)) @(Kleisli g (-->))) (Kleisli (Flat m)) of
+x -//|//-> m = case (map @((-/->) g) @((-/->) g) . map @((-/->) g) @((-/->) g)) (Kleisli (Flat m)) of
 	Kleisli (Flat m') -> m' x
 
 point :: Monoidal Functor (:*:) (:*:) (-->) (-->) f => o -> f o
@@ -605,13 +608,13 @@ instance
 	) => Functor from to (f =!?= g) where
 	map m = (=-=) ((-||-) @from @between @to @f @g m)
 
--- TODO: find a way to simplify this instance
 instance
 	( Component (-->) (Day (-->) f f (:*:) (:*:)) f
 	, Component (-->) (Day (-->) g g (:*:) (:*:)) g
 	, Covariant Natural Functor (->) (->) f
 	) => Component (-->) (Day (-->) (f =!?= g) (f =!?= g) (:*:) (:*:)) (f =!?= g) where
 	component = Flat .: \(Day (FG l :*: FG r) m) ->
+	-- TODO: find a way to simplify this instance
 		FG ...: (=-) (component @(-->) @(Day (-->) g g (:*:) (:*:)) @g) . (\x -> Day x m)
 			->- (=-) (component @(-->) @(Day (-->) f f (:*:) (:*:)) @f) (Day (l :*: r) identity)
 
@@ -660,6 +663,6 @@ instance Casting (->) f => Casting (-->) f where
 	(=-) = Flat (=-)
 	(-=) = Flat (-=)
 
-instance (Casting (->) f, Monoidal Functor (:*:) (:*:) (-->) (-->) g) => Casting (Kleisli g (-->)) f where
+instance (Casting (->) f, Monoidal Functor (:*:) (:*:) (-->) (-->) g) => Casting ((-/->) g) f where
 	(=-) = Kleisli . Flat .: point . (=-)
 	(-=) = Kleisli . Flat .: point . (-=)
