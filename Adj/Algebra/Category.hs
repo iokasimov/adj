@@ -39,8 +39,8 @@ infixl 5 =----
 infixl 6 =---
 infixl 7 =-=, -=-, =--
 
-infixl 4 -->>--, -||/->, -/|/->
-infixl 5 ->>>-, -->--, ->>--, -|/->
+infixl 4 -->>--, -||/->
+infixl 5 ->>>-, -->--, ->>--, -/>/-, -|/->
 infixl 6 ->>-, -><-, -<>-, ->--
 infixl 7 ->-, -<-
 
@@ -523,11 +523,10 @@ x -|/-> m = map @(Kleisli f (-->)) @(-->) (Kleisli (Flat m)) =- x
 	=> f (g source) -> (source -> g target) -> f (g target)
 x -||/-> m = (-|/-> m) ->- x
 
--- TODO: rename according to new notation
-(-/|/->)
-	:: forall f g source target . Traversable Functor (->) (->) g f
-	=> f source -> (source -> g target) -> g (f target)
-x -/|/-> m = case map @(Kleisli g (-->)) @(Kleisli g (-->)) (Kleisli (Flat m)) of
+(-/>/-)
+	:: Traversable Functor (->) (->) g f
+	=> (source -> g target) -> f source -> g (f target)
+m -/>/- x = case map @(Kleisli _ (-->)) @(Kleisli _ (-->)) (Kleisli (Flat m)) of
 	Kleisli (Flat m') -> m' x
 
 -- TODO: rename according to new notation
