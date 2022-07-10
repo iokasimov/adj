@@ -255,4 +255,4 @@
 * Change `Semimonoidal` type family definition
 * Define `|*|` operator
 * Define `|+|` operator
-
+* Define `-/>>/-` operator

@@ -40,7 +40,7 @@ infixl 7 =-=, -=-, =--
 
 infixl 2 --/>>/--
 infixl 3 --/>/--, -/>>/--
-infixl 4 -/>/--, -->>--
+infixl 4 -/>/--, -/>>/-, -->>--
 infixl 5 ->>>-, -->--, ->>--, -/>>-, -/>/-
 infixl 6 ->>-, -><-, -<>-, ->--, -/>-
 infixl 7 ->-, -<-
@@ -531,6 +531,12 @@ m -/>>- x = (m -/>-) ->- x
 (-/>/-) :: Traversable Functor (->) (->) g f
 	=> (source -> g target) -> f source -> g (f target)
 m -/>/- x = map @((-/->) _) @((-/->) _) .: Kleisli (Flat m) =- x
+
+(-/>>/-)
+	:: Traversable Functor (->) (->) h f
+	=> Traversable Functor (->) (->) h g
+	=> (source -> h target) -> f (g source) -> h (f (g target))
+m -/>>/- x = (m -/>/-) -/>/- x
 
 (--/>/--)
 	:: Traversable Functor (->) (->) h (Flat f o)
