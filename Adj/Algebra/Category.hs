@@ -216,7 +216,9 @@ type family OP direction where
 
 type family Semimonoidal x source target from to f where
 	Semimonoidal Functor source target from to f =
-		Component .: from .: Day to f f source target .: f
+		( Functor from to f
+		, Component .: from .: Day to f f source target .: f
+		)
 
 -- TODO: need to add a Functor constraint
 type family Monoidal x source target from to f where
