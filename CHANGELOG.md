@@ -251,3 +251,4 @@
 * Define `-/->` type operator
 * Define `<-\-` type operator
 * Define `--/>/--` operator
+* Define `-/>/--` operator
