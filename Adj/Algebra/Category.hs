@@ -515,12 +515,18 @@ m -->>-- x = (--||--) @(-->) @(-->) @(-->) (Flat m) =- x
 	=> (source -> f target) -> f source -> f target
 m -/>- x = map @(Kleisli f (-->)) @(-->) (Kleisli (Flat m)) =- x
 
--- TODO: rename according to new notation
 (-/>>-)
 	:: Covariant Natural Functor (->) (->) f
 	=> Bindable Functor (->) (->) g
 	=> (source -> g target) -> f (g source) -> f (g target)
 m -/>>- x = (m -/>-) ->- x
+
+(--/>>/--)
+	:: Traversable Functor (->) (->) h (Flat f o)
+	=> Traversable Functor (->) (->) h g
+	=> Covariant Natural Functor (->) (->) h
+	=> (source -> h target) -> f o (g source) -> h (f o (g target))
+m --/>>/-- x = (=-) ->- ((m -/>/-) -/>/- Flat x)
 
 (-/>/-)
 	:: Traversable Functor (->) (->) g f
