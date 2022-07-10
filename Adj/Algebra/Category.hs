@@ -180,11 +180,11 @@ instance Category morhism => Category (Dual morhism) where
 newtype Kleisli f m source target =
 	Kleisli (m source .: f target)
 
-type instance Casted (Kleisli f (->) source) target = source -> f target
+type instance Casted (Kleisli f (-->) source) target = source -> f target
 
-instance Casting (->) (Kleisli f (->) source) where
-	(=-) (Kleisli m) = m
-	(-=) m = Kleisli m
+instance Casting (->) (Kleisli f (-->) source) where
+	(=-) (Kleisli (Flat m)) = m
+	(-=) m = Kleisli .: Flat m
 
 instance (Functor .: Kleisli f target .: target .: f, Semigroupoid target)
 	=> Semigroupoid (Kleisli f target) where
@@ -528,11 +528,9 @@ m -/>- x = map @((-/->) f) @(-->) (Kleisli (Flat m)) =- x
 	=> (source -> g target) -> f (g source) -> f (g target)
 m -/>>- x = (m -/>-) ->- x
 
-(-/>/-)
-	:: Traversable Functor (->) (->) g f
+(-/>/-) :: Traversable Functor (->) (->) g f
 	=> (source -> g target) -> f source -> g (f target)
-m -/>/- x = case map @((-/->) _) @((-/->) _) (Kleisli (Flat m)) of
-	Kleisli (Flat m') -> m' x
+m -/>/- x = map @((-/->) _) @((-/->) _) .: Kleisli (Flat m) =- x
 
 (--/>/--)
 	:: Traversable Functor (->) (->) h (Flat f o)
