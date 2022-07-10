@@ -4,7 +4,7 @@
 module Adj.Program.Primitive.Generation where
 
 import Adj.Auxiliary (Casted, Casting ((=-), (-=)), type (=!?=), FG (FG), FFGH (FFGH), type (=!!??=), Structural (Structural))
-import Adj.Algebra.Category (Semigroupoid ((.)), Category ((.:), (...:), (....:)), Functor (map), Functoriality (Natural), Covariant, Component (component), Identity (Identity), type (-->), Flat (Flat), Dual, (->-), (->>-), (->>--), (-->--), (=-=))
+import Adj.Algebra.Category (Semigroupoid ((.)), Category ((.:), (...:), (....:), identity), Functor (map), Functoriality (Natural), Covariant, Bindable, Traversable, Semimonoidal, Component (component), Identity (Identity), Day (Day), type (-->), type (-/->), Flat (Flat), Dual, Kleisli (Kleisli), (->-), (->>-), (->>--), (->--), (-->--), (-/>/-), (-/>>/-), (=-=))
 import Adj.Algebra.Set (Setoid, (:*:) ((:*:)), (:+:) (This, That))
 
 newtype Generation f g o = Generation
@@ -26,12 +26,18 @@ instance
 	) => Functor (-->) (-->) (Generation f g) where
 	map (Flat m) = Flat . (=-=) . (=-=) .: (->>--) m . (-->--) ((=-=) (m ->>-))
 
--- instance
-	-- ( forall o . Functor (-->) (-->) (Flat f o)
-	-- , forall o . Functor (-->) (-->) (Dual f o)
-	-- , Covariant Natural Functor (->) (->) g
-	-- ) => Functor (Kleisli h (-->)) (Kleisli h (-->)) (Generation f g) where
-	-- map (Flat m) = Flat . (=-=) . (=-=) .: (->>--) m . (-->--) ((=-=) (m ->>-))
+instance
+	( forall o . Functor (-->) (-->) (Flat f o)
+	, forall o . Functor (-->) (-->) (Dual f o)
+	, Covariant Natural Functor (->) (->) g
+	, Semimonoidal Functor f f (-->) (-->) h
+	-- TODO: how did we get to this?
+	, Bindable Functor (->) (->) h
+	, Traversable Functor (->) (->) h g
+	) => Functor ((-/->) h) ((-/->) h) (Generation f g) where
+	map (Kleisli (Flat m)) = Kleisli . Flat .: \(Generation (FFGH xs)) ->
+		let new = (\(FG x) -> FG ->- (m -/>>/- x)) -->-- (m -/>/-) ->-- xs in
+		Generation . FFGH ->- component @(-->) @(Day (-->) h h f f) =- Day new identity
 
 type Construction = Generation (:*:)
 
