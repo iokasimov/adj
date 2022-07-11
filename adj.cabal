@@ -38,6 +38,7 @@ library
     Adj.Program.Datastructure.Implementation
     Adj.Program.Datastructure.Implementation.List
     Adj.Program.Datastructure.Implementation.Tree
+    Adj.Program.Datastructure.Property
   default-extensions:
     DataKinds
     ConstraintKinds

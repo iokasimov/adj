@@ -256,3 +256,4 @@
 * Define `|*|` operator
 * Define `|+|` operator
 * Define `-/>>/-` operator
+* Define `Adj.Program.Datastructure.Property` module
