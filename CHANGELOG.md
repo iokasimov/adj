@@ -258,3 +258,4 @@
 * Define `-/>>/-` operator
 * Define `Adj.Program.Datastructure.Property` module
 * Define `Infinity` datatype
+* Define `Cardinality` type family
