@@ -29,6 +29,8 @@ type family Neutral p = r | r -> p where
 	Neutral (:*:) = Unit
 	Neutral (:+:) = Void
 
+newtype Infinity = Infinity Infinity
+
 {- |
 > * Associativity: x + (y + z) ≡ (x + y) + z
 -}

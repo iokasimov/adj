@@ -257,3 +257,4 @@
 * Define `|+|` operator
 * Define `-/>>/-` operator
 * Define `Adj.Program.Datastructure.Property` module
+* Define `Infinity` datatype
