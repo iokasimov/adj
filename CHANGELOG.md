@@ -255,7 +255,7 @@
 * Change `Semimonoidal` type family definition
 * Define `|*|` operator
 * Define `|+|` operator
-* Define `-/>>/-` operator
 * Define `Adj.Program.Datastructure.Property` module
 * Define `Infinity` datatype
 * Define `Cardinality` type family
+* Rename `-//|//->` operator to `-/>>/-` and flip arguments

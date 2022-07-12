@@ -566,14 +566,6 @@ m --/>>/-- x = (=-) ->- ((m -/>/-) -/>/- Flat x)
 	=> (source -> h target) -> f (g source) o -> h (f (g target) o)
 m -/>>/-- x = (=-) ->- ((m -/>/-) -/>/- Dual x)
 
--- TODO: rename according to new notation
-(-//|//->)
-	:: forall f g h source target
-	. (Traversable Functor (->) (->) g h, Traversable Functor (->) (->) g f)
-	=> f (h source) -> (source -> g target) -> g (f (h target))
-x -//|//-> m = case (map @((-/->) g) @((-/->) g) . map @((-/->) g) @((-/->) g)) (Kleisli (Flat m)) of
-	Kleisli (Flat m') -> m' x
-
 (|*|) :: forall f l r o
 	. Semimonoidal Functor (:*:) (:*:) (-->) (-->) f
 	=> f l -> f r -> (l -> r -> o) -> f o
