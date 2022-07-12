@@ -17,22 +17,17 @@ infixl 3 ......:
 infixl 2 .......:
 infixl 1 ........:
 
+infixr 6 <-\-, -/->
 infixr 7 <--, -->
 
 infixr 8 <:*:, :*:>
 infixr 8 <:+:, :+:>
 
-infixl 5 -|||-
-infixl 6 -||-
-infixl 7 -|-
-
-infixl 4 -|||--
-infixl 5 -||--
-infixl 6 -|--
-
 infixl 3 --|||--
-infixl 4 --||--
-infixl 5 --|--
+infixl 4 -|||--, --||--
+infixl 5 -|||-, -||--, --|--
+infixl 6 -||-, -|--
+infixl 7 -|-
 
 infixl 5 =----
 infixl 6 =---
