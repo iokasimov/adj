@@ -40,7 +40,7 @@ infixl 7 =-=, -=-, =--
 
 infixl 2 --/>>/--
 infixl 3 --/>/--, -/>>/--
-infixl 4 -/>/--, -/>>/-, -->>--
+infixl 4 -/>/--, -/>>/-, -->>--, -/>>/=
 infixl 5 ->>>-, -->--, ->>--, -/>>-, -/>/-
 infixl 6 ->>-, -><-, -<>-, ->--, -/>-
 infixl 7 ->-, -<-, ->=
@@ -630,6 +630,13 @@ empty = component @(-->) @((-->) (Neutral (:+:))) =- Flat absurd
 	=> (Casting (->) f', Casted f' source ~ f source)
 	=> (source -> target) -> f' source -> f target
 m ->= x = map @(-->) @(-->) (Flat m) =- ((=-) x)
+
+(-/>>/=)
+	:: Traversable Functor (->) (->) h f
+	=> Traversable Functor (->) (->) h g
+	=> (Casting (->) f', Casted f' source ~ f (g source))
+	=> (source -> h target) -> f' source -> h (f (g target))
+m -/>>/= x = (m -/>/-) -/>/- ((=-) x)
 
 instance
 	( Functor between to f
