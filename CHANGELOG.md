@@ -259,3 +259,4 @@
 * Define `Infinity` datatype
 * Define `Cardinality` type family
 * Rename `-//|//->` operator to `-/>>/-` and flip arguments
+* Define `->=` operator

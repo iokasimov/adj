@@ -43,7 +43,7 @@ infixl 3 --/>/--, -/>>/--
 infixl 4 -/>/--, -/>>/-, -->>--
 infixl 5 ->>>-, -->--, ->>--, -/>>-, -/>/-
 infixl 6 ->>-, -><-, -<>-, ->--, -/>-
-infixl 7 ->-, -<-
+infixl 7 ->-, -<-, ->=
 
 {- |
 > * Associativity: f . (g . h) ≡ (f . g) . h
@@ -624,6 +624,12 @@ empty = component @(-->) @((-->) (Neutral (:+:))) =- Flat absurd
 	=> i o ~ Casted h o
 	=> m .: f o .: Casted i o
 (=----) = (=-) @m . (=-) @m . (=-) @m . (=-) @m
+
+(->=)
+	:: Covariant Natural Functor (->) (->) f
+	=> (Casting (->) f', Casted f' source ~ f source)
+	=> (source -> target) -> f' source -> f target
+m ->= x = map @(-->) @(-->) (Flat m) =- ((=-) x)
 
 instance
 	( Functor between to f
