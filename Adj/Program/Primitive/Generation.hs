@@ -4,7 +4,7 @@
 module Adj.Program.Primitive.Generation where
 
 import Adj.Auxiliary (Casted, Casting ((=-), (-=)), type (=!?=), FG (FG), FFGH (FFGH), type (=!!??=), Structural (Structural))
-import Adj.Algebra.Category (Semigroupoid ((.)), Category ((.:), (...:), (....:), identity), Functor (map), Covariant, Bindable, Traversable, Semimonoidal, Component (component), Identity (Identity), Day (Day), type (-->), type (-/->), Flat (Flat), Dual, Kleisli (Kleisli), (->-), (->>-), (->>--), (->--), (-->--), (-/>/-), (-/>>/-), (=-=))
+import Adj.Algebra.Category (Semigroupoid ((.)), Category ((.:), (...:), (....:), identity), Functor (map), Covariant, Bindable, Traversable, Semimonoidal, Component (component), Identity (Identity), Day (Day), type (-->), type (-/->), Straight (Straight), Dual, Kleisli (Kleisli), (->-), (->>-), (->>--), (->--), (-->--), (-/>/-), (-/>>/-), (=-=))
 import Adj.Algebra.Set (Setoid, (:*:) ((:*:)), (:+:) (This, That))
 
 newtype Generation f g o = Generation
@@ -20,22 +20,22 @@ instance Casting (->) (Generation f g) where
 	(-=) m = Generation m
 
 instance
-	( forall o . Functor (-->) (-->) (Flat f o)
+	( forall o . Functor (-->) (-->) (Straight f o)
 	, forall o . Functor (-->) (-->) (Dual f o)
-	, Covariant Flat Functor g (->) (->)
+	, Covariant Straight Functor g (->) (->)
 	) => Functor (-->) (-->) (Generation f g) where
-	map (Flat m) = Flat . (=-=) . (=-=) .: (->>--) m . (-->--) ((=-=) (m ->>-))
+	map (Straight m) = Straight . (=-=) . (=-=) .: (->>--) m . (-->--) ((=-=) (m ->>-))
 
 instance
-	( forall o . Functor (-->) (-->) (Flat f o)
+	( forall o . Functor (-->) (-->) (Straight f o)
 	, forall o . Functor (-->) (-->) (Dual f o)
-	, Covariant Flat Functor g (->) (->)
+	, Covariant Straight Functor g (->) (->)
 	, Semimonoidal Functor f f (-->) (-->) h
 	-- TODO: how did we get to this?
 	, Bindable Functor (->) (->) h
 	, Traversable Functor (->) (->) h g
 	) => Functor ((-/->) h) ((-/->) h) (Generation f g) where
-	map (Kleisli (Flat m)) = Kleisli . Flat .: \(Generation (FFGH xs)) ->
+	map (Kleisli (Straight m)) = Kleisli . Straight .: \(Generation (FFGH xs)) ->
 		let new = (\(FG x) -> FG ->- (m -/>>/- x)) -->-- (m -/>/-) ->-- xs in
 		Generation . FFGH ->- component @(-->) @(Day (-->) h h f f) =- Day new identity
 
@@ -55,6 +55,6 @@ pattern Load :: o -> Instruction f o
 pattern Load x <- Generation (FFGH (This (Identity x)))
 	where Load x = Generation . FFGH . This .: Identity x
 
-instance Covariant Flat Functor f (->) (->) => Component (-->) f (Instruction f) where
-	component = Flat .: \x -> Generation . FFGH . That . FG
+instance Covariant Straight Functor f (->) (->) => Component (-->) f (Instruction f) where
+	component = Straight .: \x -> Generation . FFGH . That . FG
 		....: Generation . FFGH . This . Identity ->- x

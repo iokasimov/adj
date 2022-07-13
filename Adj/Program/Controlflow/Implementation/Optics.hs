@@ -1,7 +1,7 @@
 module Adj.Program.Controlflow.Implementation.Optics where
 
 import Adj.Auxiliary ((=-), type (=!?=), FG (FG))
-import Adj.Algebra.Category (type (<--), type (-->), type (:*:>), type (:+:>), (.), (..:), Dual (Dual), Flat (Flat), extract)
+import Adj.Algebra.Category (type (<--), type (-->), type (:*:>), type (:+:>), (.), (..:), Dual (Dual), Straight (Straight), extract)
 import Adj.Algebra.Set ((:+:) (This, That))
 
 type Lens queried required source target =
@@ -15,8 +15,8 @@ type Prism available set subset =
 
 review :: Prism available set subset -> set -> available subset
 review prism set = case prism =- set of
-	FG (Flat (This subset)) -> subset
-	FG (Flat (That m)) -> m =- set
+	FG (Straight (This subset)) -> subset
+	FG (Straight (That m)) -> m =- set
 
 -- TODO: think about composition between different type of optics
 -- TODO: Lens and Prism types looks the same so maybe we can just generalize them somehow

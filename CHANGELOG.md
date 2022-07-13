@@ -265,3 +265,4 @@
 # 0.1.3
 * Change `Contravariant` type family definition
 * Change `Covariant` type family definition
+* Rename `Flat` morphism to `Straight`
