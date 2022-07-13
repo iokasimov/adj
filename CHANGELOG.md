@@ -263,3 +263,5 @@
 * Define `-/>>/=` operator
 
 # 0.1.3
+* Change `Contravariant` type family definition
+* Change `Covariant` type family definition

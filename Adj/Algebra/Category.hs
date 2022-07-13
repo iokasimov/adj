@@ -195,13 +195,11 @@ instance
 
 data Functoriality = Natural | Opposite
 
-type family Covariant functoriality functor source target where
-	Covariant Natural functor source target = Functor .: Flat source .: Flat source
-	Covariant Opposite functor source target = Functor .: Dual source .: Dual source
+type family Covariant m functor f from to where
+	Covariant m Functor functor from to = Functor (m from) (m to) functor
 
-type family Contravariant functoriality functor source target where
-	Contravariant Natural functor source target = Functor .: Flat source .: Dual source
-	Contravariant Opposite functor source target = Functor .: Dual source .: Flat source
+type family Contravariant m functor f from to where
+	Contravariant m Functor functor from to = Functor (m from) (OP (m to)) functor
 
 type family OP direction where
 	OP (Flat category) = Dual category
@@ -224,15 +222,17 @@ type family Monoidal x source target from to f where
 		, Component .: from .: to (Neutral target) .: f
 		)
 
+-- TODO: we need to add laws here
 type family Bindable x source target f where
 	Bindable Functor source target f =
 		Functor .: Kleisli f (Flat source) .: Flat target .: f
 
+-- TODO: we need to add laws here
 type family Traversable x source target g f where
 	Traversable Functor source target g f =
 		Functor .: Kleisli g (Flat source) .: Kleisli g (Flat target) .: f
 
--- TODO: not really sure about morphisms in conponents
+-- TODO: not really sure about morphisms in components
 type family Adjunction source target f g where
 	Adjunction source target f g =
 		( Functor target source f
@@ -279,7 +279,7 @@ instance (Component (-->) Identity Identity, Casting (-->) Identity) => Functor 
 	map (Kleisli (Flat m)) = Flat .: \case
 		Identity x -> m x
 
-instance (Covariant Natural Functor (->) (->) g, Bindable Functor (->) (->) g) => Functor ((-/->) g) ((-/->) g) Identity where
+instance (Covariant Flat Functor g (->) (->), Bindable Functor (->) (->) g) => Functor ((-/->) g) ((-/->) g) Identity where
 	map (Kleisli (Flat m)) = Kleisli . Flat .: \case
 		Identity x -> (-|-) @_ @(-->) (Flat Identity) =- m x
 
@@ -343,21 +343,21 @@ instance
 	map (Kleisli (Flat m)) = Flat .: \case
 		Dual (l :*: _) -> m l
 
-instance (Covariant Natural Functor (->) (->) f, Bindable Functor (->) (->) f) => Functor ((-/->) f) ((-/->) f) ((:*:>) l) where
+instance (Covariant Flat Functor f (->) (->), Bindable Functor (->) (->) f) => Functor ((-/->) f) ((-/->) f) ((:*:>) l) where
 	map (Kleisli (Flat m)) = Kleisli . Flat .: \case
 		Flat (l :*: r) -> Flat . (l :*:) ->- m r
 
-instance (Covariant Natural Functor (->) (->) f, Bindable Functor (->) (->) f) => Functor ((-/->) f) ((-/->) f) ((<:*:) r) where
+instance (Covariant Flat Functor f (->) (->), Bindable Functor (->) (->) f) => Functor ((-/->) f) ((-/->) f) ((<:*:) r) where
 	map (Kleisli (Flat m)) = Kleisli . Flat .: \case
 		Dual (l :*: r) -> Dual . (:*: r) ->- m l
 
-instance (Covariant Natural Functor (->) (->) f, Bindable Functor (->) (->) f, Monoidal Functor (:*:) (:*:) (-->) (-->) f)
+instance (Covariant Flat Functor f (->) (->), Bindable Functor (->) (->) f, Monoidal Functor (:*:) (:*:) (-->) (-->) f)
 	=> Functor ((-/->) f) ((-/->) f) ((:+:>) l) where
 		map (Kleisli (Flat m)) = Kleisli . Flat .: \case
 			Flat (That r) -> Flat . That ->- m r
 			Flat (This l) -> point . Flat . This .: l
 
-instance (Covariant Natural Functor (->) (->) f, Bindable Functor (->) (->) f, Monoidal Functor (:*:) (:*:) (-->) (-->) f)
+instance (Covariant Flat Functor f (->) (->), Bindable Functor (->) (->) f, Monoidal Functor (:*:) (:*:) (-->) (-->) f)
 	=> Functor ((-/->) f) ((-/->) f) ((<:+:) r) where
 		map (Kleisli (Flat m)) = Kleisli . Flat .: \case
 			Dual (This l) -> Dual . This ->- m l
@@ -448,65 +448,65 @@ instance Component (-->) Identity ((-->) s =!?= (:*:>) s) where
 		Identity x -> FG . Flat .: \s -> Flat ...: s :*: x
 
 (->-)
-	:: Covariant Natural Functor (->) (->) f
+	:: Covariant Flat Functor f (->) (->)
 	=> (source -> target) -> f source -> f target
 m ->- x = map @(-->) @(-->) (Flat m) =- x
 
 (-<-)
-	:: Contravariant Natural Functor (->) (->) f
+	:: Contravariant Flat Functor f (->) (->)
 	=> (source -> target) -> f target -> f source
 m -<- x = map @(-->) @(<--) (Flat m) =- x
 
 (->>-)
-	:: Covariant Natural Functor (->) (->) f
-	=> Covariant Natural Functor (->) (->) g
+	:: Covariant Flat Functor f (->) (->)
+	=> Covariant Flat Functor g (->) (->)
 	=> (source -> target) -> f (g source) -> f (g target)
 m ->>- x = (-||-) @(-->) @(-->) @(-->) (Flat m) =- x
 
 (-><-)
-	:: Contravariant Natural Functor (->) (->) f
-	=> Covariant Natural Functor (->) (->) g
+	:: Contravariant Flat Functor f (->) (->)
+	=> Covariant Flat Functor g (->) (->)
 	=> (source -> target) -> f (g target) -> f (g source)
 m -><- x = (-||-) @(-->) @(-->) @(<--) (Flat m) =- x
 
 (-<>-)
-	:: Covariant Natural Functor (->) (->) f
-	=> Contravariant Opposite Functor (->) (->) g
+	:: Covariant Flat Functor f (->) (->)
+	=> Contravariant Dual Functor g (->) (->)
 	=> (source -> target) -> f (g target) -> f (g source)
 m -<>- x = (-||-) @(<--) @(-->) @(-->) (Dual m) =- x
 
 (-<<-)
-	:: Contravariant Natural Functor (->) (->) f
-	=> Contravariant Opposite Functor (->) (->) g
+	:: Contravariant Flat Functor f (->) (->)
+	=> Contravariant Dual Functor g (->) (->)
 	=> (source -> target) -> f (g source) -> f (g target)
 m -<<- x = (-||-) @(<--) @(-->) @(<--) (Dual m) =- x
 
 (->>>-)
-	:: Covariant Natural Functor (->) (->) f
-	=> Covariant Natural Functor (->) (->) g
-	=> Covariant Natural Functor (->) (->) h
+	:: Covariant Flat Functor f (->) (->)
+	=> Covariant Flat Functor g (->) (->)
+	=> Covariant Flat Functor h (->) (->)
 	=> (source -> target) -> f (g (h source)) -> f (g (h target))
 m ->>>- x = (-|||-) @(-->) @(-->) @(-->) @(-->) (Flat m) =- x
 
 (->--)
-	:: Covariant Natural Functor (->) (->) (Dual f o)
+	:: Covariant Flat Functor (Dual f o) (->) (->)
 	=> (source -> target) -> f source o -> f target o
 m ->-- x = (-|--) @(-->) @(-->) (Flat m) =- x
 
 (-->--)
-	:: Covariant Natural Functor (->) (->) (Flat f o)
+	:: Covariant Flat Functor (Flat f o) (->) (->)
 	=> (source -> target) -> f o source -> f o target
 m -->-- x = (--|--) @(-->) @(-->) (Flat m) =- x
 
 (->>--)
-	:: Covariant Natural Functor (->) (->) (Dual f o)
-	=> Covariant Natural Functor (->) (->) g
+	:: Covariant Flat Functor (Dual f o) (->) (->)
+	=> Covariant Flat Functor g (->) (->)
 	=> (source -> target) -> f (g source) o -> f (g target) o
 m ->>-- x = (-||--) @(-->) @(-->) @(-->) (Flat m) =- x
 
 (-->>--)
-	:: Covariant Natural Functor (->) (->) (Flat f o)
-	=> Covariant Natural Functor (->) (->) g
+	:: Covariant Flat Functor (Flat f o) (->) (->)
+	=> Covariant Flat Functor g (->) (->)
 	=> (source -> target) -> f o (g source) -> f o (g target)
 m -->>-- x = (--||--) @(-->) @(-->) @(-->) (Flat m) =- x
 
@@ -518,7 +518,7 @@ m -->>-- x = (--||--) @(-->) @(-->) @(-->) (Flat m) =- x
 m -/>- x = map @((-/->) f) @(-->) (Kleisli (Flat m)) =- x
 
 (-/>>-)
-	:: Covariant Natural Functor (->) (->) f
+	:: Covariant Flat Functor f (->) (->)
 	=> Bindable Functor (->) (->) g
 	=> (source -> g target) -> f (g source) -> f (g target)
 m -/>>- x = (m -/>-) ->- x
@@ -536,28 +536,28 @@ m -/>>/- x = (m -/>/-) -/>/- x
 (--/>/--)
 	:: Traversable Functor (->) (->) h (Flat f o)
 	=> Traversable Functor (->) (->) h g
-	=> Covariant Natural Functor (->) (->) h
+	=> Covariant Flat Functor h (->) (->)
 	=> (source -> h target) -> f o source -> h (f o target)
 m --/>/-- x = (=-) ->- (m -/>/- Flat x)
 
 (-/>/--)
 	:: Traversable Functor (->) (->) h (Dual f o)
 	=> Traversable Functor (->) (->) h g
-	=> Covariant Natural Functor (->) (->) h
+	=> Covariant Flat Functor h (->) (->)
 	=> (source -> h target) -> f source o -> h (f target o)
 m -/>/-- x = (=-) ->- (m -/>/- Dual x)
 
 (--/>>/--)
 	:: Traversable Functor (->) (->) h (Flat f o)
 	=> Traversable Functor (->) (->) h g
-	=> Covariant Natural Functor (->) (->) h
+	=> Covariant Flat Functor h (->) (->)
 	=> (source -> h target) -> f o (g source) -> h (f o (g target))
 m --/>>/-- x = (=-) ->- ((m -/>/-) -/>/- Flat x)
 
 (-/>>/--)
 	:: Traversable Functor (->) (->) h (Dual f o)
 	=> Traversable Functor (->) (->) h g
-	=> Covariant Natural Functor (->) (->) h
+	=> Covariant Flat Functor h (->) (->)
 	=> (source -> h target) -> f (g source) o -> h (f (g target) o)
 m -/>>/-- x = (=-) ->- ((m -/>/-) -/>/- Dual x)
 
@@ -621,7 +621,7 @@ empty = component @(-->) @((-->) (Neutral (:+:))) =- Flat absurd
 (=----) = (=-) @m . (=-) @m . (=-) @m . (=-) @m
 
 (->=)
-	:: Covariant Natural Functor (->) (->) f
+	:: Covariant Flat Functor f (->) (->)
 	=> (Casting (->) f', Casted f' source ~ f source)
 	=> (source -> target) -> f' source -> f target
 m ->= x = map @(-->) @(-->) (Flat m) =- ((=-) x)
@@ -643,7 +643,7 @@ instance
 instance
 	( Component (-->) (Day (-->) f f (:*:) (:*:)) f
 	, Component (-->) (Day (-->) g g (:*:) (:*:)) g
-	, Covariant Natural Functor (->) (->) f
+	, Covariant Flat Functor f (->) (->)
 	) => Component (-->) (Day (-->) (f =!?= g) (f =!?= g) (:*:) (:*:)) (f =!?= g) where
 	component = Flat .: \(Day (FG l :*: FG r) m) ->
 	-- TODO: find a way to simplify this instance
@@ -651,15 +651,15 @@ instance
 			->- (=-) (component @(-->) @(Day (-->) f f (:*:) (:*:)) @f) (Day (l :*: r) identity)
 
 instance
-	( Covariant Natural Functor (->) (->) f
-	, Covariant Natural Functor (->) (->) g
+	( Covariant Flat Functor f (->) (->)
+	, Covariant Flat Functor g (->) (->)
 	) => Component (-->) (Day (-->) (f =!?= g) Identity (:*:) (:*:)) (f =!?= g) where
 	component = Flat .: \(Day (FG l :*: Identity r) m) ->
 		FG ....: (m =-) . (:*: r) ->>- l
 
 instance
-	( Covariant Natural Functor (->) (->) f
-	, Covariant Natural Functor (->) (->) g
+	( Covariant Flat Functor f (->) (->)
+	, Covariant Flat Functor g (->) (->)
 	) => Component (-->) (Day (-->) Identity (f =!?= g) (:*:) (:*:)) (f =!?= g) where
 	component = Flat .: \(Day (Identity l :*: FG r) m) ->
 		FG ....: (m =-) . (l :*:) ->>- r
