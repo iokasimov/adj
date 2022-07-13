@@ -95,24 +95,24 @@ class (Category from, Category to) => Functor from to f where
 (-|||-) m = map @between' @to @f . map @between @between' @g . map @from @between @h .: m
 
 (-|--) :: forall from to f source target o
-	. (Category to, Functor from to ((Dual f) o), Casting to (Dual f o))
+	. (Category to, Functor from to ((Opposite f) o), Casting to (Opposite f o))
 	=> from source target -> to .: f source o .: f target o
-(-|--) m = (-=-) ((-|-) @from @to @((Dual f) o) m)
+(-|--) m = (-=-) ((-|-) @from @to @((Opposite f) o) m)
 
 (-||--) :: forall from between to f g source target o .
-	( Casting to (Dual f o)
-	, Functor between to ((Dual f) o)
+	( Casting to (Opposite f o)
+	, Functor between to ((Opposite f) o)
 	, Functor from between g
 	) => from source target -> to .: f (g source) o .: f (g target) o
-(-||--) m = (-=-) @to ((-||-) @from @between @to @((Dual f) o) @g @source @target m)
+(-||--) m = (-=-) @to ((-||-) @from @between @to @((Opposite f) o) @g @source @target m)
 
 (-|||--) :: forall from between between' to f g h source target o .
-	( Casting to (Dual f o)
+	( Casting to (Opposite f o)
 	, Functor .: from .: between .: h
 	, Functor .: between .: between' .: g
-	, Functor .: between' .: to .: Dual f o
+	, Functor .: between' .: to .: Opposite f o
 	) => from source target -> to .: f (g (h source)) o .: f (g (h target)) o
-(-|||--) m = (-=-) ((-|||-) @from @between @between' @to @((Dual f) o) m)
+(-|||--) m = (-=-) ((-|||-) @from @between @between' @to @((Opposite f) o) m)
 
 (--|--) :: forall from to f source target o
 	. (Category to, Functor from to ((Straight f) o), Casting to (Straight f o))
@@ -158,19 +158,19 @@ instance Semigroupoid morhism => Semigroupoid (Straight morhism) where
 instance Category morhism => Category (Straight morhism) where
 	identity = Straight identity
 
-newtype Dual m source target = Dual (m target source)
+newtype Opposite m source target = Opposite (m target source)
 
-type instance Casted (Dual m target) source = m source target
+type instance Casted (Opposite m target) source = m source target
 
-instance Casting (->) (Dual m target) where
-	(=-) (Dual m) = m
-	(-=) m = Dual m
+instance Casting (->) (Opposite m target) where
+	(=-) (Opposite m) = m
+	(-=) m = Opposite m
 
-instance Semigroupoid morhism => Semigroupoid (Dual morhism) where
-	Dual g . Dual f = Dual .: f . g
+instance Semigroupoid morhism => Semigroupoid (Opposite morhism) where
+	Opposite g . Opposite f = Opposite .: f . g
 
-instance Category morhism => Category (Dual morhism) where
-	identity = Dual identity
+instance Category morhism => Category (Opposite morhism) where
+	identity = Opposite identity
 
 newtype Kleisli f m source target =
 	Kleisli (m source .: f target)
@@ -200,10 +200,10 @@ type family Contravariant m functor f from to where
 	Contravariant m Functor functor from to = Functor (m from) (OP (m to)) functor
 
 type family OP direction where
-	OP (Straight category) = Dual category
-	OP (Dual category) = Straight category
-	OP (Kleisli f (Straight category)) = Kleisli f (Dual category)
-	OP (Kleisli f (Dual category)) = Kleisli f (Straight category)
+	OP (Straight category) = Opposite category
+	OP (Opposite category) = Straight category
+	OP (Kleisli f (Straight category)) = Kleisli f (Opposite category)
+	OP (Kleisli f (Opposite category)) = Kleisli f (Straight category)
 
 type family Semimonoidal x source target from to f where
 	Semimonoidal Functor source target from to f =
@@ -241,7 +241,7 @@ type family Adjunction source target f g where
 
 type (-->) = Straight (->)
 
-type (<--) = Dual (->)
+type (<--) = Opposite (->)
 
 type (-/->) f = Kleisli f (-->)
 
@@ -249,11 +249,11 @@ type (<-\-) f = Kleisli f (<--)
 
 type (:*:>) = Straight (:*:)
 
-type (<:*:) = Dual (:*:)
+type (<:*:) = Opposite (:*:)
 
 type (:+:>) = Straight (:+:)
 
-type (<:+:) = Dual (:+:)
+type (<:+:) = Opposite (:+:)
 
 instance Semigroupoid (->) where
 	g . f = \x -> g (f x)
@@ -318,20 +318,20 @@ instance
 
 instance Functor (-->) (-->) ((<:*:) r) where
 	map (Straight m) = Straight .: \case
-		Dual (l :*: r) -> Dual (m l :*: r)
+		Opposite (l :*: r) -> Opposite (m l :*: r)
 
 instance Functor (-->) (-->) ((<:+:) r) where
 	map (Straight m) = Straight .: \case
-		Dual (This l) -> Dual . This .: m l
-		Dual (That r) -> Dual .: That r
+		Opposite (This l) -> Opposite . This .: m l
+		Opposite (That r) -> Opposite .: That r
 
 instance
 	( Component (-->) Identity ((<:+:) r)
 	, Casting (-->) Identity
 	) => Functor ((-/->) ((<:+:) r)) (-->) ((<:+:) r) where
 	map (Kleisli (Straight m)) = Straight .: \case
-		Dual (This l) -> m l
-		Dual (That r) -> Dual .: That r
+		Opposite (This l) -> m l
+		Opposite (That r) -> Opposite .: That r
 
 instance
 	( Component (-->) Identity ((<:*:) r)
@@ -339,7 +339,7 @@ instance
 	, Casting (-->) Identity
 	) => Functor ((-/->) ((<:*:) r)) (-->) ((<:*:) r) where
 	map (Kleisli (Straight m)) = Straight .: \case
-		Dual (l :*: _) -> m l
+		Opposite (l :*: _) -> m l
 
 instance (Covariant Straight Functor f (->) (->), Bindable Functor (->) (->) f) => Functor ((-/->) f) ((-/->) f) ((:*:>) l) where
 	map (Kleisli (Straight m)) = Kleisli . Straight .: \case
@@ -347,7 +347,7 @@ instance (Covariant Straight Functor f (->) (->), Bindable Functor (->) (->) f) 
 
 instance (Covariant Straight Functor f (->) (->), Bindable Functor (->) (->) f) => Functor ((-/->) f) ((-/->) f) ((<:*:) r) where
 	map (Kleisli (Straight m)) = Kleisli . Straight .: \case
-		Dual (l :*: r) -> Dual . (:*: r) ->- m l
+		Opposite (l :*: r) -> Opposite . (:*: r) ->- m l
 
 instance (Covariant Straight Functor f (->) (->), Bindable Functor (->) (->) f, Monoidal Functor (:*:) (:*:) (-->) (-->) f)
 	=> Functor ((-/->) f) ((-/->) f) ((:+:>) l) where
@@ -358,8 +358,8 @@ instance (Covariant Straight Functor f (->) (->), Bindable Functor (->) (->) f, 
 instance (Covariant Straight Functor f (->) (->), Bindable Functor (->) (->) f, Monoidal Functor (:*:) (:*:) (-->) (-->) f)
 	=> Functor ((-/->) f) ((-/->) f) ((<:+:) r) where
 		map (Kleisli (Straight m)) = Kleisli . Straight .: \case
-			Dual (This l) -> Dual . This ->- m l
-			Dual (That r) -> point . Dual . That .: r
+			Opposite (This l) -> Opposite . This ->- m l
+			Opposite (That r) -> point . Opposite . That .: r
 
 instance Component (-->) (Day (-->) Identity Identity (:*:) (:*:)) Identity where
 	component = Straight .: \case
@@ -387,35 +387,35 @@ instance Component (-->) (Day (-->) Identity Identity (:*:) (:*:)) ((:+:>) l) wh
 
 instance Component (-->) (Day (-->) ((<:+:) r) ((<:+:) r) (:*:) (:*:)) ((<:+:) r) where
 	component = Straight .: \case
-		Day (Dual (This l) :*: Dual (This r)) (Straight m) -> Dual . This .: m (l :*: r)
-		Day (Dual (That l) :*: _) _ -> Dual . That .: l
-		Day (_ :*: Dual (That r)) _ -> Dual . That .: r
+		Day (Opposite (This l) :*: Opposite (This r)) (Straight m) -> Opposite . This .: m (l :*: r)
+		Day (Opposite (That l) :*: _) _ -> Opposite . That .: l
+		Day (_ :*: Opposite (That r)) _ -> Opposite . That .: r
 
 instance Component (-->) (Day (-->) ((<:+:) r) Identity (:*:) (:*:)) ((<:+:) r) where
 	component = Straight .: \case
-		Day (Dual (This l) :*: Identity r) (Straight m) -> Dual . This .: m (l :*: r)
-		Day (Dual (That l) :*: _) _ -> Dual . That .: l
+		Day (Opposite (This l) :*: Identity r) (Straight m) -> Opposite . This .: m (l :*: r)
+		Day (Opposite (That l) :*: _) _ -> Opposite . That .: l
 
 instance Component (-->) (Day (-->) Identity ((<:+:) r) (:*:) (:*:)) ((<:+:) r) where
 	component = Straight .: \case
-		Day (Identity l :*: Dual (This r)) (Straight m) -> Dual . This .: m (l :*: r)
-		Day (_ :*: Dual (That r)) _ -> Dual . That .: r
+		Day (Identity l :*: Opposite (This r)) (Straight m) -> Opposite . This .: m (l :*: r)
+		Day (_ :*: Opposite (That r)) _ -> Opposite . That .: r
 
 instance Component (-->) (Day (-->) Identity Identity (:*:) (:*:)) ((<:+:) r) where
 	component = Straight .: \case
-		Day (Identity l :*: Identity r) (Straight m) -> Dual . This .: m (l :*: r)
+		Day (Identity l :*: Identity r) (Straight m) -> Opposite . This .: m (l :*: r)
 
 instance Component (<--) (Day (-->) ((<:*:) r) ((<:*:) r) (:*:) (:*:)) ((<:*:) r) where
-	component = Dual .: \case
-		Dual (l :*: r) -> Day (Dual (l :*: r) :*: Dual (l :*: r)) (Straight .: \(o :*: _) -> o)
+	component = Opposite .: \case
+		Opposite (l :*: r) -> Day (Opposite (l :*: r) :*: Opposite (l :*: r)) (Straight .: \(o :*: _) -> o)
 
 instance Component (<--) (Day (-->) ((<:*:) r) Identity (:*:) (:*:)) ((<:*:) r) where
-	component = Dual .: \case
-		Dual (l :*: r) -> Day (Dual (l :*: r) :*: Identity l) (Straight .: \(o :*: _) -> o)
+	component = Opposite .: \case
+		Opposite (l :*: r) -> Day (Opposite (l :*: r) :*: Identity l) (Straight .: \(o :*: _) -> o)
 
 instance Component (<--) (Day (-->) Identity ((<:*:) r) (:*:) (:*:)) ((<:*:) r) where
-	component = Dual .: \case
-		Dual (l :*: r) -> Day (Identity l :*: Dual (l :*: r)) (Straight .: \(o :*: _) -> o)
+	component = Opposite .: \case
+		Opposite (l :*: r) -> Day (Identity l :*: Opposite (l :*: r)) (Straight .: \(o :*: _) -> o)
 
 instance Component (-->) ((-->) Unit) Identity where
 	component = Straight .: \case
@@ -427,15 +427,15 @@ instance Component (-->) ((-->) Unit) ((:+:>) l) where
 
 instance Component (-->) ((-->) Unit) ((<:+:) r) where
 	component = Straight .: \case
-		Straight m -> Dual . This .: m Unit
+		Straight m -> Opposite . This .: m Unit
 
 instance Component (<--) ((-->) Unit) (Straight (:*:) l) where
-	component = Dual .: \case
+	component = Opposite .: \case
 		Straight (_ :*: r) -> Straight .: \_ -> r
 
-instance Component (<--) ((-->) Unit) (Dual (:*:) r) where
-	component = Dual .: \case
-		Dual (l :*: _) -> Straight .: \_ -> l
+instance Component (<--) ((-->) Unit) (Opposite (:*:) r) where
+	component = Opposite .: \case
+		Opposite (l :*: _) -> Straight .: \_ -> l
 
 instance Component (-->) ((:*:>) s =!?= (-->) s) Identity where
 	component = Straight .: \case
@@ -469,15 +469,15 @@ m -><- x = (-||-) @(-->) @(-->) @(<--) (Straight m) =- x
 
 (-<>-)
 	:: Covariant Straight Functor f (->) (->)
-	=> Contravariant Dual Functor g (->) (->)
+	=> Contravariant Opposite Functor g (->) (->)
 	=> (source -> target) -> f (g target) -> f (g source)
-m -<>- x = (-||-) @(<--) @(-->) @(-->) (Dual m) =- x
+m -<>- x = (-||-) @(<--) @(-->) @(-->) (Opposite m) =- x
 
 (-<<-)
 	:: Contravariant Straight Functor f (->) (->)
-	=> Contravariant Dual Functor g (->) (->)
+	=> Contravariant Opposite Functor g (->) (->)
 	=> (source -> target) -> f (g source) -> f (g target)
-m -<<- x = (-||-) @(<--) @(-->) @(<--) (Dual m) =- x
+m -<<- x = (-||-) @(<--) @(-->) @(<--) (Opposite m) =- x
 
 (->>>-)
 	:: Covariant Straight Functor f (->) (->)
@@ -487,7 +487,7 @@ m -<<- x = (-||-) @(<--) @(-->) @(<--) (Dual m) =- x
 m ->>>- x = (-|||-) @(-->) @(-->) @(-->) @(-->) (Straight m) =- x
 
 (->--)
-	:: Covariant Straight Functor (Dual f o) (->) (->)
+	:: Covariant Straight Functor (Opposite f o) (->) (->)
 	=> (source -> target) -> f source o -> f target o
 m ->-- x = (-|--) @(-->) @(-->) (Straight m) =- x
 
@@ -497,7 +497,7 @@ m ->-- x = (-|--) @(-->) @(-->) (Straight m) =- x
 m -->-- x = (--|--) @(-->) @(-->) (Straight m) =- x
 
 (->>--)
-	:: Covariant Straight Functor (Dual f o) (->) (->)
+	:: Covariant Straight Functor (Opposite f o) (->) (->)
 	=> Covariant Straight Functor g (->) (->)
 	=> (source -> target) -> f (g source) o -> f (g target) o
 m ->>-- x = (-||--) @(-->) @(-->) @(-->) (Straight m) =- x
@@ -539,11 +539,11 @@ m -/>>/- x = (m -/>/-) -/>/- x
 m --/>/-- x = (=-) ->- (m -/>/- Straight x)
 
 (-/>/--)
-	:: Traversable Functor (->) (->) h (Dual f o)
+	:: Traversable Functor (->) (->) h (Opposite f o)
 	=> Traversable Functor (->) (->) h g
 	=> Covariant Straight Functor h (->) (->)
 	=> (source -> h target) -> f source o -> h (f target o)
-m -/>/-- x = (=-) ->- (m -/>/- Dual x)
+m -/>/-- x = (=-) ->- (m -/>/- Opposite x)
 
 (--/>>/--)
 	:: Traversable Functor (->) (->) h (Straight f o)
@@ -553,11 +553,11 @@ m -/>/-- x = (=-) ->- (m -/>/- Dual x)
 m --/>>/-- x = (=-) ->- ((m -/>/-) -/>/- Straight x)
 
 (-/>>/--)
-	:: Traversable Functor (->) (->) h (Dual f o)
+	:: Traversable Functor (->) (->) h (Opposite f o)
 	=> Traversable Functor (->) (->) h g
 	=> Covariant Straight Functor h (->) (->)
 	=> (source -> h target) -> f (g source) o -> h (f (g target) o)
-m -/>>/-- x = (=-) ->- ((m -/>/-) -/>/- Dual x)
+m -/>>/-- x = (=-) ->- ((m -/>/-) -/>/- Opposite x)
 
 (|*|) :: forall f l r o
 	. Semimonoidal Functor (:*:) (:*:) (-->) (-->) f
@@ -680,9 +680,9 @@ instance
  	( Functor from between h
  	, Functor from between g
  	, forall o . Functor between to (Straight f .: g o)
- 	, forall o . Functor between to (Dual f .: h o)
+ 	, forall o . Functor between to (Opposite f .: h o)
  	, forall o . Casting to (Straight f .: g o)
- 	, forall o . Casting to (Dual f .: h o)
+ 	, forall o . Casting to (Opposite f .: h o)
  	, Casting to ((=!!??=) f g h)
  	) => Functor from to ((=!!??=) f g h) where
  	map m = (=-=) @to @((=!!??=) f g h)

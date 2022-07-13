@@ -266,3 +266,4 @@
 * Change `Contravariant` type family definition
 * Change `Covariant` type family definition
 * Rename `Flat` morphism to `Straight`
+* Rename `Dual` morphism to `Opposite`
