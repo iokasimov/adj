@@ -115,16 +115,16 @@ class (Category from, Category to) => Functor from to f where
 (-|||--) m = (-=-) ((-|||-) @from @between @between' @to @(Opposite f o) m)
 
 (--|--) :: forall from to f source target o
-	. (Category to, Functor from to ((Straight f) o), Casting to (Straight f o))
+	. (Category to, Functor from to (Straight f o), Casting to (Straight f o))
 	=> from source target -> to .: f o source .: f o target
-(--|--) m = (-=-) ((-|-) @from @to @((Straight f) o) m)
+(--|--) m = (-=-) ((-|-) @from @to @(Straight f o) m)
 
 (--||--) :: forall from between to f g source target o .
 	( Category to, Casting to (Straight f o)
 	, Functor from between g
 	, Functor between to ((Straight f) o)
 	) => from source target -> to .: f o (g source) .: f o (g target)
-(--||--) m = (-=-) ((-||-) @from @between @to @((Straight f) o) m)
+(--||--) m = (-=-) ((-||-) @from @between @to @(Straight f o) m)
 
 (--|||--) :: forall from between between' to f g h source target o .
 	( Category to, Casting to (Straight f o)
@@ -132,7 +132,7 @@ class (Category from, Category to) => Functor from to f where
 	, Functor .: between .: between' .: g
 	, Functor .: between' .: to .: Straight f o
 	) => from source target -> to .: f o (g (h source)) .: f o (g (h target))
-(--|||--) m = (-=-) ((-|||-) @from @between @between' @to @((Straight f) o) m)
+(--|||--) m = (-=-) ((-|||-) @from @between @between' @to @(Straight f o) m)
 
 class Component m f g where
 	component :: m .: f object .: g object
@@ -221,11 +221,13 @@ type family Monoidal x source target from to f where
 		)
 
 -- TODO: we need to add laws here
+-- TODO: turn into a typeclass
 type family Bindable x source target f where
 	Bindable Functor source target f =
 		Functor .: Kleisli f (Straight source) .: Straight target .: f
 
 -- TODO: we need to add laws here
+-- TODO: turn into a typeclass
 type family Traversable x source target g f where
 	Traversable Functor source target g f =
 		Functor .: Kleisli g (Straight source) .: Kleisli g (Straight target) .: f
@@ -273,11 +275,16 @@ instance Functor (-->) (-->) Identity where
 	map (Straight m) = Straight .: \case
 		Identity x -> Identity .: m x
 
-instance (Component (-->) Identity Identity, Casting (-->) Identity) => Functor ((-/->) Identity) (-->) Identity where
+instance
+	( Component (-->) Identity Identity
+	) => Functor ((-/->) Identity) (-->) Identity where
 	map (Kleisli (Straight m)) = Straight .: \case
 		Identity x -> m x
 
-instance (Covariant Straight Functor g (->) (->), Bindable Functor (->) (->) g) => Functor ((-/->) g) ((-/->) g) Identity where
+instance
+	( Covariant Straight Functor g (->) (->)
+	, Bindable Functor (->) (->) g
+	) => Functor ((-/->) g) ((-/->) g) Identity where
 	map (Kleisli (Straight m)) = Kleisli . Straight .: \case
 		Identity x -> (-|-) @_ @(-->) (Straight Identity) =- m x
 
@@ -341,22 +348,34 @@ instance
 	map (Kleisli (Straight m)) = Straight .: \case
 		Opposite (l :*: _) -> m l
 
-instance (Covariant Straight Functor f (->) (->), Bindable Functor (->) (->) f) => Functor ((-/->) f) ((-/->) f) ((:*:>) l) where
+instance
+	( Covariant Straight Functor f (->) (->)
+	, Bindable Functor (->) (->) f
+	) => Functor ((-/->) f) ((-/->) f) ((:*:>) l) where
 	map (Kleisli (Straight m)) = Kleisli . Straight .: \case
 		Straight (l :*: r) -> Straight . (l :*:) ->- m r
 
-instance (Covariant Straight Functor f (->) (->), Bindable Functor (->) (->) f) => Functor ((-/->) f) ((-/->) f) ((<:*:) r) where
+instance
+	( Covariant Straight Functor f (->) (->)
+	, Bindable Functor (->) (->) f
+	) => Functor ((-/->) f) ((-/->) f) ((<:*:) r) where
 	map (Kleisli (Straight m)) = Kleisli . Straight .: \case
 		Opposite (l :*: r) -> Opposite . (:*: r) ->- m l
 
-instance (Covariant Straight Functor f (->) (->), Bindable Functor (->) (->) f, Monoidal Functor (:*:) (:*:) (-->) (-->) f)
-	=> Functor ((-/->) f) ((-/->) f) ((:+:>) l) where
+instance
+	( Covariant Straight Functor f (->) (->)
+	, Bindable Functor (->) (->) f
+	, Monoidal Functor (:*:) (:*:) (-->) (-->) f
+	) => Functor ((-/->) f) ((-/->) f) ((:+:>) l) where
 		map (Kleisli (Straight m)) = Kleisli . Straight .: \case
 			Straight (That r) -> Straight . That ->- m r
 			Straight (This l) -> point . Straight . This .: l
 
-instance (Covariant Straight Functor f (->) (->), Bindable Functor (->) (->) f, Monoidal Functor (:*:) (:*:) (-->) (-->) f)
-	=> Functor ((-/->) f) ((-/->) f) ((<:+:) r) where
+instance
+	( Covariant Straight Functor f (->) (->)
+	, Bindable Functor (->) (->) f
+	, Monoidal Functor (:*:) (:*:) (-->) (-->) f
+	) => Functor ((-/->) f) ((-/->) f) ((<:+:) r) where
 		map (Kleisli (Straight m)) = Kleisli . Straight .: \case
 			Opposite (This l) -> Opposite . This ->- m l
 			Opposite (That r) -> point . Opposite . That .: r
@@ -693,6 +712,9 @@ instance Casting (->) f => Casting (-->) f where
 	(=-) = Straight (=-)
 	(-=) = Straight (-=)
 
-instance (Casting (->) f, Monoidal Functor (:*:) (:*:) (-->) (-->) g) => Casting ((-/->) g) f where
+instance
+	( Casting (->) f
+	, Monoidal Functor (:*:) (:*:) (-->) (-->) g
+	) => Casting ((-/->) g) f where
 	(=-) = Kleisli . Straight .: point . (=-)
 	(-=) = Kleisli . Straight .: point . (-=)
