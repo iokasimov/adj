@@ -70,3 +70,5 @@ instance Casting (->) (FGG f gg g) where
 	(-=) = FGG
 
 newtype Structural o = Structural o
+
+data I = I | II | III | IIII | IIIII | IIIIII | IIIIIII | IIIIIIII | IIIIIIIII

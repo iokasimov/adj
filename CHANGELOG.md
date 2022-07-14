@@ -267,3 +267,4 @@
 * Change `Covariant` type family definition
 * Rename `Flat` morphism to `Straight`
 * Rename `Dual` morphism to `Opposite`
+* Define `I` datatype for type level natural numbers

@@ -95,16 +95,16 @@ class (Category from, Category to) => Functor from to f where
 (-|||-) m = map @between' @to @f . map @between @between' @g . map @from @between @h .: m
 
 (-|--) :: forall from to f source target o
-	. (Category to, Functor from to ((Opposite f) o), Casting to (Opposite f o))
+	. (Category to, Functor from to (Opposite f o), Casting to (Opposite f o))
 	=> from source target -> to .: f source o .: f target o
-(-|--) m = (-=-) ((-|-) @from @to @((Opposite f) o) m)
+(-|--) m = (-=-) ((-|-) @from @to @(Opposite f o) m)
 
 (-||--) :: forall from between to f g source target o .
 	( Casting to (Opposite f o)
-	, Functor between to ((Opposite f) o)
+	, Functor between to (Opposite f o)
 	, Functor from between g
 	) => from source target -> to .: f (g source) o .: f (g target) o
-(-||--) m = (-=-) @to ((-||-) @from @between @to @((Opposite f) o) @g @source @target m)
+(-||--) m = (-=-) @to ((-||-) @from @between @to @(Opposite f o) @g @source @target m)
 
 (-|||--) :: forall from between between' to f g h source target o .
 	( Casting to (Opposite f o)
@@ -112,7 +112,7 @@ class (Category from, Category to) => Functor from to f where
 	, Functor .: between .: between' .: g
 	, Functor .: between' .: to .: Opposite f o
 	) => from source target -> to .: f (g (h source)) o .: f (g (h target)) o
-(-|||--) m = (-=-) ((-|||-) @from @between @between' @to @((Opposite f) o) m)
+(-|||--) m = (-=-) ((-|||-) @from @between @between' @to @(Opposite f o) m)
 
 (--|--) :: forall from to f source target o
 	. (Category to, Functor from to ((Straight f) o), Casting to (Straight f o))
