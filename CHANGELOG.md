@@ -270,3 +270,4 @@
 * Define `I` datatype for type level natural numbers
 * Define `Nonempty` type family
 * Define `Emptiable` type alias
+* Change `Tree` type alias definition
