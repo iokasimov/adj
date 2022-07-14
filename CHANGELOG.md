@@ -271,3 +271,5 @@
 * Define `Nonempty` type family
 * Define `Emptiable` type alias
 * Change `Tree` type alias definition
+* Define `Binary` type alias
+* Define `Ternary` type alias
