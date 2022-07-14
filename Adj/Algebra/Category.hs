@@ -175,14 +175,15 @@ instance Category morhism => Category (Opposite morhism) where
 newtype Kleisli f m source target =
 	Kleisli (m source .: f target)
 
-type instance Casted (Kleisli f (-->) source) target = source -> f target
+type instance Casted ((-/->) f source) target = source -> f target
 
 instance Casting (->) (Kleisli f (-->) source) where
 	(=-) (Kleisli (Straight m)) = m
 	(-=) m = Kleisli .: Straight m
 
-instance (Functor .: Kleisli f target .: target .: f, Semigroupoid target)
-	=> Semigroupoid (Kleisli f target) where
+instance
+	( Functor .: Kleisli f target .: target .: f
+	) => Semigroupoid (Kleisli f target) where
 		g . Kleisli f = Kleisli .: map g . f
 
 instance
@@ -194,10 +195,12 @@ instance
 	identity = Kleisli .: component @_ @Identity @f . (-=) @_ . identity
 
 type family Covariant m functor f from to where
-	Covariant m Functor functor from to = Functor (m from) (m to) functor
+	Covariant m Functor functor from to
+		= Functor (m from) (m to) functor
 
 type family Contravariant m functor f from to where
-	Contravariant m Functor functor from to = Functor (m from) (OP (m to)) functor
+	Contravariant m Functor functor from to
+		= Functor (m from) (OP (m to)) functor
 
 type family OP direction where
 	OP (Straight category) = Opposite category
@@ -324,13 +327,13 @@ instance
 		Straight (That r) -> m r
 
 instance Functor (-->) (-->) ((<:*:) r) where
-	map (Straight m) = Straight .: \case
-		Opposite (l :*: r) -> Opposite (m l :*: r)
+	map (Straight m) = Straight . (=-=) .: \case
+		l :*: r -> m l :*: r
 
 instance Functor (-->) (-->) ((<:+:) r) where
-	map (Straight m) = Straight .: \case
-		Opposite (This l) -> Opposite . This .: m l
-		Opposite (That r) -> Opposite .: That r
+	map (Straight m) = Straight . (=-=) .: \case
+		This l -> This .: m l
+		That r -> That r
 
 instance
 	( Component (-->) Identity ((<:+:) r)
@@ -352,15 +355,15 @@ instance
 	( Covariant Straight Functor f (->) (->)
 	, Bindable Functor (->) (->) f
 	) => Functor ((-/->) f) ((-/->) f) ((:*:>) l) where
-	map (Kleisli (Straight m)) = Kleisli . Straight .: \case
-		Straight (l :*: r) -> Straight . (l :*:) ->- m r
+	map (Kleisli (Straight m)) = Kleisli . Straight . (=-=) .: \case
+		l :*: r -> (l :*:) ->- m r
 
 instance
 	( Covariant Straight Functor f (->) (->)
 	, Bindable Functor (->) (->) f
 	) => Functor ((-/->) f) ((-/->) f) ((<:*:) r) where
-	map (Kleisli (Straight m)) = Kleisli . Straight .: \case
-		Opposite (l :*: r) -> Opposite . (:*: r) ->- m l
+	map (Kleisli (Straight m)) = Kleisli . Straight . (=-=) .: \case
+		l :*: r -> (:*: r) ->- m l
 
 instance
 	( Covariant Straight Functor f (->) (->)
