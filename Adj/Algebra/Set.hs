@@ -120,5 +120,7 @@ type (=:*:=) = (=!!??=) (:*:)
 
 type (=:+:=) = (=!!??=) (:+:)
 
+type (=:+*:=) lf rf = (=:+:=) ((=:+:=) lf rf) ((=:*:=) lf rf)
+
 deriving via (Structural (f (g o) (h o))) instance
 	Setoid (f (g o) (h o)) => Setoid ((=!!??=) f g h o)

@@ -6,6 +6,8 @@ import Adj.Program.Primitive.Generation (Construction)
 
 type Tree = Construction
 
+-- TODO: Alternative representation:
+-- Tree (Identity =:+*:= Identity)
 type family Binary tree where
 	Binary Tree = Tree (Maybe =:*:= Maybe)
 

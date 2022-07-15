@@ -274,3 +274,4 @@
 * Define `Binary` type alias
 * Define `Ternary` type alias
 * Define `:+*:` type alias
+* Define `=:+*:=` type alias
