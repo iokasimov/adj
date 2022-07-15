@@ -20,7 +20,7 @@ type (.......:) oo o = oo o
 type (........:) oo o = oo o
 
 class c || d where
-    resolve :: (c => r) -> (d => r) -> r
+	resolve :: (c => r) -> (d => r) -> r
 
 type family Casted (f :: * -> *) a
 

@@ -6,6 +6,8 @@ import Adj.Program.Primitive.Generation (Construction)
 
 type Tree = Construction
 
-type Binary tree = Tree (Maybe =:*:= Maybe)
+type family Binary tree where
+	Binary Tree = Tree (Maybe =:*:= Maybe)
 
-type Ternary tree = Tree (Maybe =:*:= Maybe =:*:= Maybe)
+type family Ternary tree where
+	Ternary Tree = Tree (Maybe =:*:= Maybe =:*:= Maybe)

@@ -307,7 +307,6 @@ instance Functor (-->) (-->) ((:*:>) l) where
 instance
 	( Bindable Functor (->) (->) ((:*:>) l)
 	, Component (-->) Identity ((:*:>) l)
-	, Casting (-->) Identity
 	) => Functor ((-/->) ((:*:>) l)) (-->) ((:*:>) l) where
 	map (Kleisli (Straight m)) = Straight .: \case
 		Straight (_ :*: r) -> m r
@@ -320,7 +319,6 @@ instance Functor (-->) (-->) ((:+:>) l) where
 instance
 	( Bindable Functor (->) (->) ((:+:>) l)
 	, Component (-->) Identity ((:+:>) l)
-	, Casting (-->) Identity
 	) => Functor ((-/->) ((:+:>) l)) (-->) ((:+:>) l) where
 	map (Kleisli (Straight m)) = Straight .: \case
 		Straight (This l) -> Straight .: This l
@@ -337,7 +335,6 @@ instance Functor (-->) (-->) ((<:+:) r) where
 
 instance
 	( Component (-->) Identity ((<:+:) r)
-	, Casting (-->) Identity
 	) => Functor ((-/->) ((<:+:) r)) (-->) ((<:+:) r) where
 	map (Kleisli (Straight m)) = Straight .: \case
 		Opposite (This l) -> m l
@@ -346,7 +343,6 @@ instance
 instance
 	( Component (-->) Identity ((<:*:) r)
 	, Bindable Functor (->) (->) ((<:*:) r)
-	, Casting (-->) Identity
 	) => Functor ((-/->) ((<:*:) r)) (-->) ((<:*:) r) where
 	map (Kleisli (Straight m)) = Straight .: \case
 		Opposite (l :*: _) -> m l
@@ -355,15 +351,15 @@ instance
 	( Covariant Straight Functor f (->) (->)
 	, Bindable Functor (->) (->) f
 	) => Functor ((-/->) f) ((-/->) f) ((:*:>) l) where
-	map (Kleisli (Straight m)) = Kleisli . Straight . (=-=) .: \case
-		l :*: r -> (l :*:) ->- m r
+	map (Kleisli (Straight m)) = Kleisli . Straight .: \case
+		Straight (l :*: r) -> Straight . (l :*:) ->- m r
 
 instance
 	( Covariant Straight Functor f (->) (->)
 	, Bindable Functor (->) (->) f
 	) => Functor ((-/->) f) ((-/->) f) ((<:*:) r) where
-	map (Kleisli (Straight m)) = Kleisli . Straight . (=-=) .: \case
-		l :*: r -> (:*: r) ->- m l
+	map (Kleisli (Straight m)) = Kleisli . Straight .: \case
+		Opposite (l :*: r) -> Opposite . (:*: r) ->- m l
 
 instance
 	( Covariant Straight Functor f (->) (->)
