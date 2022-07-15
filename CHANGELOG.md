@@ -273,3 +273,4 @@
 * Change `Tree` type alias definition
 * Define `Binary` type alias
 * Define `Ternary` type alias
+* Define `:+*:` type alias

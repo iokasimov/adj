@@ -5,6 +5,7 @@ module Adj.Algebra.Set where
 
 import Adj.Auxiliary (Structural (Structural), type (=!?=), type (=!?!=), type (=!!??=), FG (FG), FGF (FGF), FFGH (FFGH))
 
+infixr 6 :+*:
 infixr 7 :*:, :+:, =/=
 infixr 8 ==
 infixr 9 +, *
@@ -14,6 +15,9 @@ data (:*:) l r = l :*: r
 
 -- Disjoint union
 data (:+:) l r = This l | That r
+
+-- Canonical union
+type (:+*:) l r = (l :+: r) :+: (l :*: r)
 
 data Unit = Unit
 
