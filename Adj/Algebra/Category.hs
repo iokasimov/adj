@@ -244,19 +244,25 @@ type family Adjunction source target f g where
 		, Component .: Straight target .: Identity .: (g =!?= f)
 		)
 
-type (-->) = Straight (->)
-
-type (<--) = Opposite (->)
-
-type (-/->) f = Kleisli f (-->)
-
-type (<-\-) f = Kleisli f (<--)
-
 instance Semigroupoid (->) where
 	g . f = \x -> g (f x)
 
 instance Category (->) where
 	identity = \x -> x
+
+type (-->) = Straight (->)
+
+instance Functor (-->) (-->) ((-->) i) where
+	map m = Straight .: (m .)
+
+type (<--) = Opposite (->)
+
+instance Functor (-->) (<--) ((<--) o) where
+	map (Straight m) = Opposite .: (Opposite m .)
+
+type (-/->) f = Kleisli f (-->)
+
+type (<-\-) f = Kleisli f (<--)
 
 newtype Identity o = Identity o
 
@@ -270,7 +276,7 @@ instance Functor (-->) (-->) Identity where
 	map (Straight m) = Straight .: \case
 		Identity x -> Identity .: m x
 
-instance Component (-->) Identity Identity 
+instance Component (-->) Identity Identity
 	=> Functor ((-/->) Identity) (-->) Identity where
 	map (Kleisli (Straight m)) = Straight .: \case
 		Identity x -> m x
@@ -281,15 +287,6 @@ instance
 	) => Functor ((-/->) g) ((-/->) g) Identity where
 	map (Kleisli (Straight m)) = Kleisli . Straight .: \case
 		Identity x -> (-|-) @_ @(-->) (Straight Identity) =- m x
-
-data Day m f g from to result where
-	Day :: from (f l) (g r)
-		-> m (to l r) result
-		-> Day m f g from to result
-
-instance Functor (-->) (-->) (Day (-->) f g from to) where
-	map m = Straight .: \case
-		Day from to -> Day from .: m . to
 
 type (:*:>) = Straight (:*:)
 
@@ -376,6 +373,15 @@ instance
 		map (Kleisli (Straight m)) = Kleisli . Straight .: \case
 			Opposite (This l) -> Opposite . This ->- m l
 			Opposite (That r) -> point . Opposite . That .: r
+
+data Day m f g from to result where
+	Day :: from (f l) (g r)
+		-> m (to l r) result
+		-> Day m f g from to result
+
+instance Functor (-->) (-->) (Day (-->) f g from to) where
+	map m = Straight .: \case
+		Day from to -> Day from .: m . to
 
 instance Component (-->) (Day (-->) Identity Identity (:*:) (:*:)) Identity where
 	component = Straight .: \case
