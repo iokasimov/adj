@@ -30,6 +30,7 @@ library
     Adj.Program.Primitive.Generation
     Adj.Program.Primitive.Maybe
     Adj.Program.Primitive.Progress
+    Adj.Program.Primitive.Predicate
     Adj.Program.Controlflow
     Adj.Program.Controlflow.Implementation
     Adj.Program.Controlflow.Implementation.State
