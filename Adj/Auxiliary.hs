@@ -8,7 +8,7 @@ infixr 6 =!?=
 infixr 5 =!?!=
 infixr 4 =!!??=
 
-infixr 2 ||
+infixr 6 <?>
 
 type (.:) oo o = oo o
 type (..:) oo o = oo o
@@ -19,8 +19,8 @@ type (......:) oo o = oo o
 type (.......:) oo o = oo o
 type (........:) oo o = oo o
 
-class c || d where
-	resolve :: (c => r) -> (d => r) -> r
+class c <?> d where
+	(<?>) :: (c => r) -> (d => r) -> r
 
 type family Casted (f :: * -> *) a
 

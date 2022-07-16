@@ -4,7 +4,7 @@
 
 module Adj.Algebra.Category where
 
-import Adj.Auxiliary (type (.:), type (=!?=), FG (FG), type (=!?!=), type (=!!??=), Casted, Casting ((-=), (=-)))
+import Adj.Auxiliary (type (<?>) ((<?>)), type (.:), type (=!?=), FG (FG), type (=!?!=), type (=!!??=), Casted, Casting ((-=), (=-)))
 import Adj.Algebra.Set ((:*:) ((:*:)), (:+:) (This, That), Unit (Unit), Neutral, absurd)
 
 infixr 9 .
@@ -695,15 +695,15 @@ instance
 	map m = (=-=) ((-|||-) @from @between @between' @to @f @g @f' m)
 
 instance
- 	( Functor from between h
- 	, Functor from between g
- 	, forall o . Functor between to (Straight f .: g o)
- 	, forall o . Functor between to (Opposite f .: h o)
- 	, forall o . Casting to (Straight f .: g o)
- 	, forall o . Casting to (Opposite f .: h o)
- 	, Casting to ((=!!??=) f g h)
- 	) => Functor from to ((=!!??=) f g h) where
- 	map m = (=-=) @to @((=!!??=) f g h)
+	( Functor from between h
+	, Functor from between g
+	, forall o . Functor between to (Straight f .: g o)
+	, forall o . Functor between to (Opposite f .: h o)
+	, forall o . Casting to (Straight f .: g o)
+	, forall o . Casting to (Opposite f .: h o)
+	, Casting to ((=!!??=) f g h)
+	) => Functor from to ((=!!??=) f g h) where
+	map m = (=-=) @to @((=!!??=) f g h)
 		.: (-||--) @from @between @to @f @g m
 		. (--||--) @from @between @to @f @h m
 

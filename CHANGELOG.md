@@ -275,3 +275,5 @@
 * Define `Ternary` type alias
 * Define `:+*:` type alias
 * Define `=:+*:=` type alias
+* Rename `||` typeclass to `<?>`
+* Rename `resolver` method to `<?>`
