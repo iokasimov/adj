@@ -2,7 +2,16 @@
 
 module Adj.Auxiliary where
 
-infixl 8 .:, =-, -=
+infixl 8 =-, -=
+
+infixl 8 .:
+infixl 7 ..:
+infixl 6 ...:
+infixl 5 ....:
+infixl 4 .....:
+infixl 3 ......:
+infixl 2 .......:
+infixl 1 ........:
 
 infixr 6 =!?=
 infixr 5 =!?!=
