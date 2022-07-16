@@ -675,6 +675,7 @@ instance
 	, Covariant Straight Functor g (->) (->)
 	) => Component (-->) (Day (-->) (f =!?= g) Identity (:*:) (:*:)) (f =!?= g) where
 	component = Straight .: \(Day (FG l :*: Identity r) m) ->
+		-- TODO: looks like an adjunction
 		FG ....: (m =-) . (:*: r) ->>- l
 
 instance
