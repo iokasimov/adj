@@ -252,14 +252,6 @@ type (-/->) f = Kleisli f (-->)
 
 type (<-\-) f = Kleisli f (<--)
 
-type (:*:>) = Straight (:*:)
-
-type (<:*:) = Opposite (:*:)
-
-type (:+:>) = Straight (:+:)
-
-type (<:+:) = Opposite (:+:)
-
 instance Semigroupoid (->) where
 	g . f = \x -> g (f x)
 
@@ -278,9 +270,8 @@ instance Functor (-->) (-->) Identity where
 	map (Straight m) = Straight .: \case
 		Identity x -> Identity .: m x
 
-instance
-	( Component (-->) Identity Identity
-	) => Functor ((-/->) Identity) (-->) Identity where
+instance Component (-->) Identity Identity 
+	=> Functor ((-/->) Identity) (-->) Identity where
 	map (Kleisli (Straight m)) = Straight .: \case
 		Identity x -> m x
 
@@ -300,6 +291,8 @@ instance Functor (-->) (-->) (Day (-->) f g from to) where
 	map m = Straight .: \case
 		Day from to -> Day from .: m . to
 
+type (:*:>) = Straight (:*:)
+
 instance Functor (-->) (-->) ((:*:>) l) where
 	map (Straight m) = Straight .: \case
 		Straight (l :*: r) -> Straight (l :*: m r)
@@ -310,6 +303,15 @@ instance
 	) => Functor ((-/->) ((:*:>) l)) (-->) ((:*:>) l) where
 	map (Kleisli (Straight m)) = Straight .: \case
 		Straight (_ :*: r) -> m r
+
+instance
+	( Covariant Straight Functor f (->) (->)
+	, Bindable Functor (->) (->) f
+	) => Functor ((-/->) f) ((-/->) f) ((:*:>) l) where
+	map (Kleisli (Straight m)) = Kleisli . Straight .: \case
+		Straight (l :*: r) -> Straight . (l :*:) ->- m r
+
+type (:+:>) = Straight (:+:)
 
 instance Functor (-->) (-->) ((:+:>) l) where
 	map (Straight m) = Straight .: \case
@@ -324,21 +326,20 @@ instance
 		Straight (This l) -> Straight .: This l
 		Straight (That r) -> m r
 
+instance
+	( Covariant Straight Functor f (->) (->)
+	, Bindable Functor (->) (->) f
+	, Monoidal Functor (:*:) (:*:) (-->) (-->) f
+	) => Functor ((-/->) f) ((-/->) f) ((:+:>) l) where
+		map (Kleisli (Straight m)) = Kleisli . Straight .: \case
+			Straight (That r) -> Straight . That ->- m r
+			Straight (This l) -> point . Straight . This .: l
+
+type (<:*:) = Opposite (:*:)
+
 instance Functor (-->) (-->) ((<:*:) r) where
 	map (Straight m) = Straight . (=-=) .: \case
 		l :*: r -> m l :*: r
-
-instance Functor (-->) (-->) ((<:+:) r) where
-	map (Straight m) = Straight . (=-=) .: \case
-		This l -> This .: m l
-		That r -> That r
-
-instance
-	( Component (-->) Identity ((<:+:) r)
-	) => Functor ((-/->) ((<:+:) r)) (-->) ((<:+:) r) where
-	map (Kleisli (Straight m)) = Straight .: \case
-		Opposite (This l) -> m l
-		Opposite (That r) -> Opposite .: That r
 
 instance
 	( Component (-->) Identity ((<:*:) r)
@@ -350,25 +351,22 @@ instance
 instance
 	( Covariant Straight Functor f (->) (->)
 	, Bindable Functor (->) (->) f
-	) => Functor ((-/->) f) ((-/->) f) ((:*:>) l) where
-	map (Kleisli (Straight m)) = Kleisli . Straight .: \case
-		Straight (l :*: r) -> Straight . (l :*:) ->- m r
-
-instance
-	( Covariant Straight Functor f (->) (->)
-	, Bindable Functor (->) (->) f
 	) => Functor ((-/->) f) ((-/->) f) ((<:*:) r) where
 	map (Kleisli (Straight m)) = Kleisli . Straight .: \case
 		Opposite (l :*: r) -> Opposite . (:*: r) ->- m l
 
-instance
-	( Covariant Straight Functor f (->) (->)
-	, Bindable Functor (->) (->) f
-	, Monoidal Functor (:*:) (:*:) (-->) (-->) f
-	) => Functor ((-/->) f) ((-/->) f) ((:+:>) l) where
-		map (Kleisli (Straight m)) = Kleisli . Straight .: \case
-			Straight (That r) -> Straight . That ->- m r
-			Straight (This l) -> point . Straight . This .: l
+type (<:+:) = Opposite (:+:)
+
+instance Functor (-->) (-->) ((<:+:) r) where
+	map (Straight m) = Straight . (=-=) .: \case
+		This l -> This .: m l
+		That r -> That r
+
+instance Component (-->) Identity ((<:+:) r)
+	=> Functor ((-/->) ((<:+:) r)) (-->) ((<:+:) r) where
+	map (Kleisli (Straight m)) = Straight .: \case
+		Opposite (This l) -> m l
+		Opposite (That r) -> Opposite .: That r
 
 instance
 	( Covariant Straight Functor f (->) (->)
