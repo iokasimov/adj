@@ -281,3 +281,4 @@
 * Define `Adj.Program.Primitive.Predicate` module
 
 # 0.1.4
+* Define `Generate` pattern
