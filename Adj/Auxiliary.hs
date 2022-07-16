@@ -13,6 +13,15 @@ infixl 3 ......:
 infixl 2 .......:
 infixl 1 ........:
 
+infixr 8 :.
+infixr 7 :..
+infixr 6 :...
+infixr 5 :....
+infixr 4 :.....
+infixr 3 :......
+infixr 2 :.......
+infixr 1 :........
+
 infixr 6 =!?=
 infixr 5 =!?!=
 infixr 4 =!!??=
@@ -27,6 +36,15 @@ type (.....:) oo o = oo o
 type (......:) oo o = oo o
 type (.......:) oo o = oo o
 type (........:) oo o = oo o
+
+type (:.) oo o = oo o
+type (:..) oo o = oo o
+type (:...) oo o = oo o
+type (:....) oo o = oo o
+type (:.....) oo o = oo o
+type (:......) oo o = oo o
+type (:.......) oo o = oo o
+type (:........) oo o = oo o
 
 class c <?> d where
 	(<?>) :: (c => r) -> (d => r) -> r

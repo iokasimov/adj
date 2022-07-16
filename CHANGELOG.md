@@ -277,3 +277,4 @@
 * Define `=:+*:=` type alias
 * Rename `||` typeclass to `<?>`
 * Rename `resolver` method to `<?>`
+* Define `:.` family of type operators
