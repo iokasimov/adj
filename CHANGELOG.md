@@ -279,3 +279,5 @@
 * Rename `resolver` method to `<?>`
 * Define `:.` family of type operators
 * Define `Adj.Program.Primitive.Predicate` module
+
+# 0.1.4
