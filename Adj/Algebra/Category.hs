@@ -224,13 +224,6 @@ type family Monoidal x source target from to tensor f where
 
 -- TODO: we need to add laws here
 -- TODO: turn into a typeclass
--- Use Semimonoidal constraint here
--- type family Bindable x source target f where
-	-- Bindable Functor source target f =
-		-- Functor .: Kleisli f (Straight source) .: Straight target .: f
-
--- TODO: we need to add laws here
--- TODO: turn into a typeclass
 type family Traversable x source target g f where
 	Traversable Functor source target g f =
 		Functor .: Kleisli g (Straight source) .: Kleisli g (Straight target) .: f
@@ -647,6 +640,9 @@ extract x = component @(<--) @(<--) @((-->) (Neutral (:*:))) =- x =- Unit
 
 empty :: Monoidal Functor (:*:) (:+:) (-->) (-->) (-->) f => f o
 empty = component @(-->) @(-->) @((-->) (Neutral (:+:))) =- Straight absurd
+
+join :: Transformation .: (-->) .: (-->) .: FG f f .: f => f (f o) -> f o
+join x = component @(-->) @(-->) =- FG x
 
 (=-=) :: forall m f source target . (Semigroupoid m, Casting m f)
 	=> m .: Casted f source .: Casted f target -> m .: f source .: f target

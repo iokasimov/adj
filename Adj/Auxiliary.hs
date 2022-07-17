@@ -56,6 +56,8 @@ class Casting m t where
 	(=-) :: m .: t a .: Casted t a
 	(-=) :: m .: Casted t a .: t a
 
+-- TODO: newtype FF f o = f (f o)
+
 newtype FG f g o = FG (f (g o))
 
 type (=!?=) = FG

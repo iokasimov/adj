@@ -285,3 +285,4 @@
 * Remove `Component` typeclass
 * Change `Semimonoidal` type family definition
 * Change `Monoidal` type family definition
+* Define `join` method
