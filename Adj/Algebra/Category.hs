@@ -214,15 +214,13 @@ type family Semimonoidal x source target from to tensor f where
 	Semimonoidal Functor source target from to tensor f =
 		Transformation .: from .: to .: Day tensor f f source target .: f
 
--- TODO: need to add a Functor constraint
--- TODO: use Transformation instead of Component
--- type family Monoidal x source target from to f where
-	-- Monoidal Functor source target from to f =
-		-- ( Component .: from .: Day to f f source target .: f
-		-- , Component .: from .: Day to Identity f source target .: f
-		-- , Component .: from .: Day to f Identity source target .: f
-		-- , Component .: from .: to (Neutral target) .: f
-		-- )
+type family Monoidal x source target from to tensor f where
+	Monoidal Functor source target from to tensor f =
+		( Transformation .: from .: to .: Day tensor f f source target .: f
+		, Transformation .: from .: to .: Day tensor Identity f source target .: f
+		, Transformation .: from .: to .: Day tensor f Identity source target .: f
+		, Transformation .: from .: to .: tensor (Neutral target) .: f
+		)
 
 -- TODO: we need to add laws here
 -- TODO: turn into a typeclass
@@ -641,17 +639,14 @@ l |*| r = \tensor -> component @(-->) @(-->) =- Day (l :*: r)
 l |+| r = \lr -> component @(-->) @(-->) =- Day lr 
 	(Straight .: \case { This lo -> l lo; That ro -> r ro })
 
--- TODO: not really sure about morphisms in components
--- point :: Monoidal Functor (:*:) (:*:) (-->) (-->) f => o -> f o
--- point x = component @(-->) @((-->) (Neutral (:*:))) =- (Straight .: \Unit -> x)
+point :: Monoidal Functor (:*:) (:*:) (-->) (-->) (-->) f => o -> f o
+point x = component @(-->) @(-->) @((-->) (Neutral (:*:))) =- (Straight .: \Unit -> x)
 
--- TODO: not really sure about morphisms in components
--- extract :: Monoidal Functor (:*:) (:*:) (<--) (-->) f => f o -> o
--- extract x = component @(<--) @((-->) (Neutral (:*:))) =- x =- Unit
+extract :: Monoidal Functor (:*:) (:*:) (<--) (<--) (-->) f => f o -> o
+extract x = component @(<--) @(<--) @((-->) (Neutral (:*:))) =- x =- Unit
 
--- TODO: not really sure about morphisms in components
--- empty :: Monoidal Functor (:*:) (:+:) (-->) (-->) f => f o
--- empty = component @(-->) @((-->) (Neutral (:+:))) =- Straight absurd
+empty :: Monoidal Functor (:*:) (:+:) (-->) (-->) (-->) f => f o
+empty = component @(-->) @(-->) @((-->) (Neutral (:+:))) =- Straight absurd
 
 (=-=) :: forall m f source target . (Semigroupoid m, Casting m f)
 	=> m .: Casted f source .: Casted f target -> m .: f source .: f target
