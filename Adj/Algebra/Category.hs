@@ -36,8 +36,8 @@ infixl 7 =-=, -=-, =--
 infixl 2 --/>>/--
 infixl 3 --/>/--, -/>>/--
 infixl 4 -/>/--, -/>>/-, -->>--, -/>>/=
-infixl 5 ->>>-, -->--, ->>--, -/>>-, -/>/-
-infixl 6 ->>-, -><-, -<>-, ->--, -/>-
+infixl 5 ->>>-, -->--, ->>-- -- , -/>>-, -/>/-
+infixl 6 ->>-, -><-, -<>-, ->-- -- , -/>-
 infixl 7 ->-, -<-, ->=
 
 {- |
@@ -141,7 +141,10 @@ class (Category from, Category to) => Functor from to f where
 class (Functor from to f, Functor from to g) => Transformation from to f g where
 	transformation :: from source target -> to .: f source .: g target
 
--- TODO: component = transformation identity
+component :: forall from to f g object
+	. (Category from, Category to, Transformation from to f g)
+	=> to .: f object .: g object
+component = transformation @from @to @f @g identity
 
 newtype Straight m source target = Straight (m source target)
 
@@ -207,12 +210,9 @@ type family OP direction where
 	OP (Kleisli f (Straight category)) = Kleisli f (Opposite category)
 	OP (Kleisli f (Opposite category)) = Kleisli f (Straight category)
 
--- TODO: use Transformation instead of Component
--- type family Semimonoidal x source target from to f where
-	-- Semimonoidal Functor source target from to f =
-		-- ( Functor from to f
-		-- , Component .: from .: Day to f f source target .: f
-		-- )
+type family Semimonoidal x source target from to tensor f where
+	Semimonoidal Functor source target from to tensor f =
+		Transformation .: from .: to .: Day tensor f f source target .: f
 
 -- TODO: need to add a Functor constraint
 -- TODO: use Transformation instead of Component
@@ -226,9 +226,10 @@ type family OP direction where
 
 -- TODO: we need to add laws here
 -- TODO: turn into a typeclass
-type family Bindable x source target f where
-	Bindable Functor source target f =
-		Functor .: Kleisli f (Straight source) .: Straight target .: f
+-- Use Semimonoidal constraint here
+-- type family Bindable x source target f where
+	-- Bindable Functor source target f =
+		-- Functor .: Kleisli f (Straight source) .: Straight target .: f
 
 -- TODO: we need to add laws here
 -- TODO: turn into a typeclass
@@ -287,12 +288,12 @@ instance Functor (-->) (-->) Identity where
 	-- map (Kleisli (Straight m)) = Straight .: \case
 		-- Identity x -> m x
 
-instance
-	( Covariant Straight Functor g (->) (->)
-	, Bindable Functor (->) (->) g
-	) => Functor ((-/->) g) ((-/->) g) Identity where
-	map (Kleisli (Straight m)) = Kleisli . Straight .: \case
-		Identity x -> (-|-) @_ @(-->) (Straight Identity) =- m x
+-- instance
+	-- ( Covariant Straight Functor g (->) (->)
+	-- , Bindable Functor (->) (->) g
+	-- ) => Functor ((-/->) g) ((-/->) g) Identity where
+	-- map (Kleisli (Straight m)) = Kleisli . Straight .: \case
+		-- Identity x -> (-|-) @_ @(-->) (Straight Identity) =- m x
 
 type (:*:>) = Straight (:*:)
 
@@ -312,12 +313,12 @@ instance Functor (<--) (<--) ((:*:>) l) where
 	-- map (Kleisli (Straight m)) = Straight .: \case
 		-- Straight (_ :*: r) -> m r
 
-instance
-	( Covariant Straight Functor f (->) (->)
-	, Bindable Functor (->) (->) f
-	) => Functor ((-/->) f) ((-/->) f) ((:*:>) l) where
-	map (Kleisli (Straight m)) = Kleisli . Straight .: \case
-		Straight (l :*: r) -> Straight . (l :*:) ->- m r
+-- instance
+	-- ( Covariant Straight Functor f (->) (->)
+	-- , Bindable Functor (->) (->) f
+	-- ) => Functor ((-/->) f) ((-/->) f) ((:*:>) l) where
+	-- map (Kleisli (Straight m)) = Kleisli . Straight .: \case
+		-- Straight (l :*: r) -> Straight . (l :*:) ->- m r
 
 type (:+:>) = Straight (:+:)
 
@@ -368,12 +369,13 @@ instance Functor (<--) (<--) ((<:*:) r) where
 	-- map (Kleisli (Straight m)) = Straight .: \case
 		-- Opposite (l :*: _) -> m l
 
-instance
-	( Covariant Straight Functor f (->) (->)
-	, Bindable Functor (->) (->) f
-	) => Functor ((-/->) f) ((-/->) f) ((<:*:) r) where
-	map (Kleisli (Straight m)) = Kleisli . Straight .: \case
-		Opposite (l :*: r) -> Opposite . (:*: r) ->- m l
+-- TODO: return back after changing Bindable type family
+-- instance
+	-- ( Covariant Straight Functor f (->) (->)
+	-- , Bindable Functor (->) (->) f
+	-- ) => Functor ((-/->) f) ((-/->) f) ((<:*:) r) where
+	-- map (Kleisli (Straight m)) = Kleisli . Straight .: \case
+		-- Opposite (l :*: r) -> Opposite . (:*: r) ->- m l
 
 type (<:+:) = Opposite (:+:)
 
@@ -576,16 +578,18 @@ m -->>-- x = (--||--) @(-->) @(-->) @(-->) (Straight m) =- x
 
 -- TOOD: define -<<<-, -><<-, -><>-, -<<>-, -<>>-, -<><-
 
-(-/>-) :: forall f source target
-	. Bindable Functor (->) (->) f
-	=> (source -> f target) -> f source -> f target
-m -/>- x = map @((-/->) f) @(-->) (Kleisli (Straight m)) =- x
+-- TODO: return back after changing Bindable type family
+-- (-/>-) :: forall f source target
+	-- . Bindable Functor (->) (->) f
+	-- => (source -> f target) -> f source -> f target
+-- m -/>- x = map @((-/->) f) @(-->) (Kleisli (Straight m)) =- x
 
-(-/>>-)
-	:: Covariant Straight Functor f (->) (->)
-	=> Bindable Functor (->) (->) g
-	=> (source -> g target) -> f (g source) -> f (g target)
-m -/>>- x = (m -/>-) ->- x
+-- TODO: return back after changing Bindable type family
+-- (-/>>-)
+	-- :: Covariant Straight Functor f (->) (->)
+	-- => Bindable Functor (->) (->) g
+	-- => (source -> g target) -> f (g source) -> f (g target)
+-- m -/>>- x = (m -/>-) ->- x
 
 (-/>/-) :: Traversable Functor (->) (->) g f
 	=> (source -> g target) -> f source -> g (f target)
@@ -625,18 +629,17 @@ m --/>>/-- x = (=-) ->- ((m -/>/-) -/>/- Straight x)
 	=> (source -> h target) -> f (g source) o -> h (f (g target) o)
 m -/>>/-- x = (=-) ->- ((m -/>/-) -/>/- Opposite x)
 
--- (|*|) :: forall f l r o
-	-- . Semimonoidal Functor (:*:) (:*:) (-->) (-->) f
-	-- => f l -> f r -> (l -> r -> o) -> f o
--- l |*| r = \m -> component @(-->) @(Day (-->) _ _ _ _)
-	-- =- Day (l :*: r) (Straight .: \(l' :*: r') -> m l' r')
+(|*|) :: forall f l r o
+	. Semimonoidal Functor (:*:) (:*:) (-->) (-->) (-->) f
+	=> f l -> f r -> (l -> r -> o) -> f o
+l |*| r = \tensor -> component @(-->) @(-->) =- Day (l :*: r)
+	(Straight .: \(lo :*: ro) -> tensor lo ro)
 
--- TODO: use Transformation instead of Component
--- (|+|) :: forall f l r o
-	-- . Semimonoidal Functor (:+:) (:+:) (-->) (-->) f
-	-- => (l -> o) -> (r -> o) -> (f l :+: f r) -> f o
--- l |+| r = \lr -> component @(-->) @(Day (-->) _ _ _ _)
-	-- =- Day lr (Straight .: \case { This l' -> l l'; That r' -> r r' })
+(|+|) :: forall f l r o
+	. Semimonoidal Functor (:+:) (:+:) (-->) (-->) (-->) f
+	=> (l -> o) -> (r -> o) -> (f l :+: f r) -> f o
+l |+| r = \lr -> component @(-->) @(-->) =- Day lr 
+	(Straight .: \case { This lo -> l lo; That ro -> r ro })
 
 -- TODO: not really sure about morphisms in components
 -- point :: Monoidal Functor (:*:) (:*:) (-->) (-->) f => o -> f o
