@@ -134,15 +134,14 @@ class (Category from, Category to) => Functor from to f where
 	) => from source target -> to .: f o (g (h source)) .: f o (g (h target))
 (--|||--) m = (-=-) ((-|||-) @from @between @between' @to @(Straight f o) m)
 
-class Component m f g where
-	component :: m .: f object .: g object
-
 {- |
 > * Associativity: (-|) m . component = component . (-|) m
 -}
 
 class (Functor from to f, Functor from to g) => Transformation from to f g where
 	transformation :: from source target -> to .: f source .: g target
+
+-- TODO: component = transformation identity
 
 newtype Straight m source target = Straight (m source target)
 
@@ -181,18 +180,18 @@ instance Casting (->) (Kleisli f (-->) source) where
 	(=-) (Kleisli (Straight m)) = m
 	(-=) m = Kleisli .: Straight m
 
-instance
-	( Functor .: Kleisli f target .: target .: f
-	) => Semigroupoid (Kleisli f target) where
+instance Functor .: Kleisli f target .: target .: f
+	=> Semigroupoid (Kleisli f target) where
 		g . Kleisli f = Kleisli .: map g . f
 
-instance
-	( Category target
-	, Functor (Kleisli f target) target f
-	, Component target Identity f
-	, Casting target Identity
-	) => Category (Kleisli f target) where
-	identity = Kleisli .: component @_ @Identity @f . (-=) @_ . identity
+-- TODO: use Transformation instead of Component
+-- instance
+	-- ( Category target
+	-- , Functor (Kleisli f target) target f
+	-- , Component target Identity f
+	-- , Casting target Identity
+	-- ) => Category (Kleisli f target) where
+	-- identity = Kleisli .: component @_ @Identity @f . (-=) @_ . identity
 
 type family Covariant m functor f from to where
 	Covariant m Functor functor from to
@@ -208,20 +207,22 @@ type family OP direction where
 	OP (Kleisli f (Straight category)) = Kleisli f (Opposite category)
 	OP (Kleisli f (Opposite category)) = Kleisli f (Straight category)
 
-type family Semimonoidal x source target from to f where
-	Semimonoidal Functor source target from to f =
-		( Functor from to f
-		, Component .: from .: Day to f f source target .: f
-		)
+-- TODO: use Transformation instead of Component
+-- type family Semimonoidal x source target from to f where
+	-- Semimonoidal Functor source target from to f =
+		-- ( Functor from to f
+		-- , Component .: from .: Day to f f source target .: f
+		-- )
 
 -- TODO: need to add a Functor constraint
-type family Monoidal x source target from to f where
-	Monoidal Functor source target from to f =
-		( Component .: from .: Day to f f source target .: f
-		, Component .: from .: Day to Identity f source target .: f
-		, Component .: from .: Day to f Identity source target .: f
-		, Component .: from .: to (Neutral target) .: f
-		)
+-- TODO: use Transformation instead of Component
+-- type family Monoidal x source target from to f where
+	-- Monoidal Functor source target from to f =
+		-- ( Component .: from .: Day to f f source target .: f
+		-- , Component .: from .: Day to Identity f source target .: f
+		-- , Component .: from .: Day to f Identity source target .: f
+		-- , Component .: from .: to (Neutral target) .: f
+		-- )
 
 -- TODO: we need to add laws here
 -- TODO: turn into a typeclass
@@ -236,13 +237,14 @@ type family Traversable x source target g f where
 		Functor .: Kleisli g (Straight source) .: Kleisli g (Straight target) .: f
 
 -- TODO: not really sure about morphisms in components
-type family Adjunction source target f g where
-	Adjunction source target f g =
-		( Functor target source f
-		, Functor source target g
-		, Component .: Straight source .: (f =!?= g) .: Identity
-		, Component .: Straight target .: Identity .: (g =!?= f)
-		)
+-- TODO: use Transformation instead of Component
+-- type family Adjunction source target f g where
+	-- Adjunction source target f g =
+		-- ( Functor target source f
+		-- , Functor source target g
+		-- , Component .: Straight source .: (f =!?= g) .: Identity
+		-- , Component .: Straight target .: Identity .: (g =!?= f)
+		-- )
 
 instance Semigroupoid (->) where
 	g . f = \x -> g (f x)
@@ -254,6 +256,9 @@ type (-->) = Straight (->)
 
 instance Functor (-->) (-->) ((-->) i) where
 	map m = Straight .: (m .)
+
+instance Functor (<--) (<--) ((-->) i) where
+	map (Opposite m) = Opposite .: (Straight m .)
 
 type (<--) = Opposite (->)
 
@@ -276,10 +281,11 @@ instance Functor (-->) (-->) Identity where
 	map (Straight m) = Straight .: \case
 		Identity x -> Identity .: m x
 
-instance Component (-->) Identity Identity
-	=> Functor ((-/->) Identity) (-->) Identity where
-	map (Kleisli (Straight m)) = Straight .: \case
-		Identity x -> m x
+-- TODO: use Transformation instead of Component
+-- instance Component (-->) Identity Identity
+	-- => Functor ((-/->) Identity) (-->) Identity where
+	-- map (Kleisli (Straight m)) = Straight .: \case
+		-- Identity x -> m x
 
 instance
 	( Covariant Straight Functor g (->) (->)
@@ -294,12 +300,17 @@ instance Functor (-->) (-->) ((:*:>) l) where
 	map (Straight m) = Straight .: \case
 		Straight (l :*: r) -> Straight (l :*: m r)
 
-instance
-	( Bindable Functor (->) (->) ((:*:>) l)
-	, Component (-->) Identity ((:*:>) l)
-	) => Functor ((-/->) ((:*:>) l)) (-->) ((:*:>) l) where
-	map (Kleisli (Straight m)) = Straight .: \case
-		Straight (_ :*: r) -> m r
+instance Functor (<--) (<--) ((:*:>) l) where
+	map (Opposite m) = Opposite .: \case
+		Straight (l :*: r) -> Straight (l :*: m r)
+
+-- TODO: use Transformation instead of Component
+-- instance
+	-- ( Bindable Functor (->) (->) ((:*:>) l)
+	-- , Component (-->) Identity ((:*:>) l)
+	-- ) => Functor ((-/->) ((:*:>) l)) (-->) ((:*:>) l) where
+	-- map (Kleisli (Straight m)) = Straight .: \case
+		-- Straight (_ :*: r) -> m r
 
 instance
 	( Covariant Straight Functor f (->) (->)
@@ -315,22 +326,29 @@ instance Functor (-->) (-->) ((:+:>) l) where
 		Straight (This l) -> Straight .: This l
 		Straight (That r) -> Straight . That .: m r
 
-instance
-	( Bindable Functor (->) (->) ((:+:>) l)
-	, Component (-->) Identity ((:+:>) l)
-	) => Functor ((-/->) ((:+:>) l)) (-->) ((:+:>) l) where
-	map (Kleisli (Straight m)) = Straight .: \case
+instance Functor (<--) (<--) ((:+:>) l) where
+	map (Opposite m) = Opposite .: \case
 		Straight (This l) -> Straight .: This l
-		Straight (That r) -> m r
+		Straight (That r) -> Straight . That .: m r
 
-instance
-	( Covariant Straight Functor f (->) (->)
-	, Bindable Functor (->) (->) f
-	, Monoidal Functor (:*:) (:*:) (-->) (-->) f
-	) => Functor ((-/->) f) ((-/->) f) ((:+:>) l) where
-		map (Kleisli (Straight m)) = Kleisli . Straight .: \case
-			Straight (That r) -> Straight . That ->- m r
-			Straight (This l) -> point . Straight . This .: l
+-- TODO: use Transformation instead of Component
+-- instance
+	-- ( Bindable Functor (->) (->) ((:+:>) l)
+	-- , Component (-->) Identity ((:+:>) l)
+	-- ) => Functor ((-/->) ((:+:>) l)) (-->) ((:+:>) l) where
+	-- map (Kleisli (Straight m)) = Straight .: \case
+		-- Straight (This l) -> Straight .: This l
+		-- Straight (That r) -> m r
+
+-- TODO: use Transformation instead of Component
+-- instance
+	-- ( Covariant Straight Functor f (->) (->)
+	-- , Bindable Functor (->) (->) f
+	-- , Monoidal Functor (:*:) (:*:) (-->) (-->) f
+	-- ) => Functor ((-/->) f) ((-/->) f) ((:+:>) l) where
+		-- map (Kleisli (Straight m)) = Kleisli . Straight .: \case
+			-- Straight (That r) -> Straight . That ->- m r
+			-- Straight (This l) -> point . Straight . This .: l
 
 type (<:*:) = Opposite (:*:)
 
@@ -338,12 +356,17 @@ instance Functor (-->) (-->) ((<:*:) r) where
 	map (Straight m) = Straight . (=-=) .: \case
 		l :*: r -> m l :*: r
 
-instance
-	( Component (-->) Identity ((<:*:) r)
-	, Bindable Functor (->) (->) ((<:*:) r)
-	) => Functor ((-/->) ((<:*:) r)) (-->) ((<:*:) r) where
-	map (Kleisli (Straight m)) = Straight .: \case
-		Opposite (l :*: _) -> m l
+instance Functor (<--) (<--) ((<:*:) r) where
+	map (Opposite m) = Opposite . (=-=) .: \case
+		l :*: r -> m l :*: r
+
+-- TODO: use Transformation instead of Component
+-- instance
+	-- ( Component (-->) Identity ((<:*:) r)
+	-- , Bindable Functor (->) (->) ((<:*:) r)
+	-- ) => Functor ((-/->) ((<:*:) r)) (-->) ((<:*:) r) where
+	-- map (Kleisli (Straight m)) = Straight .: \case
+		-- Opposite (l :*: _) -> m l
 
 instance
 	( Covariant Straight Functor f (->) (->)
@@ -359,20 +382,27 @@ instance Functor (-->) (-->) ((<:+:) r) where
 		This l -> This .: m l
 		That r -> That r
 
-instance Component (-->) Identity ((<:+:) r)
-	=> Functor ((-/->) ((<:+:) r)) (-->) ((<:+:) r) where
-	map (Kleisli (Straight m)) = Straight .: \case
-		Opposite (This l) -> m l
-		Opposite (That r) -> Opposite .: That r
+instance Functor (<--) (<--) ((<:+:) r) where
+	map (Opposite m) = Opposite . (=-=) .: \case
+		This l -> This .: m l
+		That r -> That r
 
-instance
-	( Covariant Straight Functor f (->) (->)
-	, Bindable Functor (->) (->) f
-	, Monoidal Functor (:*:) (:*:) (-->) (-->) f
-	) => Functor ((-/->) f) ((-/->) f) ((<:+:) r) where
-		map (Kleisli (Straight m)) = Kleisli . Straight .: \case
-			Opposite (This l) -> Opposite . This ->- m l
-			Opposite (That r) -> point . Opposite . That .: r
+-- TODO: use Transformation instead of Component
+-- instance Component (-->) Identity ((<:+:) r)
+	-- => Functor ((-/->) ((<:+:) r)) (-->) ((<:+:) r) where
+	-- map (Kleisli (Straight m)) = Straight .: \case
+		-- Opposite (This l) -> m l
+		-- Opposite (That r) -> Opposite .: That r
+
+-- TODO: use Transformation instead of Component
+-- instance
+	-- ( Covariant Straight Functor f (->) (->)
+	-- , Bindable Functor (->) (->) f
+	-- , Monoidal Functor (:*:) (:*:) (-->) (-->) f
+	-- ) => Functor ((-/->) f) ((-/->) f) ((<:+:) r) where
+		-- map (Kleisli (Straight m)) = Kleisli . Straight .: \case
+			-- Opposite (This l) -> Opposite . This ->- m l
+			-- -- Opposite (That r) -> point . Opposite . That .: r
 
 data Day m f g from to result where
 	Day :: from (f l) (g r)
@@ -383,89 +413,103 @@ instance Functor (-->) (-->) (Day (-->) f g from to) where
 	map m = Straight .: \case
 		Day from to -> Day from .: m . to
 
-instance Component (-->) (Day (-->) Identity Identity (:*:) (:*:)) Identity where
-	component = Straight .: \case
-		Day (Identity l :*: Identity r) (Straight m) -> Identity .: m (l :*: r)
+instance Functor (<--) (<--) (Day (-->) f g from to) where
+	map (Opposite m) = Opposite .: \case
+		Day from to -> Day from .: Straight m . to
 
-instance Component (-->) (Day (-->) ((:+:>) l) ((:+:>) l) (:*:) (:*:)) ((:+:>) l) where
-	component = Straight .: \case
-		Day (Straight (That l) :*: Straight (That r)) (Straight m) -> Straight . That .: m (l :*: r)
+instance Transformation (-->) (-->) (Day (-->) Identity Identity (:*:) (:*:)) Identity where
+	transformation (Straight morphism) = Straight .: \case
+		Day (Identity l :*: Identity r) (Straight tensor)
+			-> Identity . morphism . tensor ...: l :*: r
+
+instance Transformation (-->) (-->) (Day (-->) ((:+:>) l) ((:+:>) l) (:*:) (:*:)) ((:+:>) l) where
+	transformation (Straight morphism) = Straight .: \case
+		Day (Straight (That l) :*: Straight (That r)) (Straight tensor) 
+			-> Straight . That . morphism . tensor ...: l :*: r
 		Day (Straight (This l) :*: _) _ -> Straight . This .: l
 		Day (_ :*: Straight (This r)) _ -> Straight . This .: r
 
-instance Component (-->) (Day (-->) ((:+:>) l) Identity (:*:) (:*:)) ((:+:>) l) where
-	component = Straight .: \case
-		Day (Straight (That l) :*: Identity r) (Straight m) -> Straight . That .: m (l :*: r)
+instance Transformation (-->) (-->) (Day (-->) ((:+:>) l) Identity (:*:) (:*:)) ((:+:>) l) where
+	transformation (Straight morphism) = Straight .: \case
+		Day (Straight (That l) :*: Identity r) (Straight tensor)
+			-> Straight . That . morphism . tensor ...: l :*: r
 		Day (Straight (This l) :*: _) _ -> Straight . This .: l
 
-instance Component (-->) (Day (-->) Identity ((:+:>) l) (:*:) (:*:)) ((:+:>) l) where
-	component = Straight .: \case
-		Day (Identity l :*: Straight (That r)) (Straight m) -> Straight . That .: m (l :*: r)
+instance Transformation (-->) (-->) (Day (-->) Identity ((:+:>) l) (:*:) (:*:)) ((:+:>) l) where
+	transformation (Straight morphism) = Straight .: \case
+		Day (Identity l :*: Straight (That r)) (Straight tensor)
+			-> Straight . That . morphism . tensor ...: l :*: r
 		Day (_ :*: Straight (This r)) _ -> Straight . This .: r
 
-instance Component (-->) (Day (-->) Identity Identity (:*:) (:*:)) ((:+:>) l) where
-	component = Straight .: \case
-		Day (Identity l :*: Identity r) (Straight m) -> Straight . That .: m (l :*: r)
+instance Transformation (-->) (-->) (Day (-->) Identity Identity (:*:) (:*:)) ((:+:>) l) where
+	transformation (Straight morphism) = Straight .: \case
+		Day (Identity l :*: Identity r) (Straight tensor) -> Straight . That . morphism . tensor ...: l :*: r
 
-instance Component (-->) (Day (-->) ((<:+:) r) ((<:+:) r) (:*:) (:*:)) ((<:+:) r) where
-	component = Straight .: \case
-		Day (Opposite (This l) :*: Opposite (This r)) (Straight m) -> Opposite . This .: m (l :*: r)
+instance Transformation (-->) (-->) (Day (-->) ((<:+:) r) ((<:+:) r) (:*:) (:*:)) ((<:+:) r) where
+	transformation (Straight morphism) = Straight .: \case
+		Day (Opposite (This l) :*: Opposite (This r)) (Straight tensor)
+			-> Opposite . This . morphism . tensor ...: l :*: r
 		Day (Opposite (That l) :*: _) _ -> Opposite . That .: l
 		Day (_ :*: Opposite (That r)) _ -> Opposite . That .: r
 
-instance Component (-->) (Day (-->) ((<:+:) r) Identity (:*:) (:*:)) ((<:+:) r) where
-	component = Straight .: \case
-		Day (Opposite (This l) :*: Identity r) (Straight m) -> Opposite . This .: m (l :*: r)
+instance Transformation (-->) (-->) (Day (-->) ((<:+:) r) Identity (:*:) (:*:)) ((<:+:) r) where
+	transformation (Straight morphism) = Straight .: \case
+		Day (Opposite (This l) :*: Identity r) (Straight tensor)
+			-> Opposite . This . morphism . tensor ...: l :*: r
 		Day (Opposite (That l) :*: _) _ -> Opposite . That .: l
 
-instance Component (-->) (Day (-->) Identity ((<:+:) r) (:*:) (:*:)) ((<:+:) r) where
-	component = Straight .: \case
-		Day (Identity l :*: Opposite (This r)) (Straight m) -> Opposite . This .: m (l :*: r)
+instance Transformation (-->) (-->) (Day (-->) Identity ((<:+:) r) (:*:) (:*:)) ((<:+:) r) where
+	transformation (Straight morphism) = Straight .: \case
+		Day (Identity l :*: Opposite (This r)) (Straight tensor)
+			-> Opposite . This . morphism . tensor ...: l :*: r
 		Day (_ :*: Opposite (That r)) _ -> Opposite . That .: r
 
-instance Component (-->) (Day (-->) Identity Identity (:*:) (:*:)) ((<:+:) r) where
-	component = Straight .: \case
-		Day (Identity l :*: Identity r) (Straight m) -> Opposite . This .: m (l :*: r)
+instance Transformation (-->) (-->) (Day (-->) Identity Identity (:*:) (:*:)) ((<:+:) r) where
+	transformation (Straight morphism) = Straight .: \case
+		Day (Identity l :*: Identity r) (Straight tensor)
+			-> Opposite . This . morphism . tensor ...: l :*: r
 
-instance Component (<--) (Day (-->) ((<:*:) r) ((<:*:) r) (:*:) (:*:)) ((<:*:) r) where
-	component = Opposite .: \case
-		Opposite (l :*: r) -> Day (Opposite (l :*: r) :*: Opposite (l :*: r)) (Straight .: \(o :*: _) -> o)
+instance Transformation (<--) (<--) (Day (-->) ((<:*:) r) ((<:*:) r) (:*:) (:*:)) ((<:*:) r) where
+	transformation (Opposite morphism) = Opposite .: \case
+		Opposite (l :*: r) -> Day (Opposite (l :*: r) :*: Opposite (l :*: r)) (Straight .: \(o :*: _) -> morphism o)
 
-instance Component (<--) (Day (-->) ((<:*:) r) Identity (:*:) (:*:)) ((<:*:) r) where
-	component = Opposite .: \case
-		Opposite (l :*: r) -> Day (Opposite (l :*: r) :*: Identity l) (Straight .: \(o :*: _) -> o)
+instance Transformation (<--) (<--) (Day (-->) ((<:*:) r) Identity (:*:) (:*:)) ((<:*:) r) where
+	transformation (Opposite morphism) = Opposite .: \case
+		Opposite (l :*: r) -> Day (Opposite (l :*: r) :*: Identity l) (Straight .: \(o :*: _) -> morphism o)
 
-instance Component (<--) (Day (-->) Identity ((<:*:) r) (:*:) (:*:)) ((<:*:) r) where
-	component = Opposite .: \case
-		Opposite (l :*: r) -> Day (Identity l :*: Opposite (l :*: r)) (Straight .: \(o :*: _) -> o)
+instance Transformation (<--) (<--) (Day (-->) Identity ((<:*:) r) (:*:) (:*:)) ((<:*:) r) where
+	transformation (Opposite morphism) = Opposite .: \case
+		Opposite (l :*: r) -> Day (Identity l :*: Opposite (l :*: r)) (Straight .: \(o :*: _) -> morphism o)
 
-instance Component (-->) ((-->) Unit) Identity where
-	component = Straight .: \case
-		Straight m -> Identity .: m Unit
+instance Transformation (-->) (-->) ((-->) Unit) Identity where
+	transformation (Straight morphism) = Straight .: \case
+		Straight m -> Identity . morphism .: m Unit
 
-instance Component (-->) ((-->) Unit) ((:+:>) l) where
-	component = Straight .: \case
-		Straight m -> Straight . That .: m Unit
+instance Transformation (-->) (-->) ((-->) Unit) ((:+:>) l) where
+	transformation (Straight morphism) = Straight .: \case
+		Straight m -> Straight . That . morphism .: m Unit
 
-instance Component (-->) ((-->) Unit) ((<:+:) r) where
-	component = Straight .: \case
-		Straight m -> Opposite . This .: m Unit
+instance Transformation (-->) (-->) ((-->) Unit) ((<:+:) r) where
+	transformation (Straight morphism) = Straight .: \case
+		Straight m -> Opposite . This . morphism .: m Unit
 
-instance Component (<--) ((-->) Unit) (Straight (:*:) l) where
-	component = Opposite .: \case
-		Straight (_ :*: r) -> Straight .: \_ -> r
+instance Transformation (<--) (<--) ((-->) Unit) (Straight (:*:) l) where
+	transformation (Opposite morphism) = Opposite .: \case
+		Straight (_ :*: r) -> Straight .: \_ -> morphism r
 
-instance Component (<--) ((-->) Unit) (Opposite (:*:) r) where
-	component = Opposite .: \case
-		Opposite (l :*: _) -> Straight .: \_ -> l
+instance Transformation (<--) (<--) ((-->) Unit) (Opposite (:*:) r) where
+	transformation (Opposite morphism) = Opposite .: \case
+		Opposite (l :*: _) -> Straight .: \_ -> morphism l
 
-instance Component (-->) ((:*:>) s =!?= (-->) s) Identity where
-	component = Straight .: \case
-		FG (Straight (s :*: Straight ms)) -> Identity .: ms s
+-- TODO: amgibous intermediate category for =!?= Functor instance
+-- instance Transformation (-->) (-->) ((:*:>) s =!?= (-->) s) Identity where
+	-- transformation (Straight morphism) = Straight .: \case
+		-- FG (Straight (s :*: Straight ms)) -> Identity . morphism .: ms s
 
-instance Component (-->) Identity ((-->) s =!?= (:*:>) s) where
-	component = Straight .: \case
-		Identity x -> FG . Straight .: \s -> Straight ...: s :*: x
+-- TODO: amgibous intermediate category for =!?= Functor instance
+-- instance Transformation (-->) (-->) Identity ((-->) s =!?= (:*:>) s) where
+	-- transformation (Straight morphism) = Straight .: \case
+		-- Identity x -> FG . Straight .: \s -> Straight ...: s :*: morphism x
 
 (->-)
 	:: Covariant Straight Functor f (->) (->)
@@ -581,26 +625,30 @@ m --/>>/-- x = (=-) ->- ((m -/>/-) -/>/- Straight x)
 	=> (source -> h target) -> f (g source) o -> h (f (g target) o)
 m -/>>/-- x = (=-) ->- ((m -/>/-) -/>/- Opposite x)
 
-(|*|) :: forall f l r o
-	. Semimonoidal Functor (:*:) (:*:) (-->) (-->) f
-	=> f l -> f r -> (l -> r -> o) -> f o
-l |*| r = \m -> component @(-->) @(Day (-->) _ _ _ _)
-	=- Day (l :*: r) (Straight .: \(l' :*: r') -> m l' r')
+-- (|*|) :: forall f l r o
+	-- . Semimonoidal Functor (:*:) (:*:) (-->) (-->) f
+	-- => f l -> f r -> (l -> r -> o) -> f o
+-- l |*| r = \m -> component @(-->) @(Day (-->) _ _ _ _)
+	-- =- Day (l :*: r) (Straight .: \(l' :*: r') -> m l' r')
 
-(|+|) :: forall f l r o
-	. Semimonoidal Functor (:+:) (:+:) (-->) (-->) f
-	=> (l -> o) -> (r -> o) -> (f l :+: f r) -> f o
-l |+| r = \lr -> component @(-->) @(Day (-->) _ _ _ _)
-	=- Day lr (Straight .: \case { This l' -> l l'; That r' -> r r' })
+-- TODO: use Transformation instead of Component
+-- (|+|) :: forall f l r o
+	-- . Semimonoidal Functor (:+:) (:+:) (-->) (-->) f
+	-- => (l -> o) -> (r -> o) -> (f l :+: f r) -> f o
+-- l |+| r = \lr -> component @(-->) @(Day (-->) _ _ _ _)
+	-- =- Day lr (Straight .: \case { This l' -> l l'; That r' -> r r' })
 
-point :: Monoidal Functor (:*:) (:*:) (-->) (-->) f => o -> f o
-point x = component @(-->) @((-->) (Neutral (:*:))) =- (Straight .: \Unit -> x)
+-- TODO: not really sure about morphisms in components
+-- point :: Monoidal Functor (:*:) (:*:) (-->) (-->) f => o -> f o
+-- point x = component @(-->) @((-->) (Neutral (:*:))) =- (Straight .: \Unit -> x)
 
-extract :: Monoidal Functor (:*:) (:*:) (<--) (-->) f => f o -> o
-extract x = component @(<--) @((-->) (Neutral (:*:))) =- x =- Unit
+-- TODO: not really sure about morphisms in components
+-- extract :: Monoidal Functor (:*:) (:*:) (<--) (-->) f => f o -> o
+-- extract x = component @(<--) @((-->) (Neutral (:*:))) =- x =- Unit
 
-empty :: Monoidal Functor (:*:) (:+:) (-->) (-->) f => f o
-empty = component @(-->) @((-->) (Neutral (:+:))) =- Straight absurd
+-- TODO: not really sure about morphisms in components
+-- empty :: Monoidal Functor (:*:) (:+:) (-->) (-->) f => f o
+-- empty = component @(-->) @((-->) (Neutral (:+:))) =- Straight absurd
 
 (=-=) :: forall m f source target . (Semigroupoid m, Casting m f)
 	=> m .: Casted f source .: Casted f target -> m .: f source .: f target
@@ -660,36 +708,41 @@ instance
 	) => Functor from to (f =!?= g) where
 	map m = (=-=) ((-||-) @from @between @to @f @g m)
 
-instance
-	( Component (-->) (Day (-->) f f (:*:) (:*:)) f
-	, Component (-->) (Day (-->) g g (:*:) (:*:)) g
-	, Covariant Straight Functor f (->) (->)
-	) => Component (-->) (Day (-->) (f =!?= g) (f =!?= g) (:*:) (:*:)) (f =!?= g) where
-	component = Straight .: \(Day (FG l :*: FG r) m) ->
+-- TODO: ambigous intermediate category for =!?= Functor instance
+-- instance
+	-- ( Component (-->) (Day (-->) f f (:*:) (:*:)) f
+	-- , Component (-->) (Day (-->) g g (:*:) (:*:)) g
+	-- , Covariant Straight Functor f (->) (->)
+	-- ) => Transformation (-->) (-->) (Day (-->) (f =!?= g) (f =!?= g) (:*:) (:*:)) (f =!?= g) where
+	-- transformation (Straight morphism) = Straight .: \(Day (FG l :*: FG r) tensor) ->
 	-- TODO: find a way to simplify this instance
-		FG ...: (=-) (component @(-->) @(Day (-->) g g (:*:) (:*:)) @g) . (\x -> Day x m)
-			->- (=-) (component @(-->) @(Day (-->) f f (:*:) (:*:)) @f) (Day (l :*: r) identity)
+		-- FG ...: (=-) (component @(-->) @(Day (-->) g g (:*:) (:*:)) @g) . (\x -> Day x (Straight morphism . tensor))
+			-- ->- (=-) (component @(-->) @(Day (-->) f f (:*:) (:*:)) @f) (Day (l :*: r) identity)
 
-instance
-	( Covariant Straight Functor f (->) (->)
-	, Covariant Straight Functor g (->) (->)
-	) => Component (-->) (Day (-->) (f =!?= g) Identity (:*:) (:*:)) (f =!?= g) where
-	component = Straight .: \(Day (FG l :*: Identity r) m) ->
-		-- TODO: looks like an adjunction
-		FG ....: (m =-) . (:*: r) ->>- l
+-- TODO: ambigous intermediate category for =!?= Functor instance
+-- instance
+	-- ( Covariant Straight Functor f (->) (->)
+	-- , Covariant Straight Functor g (->) (->)
+	-- ) => Transformation (-->) (-->) (Day (-->) (f =!?= g) Identity (:*:) (:*:)) (f =!?= g) where
+	-- transformation (Straight morphism) = Straight .: \(Day (FG l :*: Identity r) tensor) ->
+		-- -- TODO: looks like an adjunction
+		-- FG ....: (Straight morphism . tensor =-) . (:*: r) ->>- l
 
-instance
-	( Covariant Straight Functor f (->) (->)
-	, Covariant Straight Functor g (->) (->)
-	) => Component (-->) (Day (-->) Identity (f =!?= g) (:*:) (:*:)) (f =!?= g) where
-	component = Straight .: \(Day (Identity l :*: FG r) m) ->
-		FG ....: (m =-) . (l :*:) ->>- r
+-- TODO: ambigous intermediate category for =!?= Functor instance
+-- instance
+	-- ( Covariant Straight Functor f (->) (->)
+	-- , Covariant Straight Functor g (->) (->)
+	-- ) => Transformation (-->) (-->) (Day (-->) Identity (f =!?= g) (:*:) (:*:)) (f =!?= g) where
+	-- transformation (Straight morphism) = Straight .: \(Day (Identity l :*: FG r) tensor) ->
+		-- FG ....: (Straight morphism . tensor =-) . (l :*:) ->>- r
 
-instance
-	( Monoidal Functor (:*:) (:*:) (-->) (-->) f
-	, Monoidal Functor (:*:) (:*:) (-->) (-->) g
-	) => Component (-->) ((-->) Unit) (f =!?= g) where
-	component = Straight .: \(Straight m) -> FG . point @f . point @g .: m Unit
+-- TODO: ambigous intermediate category for =!?= Functor instance
+-- instance
+	-- ( Monoidal Functor (:*:) (:*:) (-->) (-->) f
+	-- , Monoidal Functor (:*:) (:*:) (-->) (-->) g
+	-- ) => Transformation (-->) (-->) ((-->) Unit) (f =!?= g) where
+	-- transformation (Straight morphism) = Straight .: \(Straight tensor)
+		-- -> FG . point @f . point @g . morphism .: tensor Unit
 
 instance
 	( Functor from between f'
@@ -716,9 +769,9 @@ instance Casting (->) f => Casting (-->) f where
 	(=-) = Straight (=-)
 	(-=) = Straight (-=)
 
-instance
-	( Casting (->) f
-	, Monoidal Functor (:*:) (:*:) (-->) (-->) g
-	) => Casting ((-/->) g) f where
-	(=-) = Kleisli . Straight .: point . (=-)
-	(-=) = Kleisli . Straight .: point . (-=)
+-- instance
+	-- ( Casting (->) f
+	-- , Monoidal Functor (:*:) (:*:) (-->) (-->) g
+	-- ) => Casting ((-/->) g) f where
+	-- (=-) = Kleisli . Straight .: point . (=-)
+	-- (-=) = Kleisli . Straight .: point . (-=)

@@ -282,3 +282,4 @@
 
 # 0.1.4
 * Define `Generate` pattern
+* Remove `Component` typeclass
