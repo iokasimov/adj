@@ -228,15 +228,11 @@ type family Traversable x source target g f where
 	Traversable Functor source target g f =
 		Functor .: Kleisli g (Straight source) .: Kleisli g (Straight target) .: f
 
--- TODO: not really sure about morphisms in components
--- TODO: use Transformation instead of Component
--- type family Adjunction source target f g where
-	-- Adjunction source target f g =
-		-- ( Functor target source f
-		-- , Functor source target g
-		-- , Component .: Straight source .: (f =!?= g) .: Identity
-		-- , Component .: Straight target .: Identity .: (g =!?= f)
-		-- )
+type family Adjunction f g from to where
+	Adjunction f g from to =
+		( Transformation .: to .: from .: FG f g .: Identity
+		, Transformation .: from .: to .: Identity .: FG g f
+		)
 
 instance Semigroupoid (->) where
 	g . f = \x -> g (f x)
