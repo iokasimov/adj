@@ -222,6 +222,11 @@ type family Monoidal x source target from to tensor f where
 		, Transformation .: from .: to .: tensor (Neutral target) .: f
 		)
 
+type Monad f to = 
+	( Transformation .: to .: to .: FG f f .: f
+	, Transformation .: to .: to .: Identity .: f
+	)
+
 -- TODO: we need to add laws here
 -- TODO: turn into a typeclass
 type family Traversable x source target g f where

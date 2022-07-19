@@ -287,3 +287,4 @@
 * Change `Monoidal` type family definition
 * Define `join` method
 * Change `Adjunction` type family definition
+* Define `Monad` type alias
