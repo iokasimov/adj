@@ -225,9 +225,14 @@ type family Monoidal x source target from to tensor f where
 		, Transformation .: from .: to .: tensor (Neutral target) .: f
 		)
 
-type Monad f to = 
-	( Transformation .: to .: to .: FG f f .: f
-	, Transformation .: to .: to .: Identity .: f
+type Monad f to =
+	( Transformation .: Straight to .: Straight to .: FG f f .: f
+	, Transformation .: Straight to .: Straight to .: Identity .: f
+	)
+
+type Comonad f to =
+	( Transformation .: Opposite to .: Opposite to .: FG f f .: f
+	, Transformation .: Opposite to .: Opposite to .: Identity .: f
 	)
 
 -- TODO: we need to add laws here

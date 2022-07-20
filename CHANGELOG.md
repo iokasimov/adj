@@ -289,3 +289,4 @@
 * Change `Adjunction` type family definition
 * Define `Monad` type alias
 * Define `Endo` type family
+* Define `Comonad` type alias
