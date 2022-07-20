@@ -200,6 +200,9 @@ type family Covariant m functor f from to where
 	Covariant m Functor functor from to
 		= Functor (m from) (m to) functor
 
+type family Endo m functor f to where
+	Endo m Functor f to = Functor (m to) (m to) f
+
 type family Contravariant m functor f from to where
 	Contravariant m Functor functor from to
 		= Functor (m from) (OP (m to)) functor
