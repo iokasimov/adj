@@ -291,3 +291,4 @@
 * Define `Endo` type family
 * Define `Comonad` type alias
 * Define `return` method
+* Define `GF` scheme

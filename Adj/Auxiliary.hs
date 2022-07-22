@@ -68,6 +68,16 @@ instance Casting (->) (FG f g) where
 	(=-) ~(FG x) = x
 	(-=) = FG
 
+newtype GF f g o = GF (g (f o))
+
+type (=?!=) = GF
+
+type instance Casted (f =?!= g) a = g (f a)
+
+instance Casting (->) (GF f g) where
+	(=-) ~(GF x) = x
+	(-=) = GF
+
 newtype FGF f g f' o = FGF (f (g (f' o)))
 
 type (=!?!=) = FGF
