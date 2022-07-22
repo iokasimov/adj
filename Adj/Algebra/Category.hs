@@ -187,14 +187,13 @@ instance Functor .: Kleisli f target .: target .: f
 	=> Semigroupoid (Kleisli f target) where
 		g . Kleisli f = Kleisli .: map g . f
 
--- TODO: use Transformation instead of Component
--- instance
-	-- ( Category target
-	-- , Functor (Kleisli f target) target f
-	-- , Component target Identity f
-	-- , Casting target Identity
-	-- ) => Category (Kleisli f target) where
-	-- identity = Kleisli .: component @_ @Identity @f . (-=) @_ . identity
+instance
+	( Monad f (Straight to)
+	, Transformation (Straight to) (Straight to) Identity f
+	, Functor (Kleisli f (Straight to)) (Straight to) f
+	, Casting (Straight to) Identity
+	) => Category (Kleisli f (Straight to)) where
+	identity = Kleisli .: return
 
 type family Covariant m functor f from to where
 	Covariant m Functor functor from to
@@ -652,6 +651,12 @@ empty = component @(-->) @(-->) @((-->) (Neutral (:+:))) =- Straight absurd
 
 join :: Transformation .: (-->) .: (-->) .: FG f f .: f => f (f o) -> f o
 join x = component @(-->) @(-->) =- FG x
+
+return :: forall to f o
+	. Transformation .: to .: to .: Identity .: f
+	=> Casting to Identity
+	=> to .: o .: f o
+return = component @to @to . (-=) @to @Identity
 
 (=-=) :: forall m f source target . (Semigroupoid m, Casting m f)
 	=> m .: Casted f source .: Casted f target -> m .: f source .: f target

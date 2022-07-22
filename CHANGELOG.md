@@ -290,3 +290,4 @@
 * Define `Monad` type alias
 * Define `Endo` type family
 * Define `Comonad` type alias
+* Define `return` method
