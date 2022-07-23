@@ -293,3 +293,4 @@
 * Define `return` method
 * Define `GF` scheme
 * Change `Traversable` type family definition
+* Change `Bindable` type family definition

@@ -225,8 +225,8 @@ type family Monoidal x source target from to tensor f where
 		)
 
 type Monad f to =
-	( Transformation .: Straight to .: Straight to .: FG f f .: f
-	, Transformation .: Straight to .: Straight to .: Identity .: f
+	( Bindable Functor f to
+	, Transformation .: to .: to .: Identity .: f
 	)
 
 type Comonad f to =
@@ -238,6 +238,10 @@ type Comonad f to =
 -- type family Traversable x source target g f where
 	-- Traversable Functor source target g f =
 		-- Functor .: Kleisli g (Straight source) .: Kleisli g (Straight target) .: f
+
+-- TODO: can we somehow include a notion about semigroupoids/semifunctors here?
+type family Bindable x f to where
+	Bindable Functor f to = Transformation .: to .: to .: FG f f .: f
 
 -- TODO: we need to add laws here, maybe inherit them from functor composition
 type family Traversable x f g to where
