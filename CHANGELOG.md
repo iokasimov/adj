@@ -294,3 +294,5 @@
 * Define `GF` scheme
 * Change `Traversable` type family definition
 * Change `Bindable` type family definition
+* Define `Pointed` type family
+

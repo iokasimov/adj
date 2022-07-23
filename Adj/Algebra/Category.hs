@@ -224,20 +224,15 @@ type family Monoidal x source target from to tensor f where
 		, Transformation .: from .: to .: tensor (Neutral target) .: f
 		)
 
-type Monad f to =
-	( Bindable Functor f to
-	, Transformation .: to .: to .: Identity .: f
-	)
+type Monad f to = (Bindable Functor f to, Pointed Functor f to)
 
 type Comonad f to =
 	( Transformation .: Opposite to .: Opposite to .: FG f f .: f
 	, Transformation .: Opposite to .: Opposite to .: Identity .: f
 	)
 
--- TODO: turn into a typeclass
--- type family Traversable x source target g f where
-	-- Traversable Functor source target g f =
-		-- Functor .: Kleisli g (Straight source) .: Kleisli g (Straight target) .: f
+type family Pointed x f to where
+	Pointed Functor f to = Transformation .: to .: to .: Identity .: f
 
 -- TODO: can we somehow include a notion about semigroupoids/semifunctors here?
 type family Bindable x f to where
