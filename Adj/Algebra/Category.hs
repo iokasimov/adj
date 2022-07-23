@@ -4,7 +4,7 @@
 
 module Adj.Algebra.Category where
 
-import Adj.Auxiliary (type (.:), type (=!?=), FG (FG), GF, type (=!?!=), type (=!!??=), Casted, Casting ((-=), (=-)))
+import Adj.Auxiliary (type (.:), type (=!?=), FG (FG), type (=?!=), GF, type (=!?!=), type (=!!??=), Casted, Casting ((-=), (=-)))
 import Adj.Algebra.Set ((:*:) ((:*:)), (:+:) (This, That), Unit (Unit), Neutral, absurd)
 
 infixr 9 .
@@ -269,6 +269,9 @@ type (<--) = Opposite (->)
 
 instance Functor (-->) (<--) ((<--) o) where
 	map (Straight m) = Opposite .: (Opposite m .)
+
+instance Functor (<--) (-->) ((<--) o) where
+	map (Opposite m) = Straight .: (Opposite m .)
 
 type (-/->) f = Kleisli f (-->)
 
