@@ -4,7 +4,7 @@
 
 module Adj.Algebra.Category where
 
-import Adj.Auxiliary (type (.:), type (=!?=), FG (FG), type (=?!=), GF, type (=!?!=), type (=!!??=), Casted, Casting ((-=), (=-)))
+import Adj.Auxiliary (type (.:), type (<?>) ((<?>)), type (=!?=), FG (FG), type (=?!=), GF, type (=!?!=), type (=!!??=), Casted, Casting ((-=), (=-)))
 import Adj.Algebra.Set ((:*:) ((:*:)), (:+:) (This, That), Unit (Unit), Neutral, absurd)
 
 infixr 9 .
@@ -39,6 +39,8 @@ infixl 4 -/>/--, -/>>/-, -->>--, -/>>/=
 infixl 5 ->>>-, -->--, ->>--, -/>/-, -/>>-
 infixl 6 ->>-, -><-, -<>-, ->--, -/>-
 infixl 7 ->-, -<-, ->=
+
+infixl 5 <-||-
 
 {- |
 > * Associativity: f . (g . h) ≡ (f . g) . h
@@ -800,3 +802,16 @@ instance Casting (->) f => Casting (-->) f where
 	-- ) => Casting ((-/->) g) f where
 	-- (=-) = Kleisli . Straight .: point . (=-)
 	-- (-=) = Kleisli . Straight .: point . (-=)
+
+type (>>/>>) f g = (Functor (-->) (-->) f, Functor (-->) (-->) g)
+type (></<>) f g = (Functor (-->) (<--) f, Functor (<--) (-->) g)
+type (<</<>) f g = (Functor (<--) (<--) f, Functor (<--) (-->) g)
+type (<>/>>) f g = (Functor (<--) (<--) f, Functor (<--) (-->) g)
+
+instance {-# OVERLAPS #-} (f >>/>> g) => ((f >>/>> g) <?> d) where (<?>) = \r _ -> r
+instance d => ((((<--) o) >>/>> ((<--) o)) <?> d) where (<?>) = \_ r -> r
+
+(<-||-) :: forall f g source target
+	. (f >>/>> g) <?> (f ></<> g)
+	=> (source -> target) -> f (g source) -> f (g target)
+(<-||-) = (<?>) @(f >>/>> g) @(f ></<> g) (->>-) (-<<-)
