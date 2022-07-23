@@ -507,6 +507,15 @@ instance Transformation (<--) (<--) ((-->) Unit) (Opposite (:*:) r) where
 	transformation (Opposite morphism) = Opposite .: \case
 		Opposite (l :*: _) -> Straight .: \_ -> morphism l
 
+-- TODO: it would be nice to generatlize this instance with contstraint unions
+-- (f =!? g) -> g: if f is Monoidal Functor (:*:) (:*:) (<--) (<--) (-->)
+-- (f =!? g) -> g: if f is Co Pointed
+-- (f =!? g) -> f: if g is Monoidal Functor (:*:) (:*:) (<--) (<--) (-->)
+-- (f =!? g) -> f: if g is Co Pointed
+-- instance Transformation (-->) (-->) (Identity =!?= Identity) Identity where
+-- 	transformation (Straight morphism) = Straight .: \case
+-- 		FG (Identity x) -> morphism ->- x
+
 -- TODO: amgibous intermediate category for =!?= Functor instance
 -- instance Transformation (-->) (-->) ((:*:>) s =!?= (-->) s) Identity where
 	-- transformation (Straight morphism) = Straight .: \case

@@ -3,7 +3,7 @@
 
 module Adj.Algebra.Set where
 
-import Adj.Auxiliary (Structural (Structural), type (=!?=), type (=!?!=), type (=!!??=), FG (FG), FGF (FGF), FFGH (FFGH))
+import Adj.Auxiliary (type (<?>) ((<?>)), Structural (Structural), type (=!?=), type (=!?!=), type (=!!??=), FG (FG), FGF (FGF), FFGH (FFGH))
 
 infixr 6 :+*:
 infixr 7 :*:, :+:, =/=
@@ -124,3 +124,6 @@ type (=:+*:=) lf rf = (=:+:=) ((=:+:=) lf rf) ((=:*:=) lf rf)
 
 deriving via (Structural (f (g o) (h o))) instance
 	Setoid (f (g o) (h o)) => Setoid ((=!!??=) f g h o)
+
+-- Impossible constraint is used to skip first constraint
+instance d => (Setoid Void <?> d) where (<?>) = \_ r -> r
