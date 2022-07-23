@@ -36,8 +36,8 @@ infixl 7 =-=, -=-, =--
 infixl 2 --/>>/--
 infixl 3 --/>/--, -/>>/--
 infixl 4 -/>/--, -/>>/-, -->>--, -/>>/=
-infixl 5 ->>>-, -->--, ->>--, -/>/- --, -/>>-
-infixl 6 ->>-, -><-, -<>-, ->-- -- , -/>-
+infixl 5 ->>>-, -->--, ->>--, -/>/-, -/>>-
+infixl 6 ->>-, -><-, -<>-, ->--, -/>-
 infixl 7 ->-, -<-, ->=
 
 {- |
@@ -582,18 +582,16 @@ m -->>-- x = (--||--) @(-->) @(-->) @(-->) (Straight m) =- x
 
 -- TOOD: define -<<<-, -><<-, -><>-, -<<>-, -<>>-, -<><-
 
--- TODO: return back after changing Bindable type family
--- (-/>-) :: forall f source target
-	-- . Bindable Functor (->) (->) f
-	-- => (source -> f target) -> f source -> f target
--- m -/>- x = map @((-/->) f) @(-->) (Kleisli (Straight m)) =- x
+(-/>-)
+	:: Bindable Functor f (-->)
+	=> (source -> f target) -> f source -> f target
+m -/>- x = component @(-->) @(-->) @(FG _ _) =- FG (m ->- x)
 
--- TODO: return back after changing Bindable type family
--- (-/>>-)
-	-- :: Covariant Straight Functor f (->) (->)
-	-- => Bindable Functor (->) (->) g
-	-- => (source -> g target) -> f (g source) -> f (g target)
--- m -/>>- x = (m -/>-) ->- x
+(-/>>-)
+	:: Covariant Straight Functor f (->) (->)
+	=> Bindable Functor g (-->)
+	=> (source -> g target) -> f (g source) -> f (g target)
+m -/>>- x = (m -/>-) ->- x
 
 (-/>/-) :: Traversable Functor f g (-->)
 	=> (source -> g target) -> f source -> g (f target)
