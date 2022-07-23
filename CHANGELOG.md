@@ -292,3 +292,4 @@
 * Define `Comonad` type alias
 * Define `return` method
 * Define `GF` scheme
+* Change `Traversable` type family definition

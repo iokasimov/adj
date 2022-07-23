@@ -4,7 +4,7 @@
 
 module Adj.Algebra.Category where
 
-import Adj.Auxiliary (type (.:), type (=!?=), FG (FG), type (=!?!=), type (=!!??=), Casted, Casting ((-=), (=-)))
+import Adj.Auxiliary (type (.:), type (=!?=), FG (FG), GF (GF), type (=!?!=), type (=!!??=), Casted, Casting ((-=), (=-)))
 import Adj.Algebra.Set ((:*:) ((:*:)), (:+:) (This, That), Unit (Unit), Neutral, absurd)
 
 infixr 9 .
@@ -33,9 +33,10 @@ infixl 5 =----
 infixl 6 =---
 infixl 7 =-=, -=-, =--
 
-infixl 2 --/>>/--
-infixl 3 --/>/--, -/>>/--
-infixl 4 -/>/--, -/>>/-, -->>--, -/>>/=
+-- infixl 2 --/>>/--
+-- infixl 3 --/>/--, -/>>/--
+-- infixl 4 -/>/--, -/>>/-, -->>--, -/>>/=
+infixl 4 -->>--
 infixl 5 ->>>-, -->--, ->>-- -- , -/>>-, -/>/-
 infixl 6 ->>-, -><-, -<>-, ->-- -- , -/>-
 infixl 7 ->-, -<-, ->=
@@ -236,9 +237,13 @@ type Comonad f to =
 
 -- TODO: we need to add laws here
 -- TODO: turn into a typeclass
-type family Traversable x source target g f where
-	Traversable Functor source target g f =
-		Functor .: Kleisli g (Straight source) .: Kleisli g (Straight target) .: f
+-- type family Traversable x source target g f where
+	-- Traversable Functor source target g f =
+		-- Functor .: Kleisli g (Straight source) .: Kleisli g (Straight target) .: f
+
+type family Traversable x f g to where
+	Traversable Functor f g to =
+		Transformation .: to .: to .: GF f g .: FG f g
 
 type family Adjunction f g from to where
 	Adjunction f g from to =
@@ -590,43 +595,43 @@ m -->>-- x = (--||--) @(-->) @(-->) @(-->) (Straight m) =- x
 	-- => (source -> g target) -> f (g source) -> f (g target)
 -- m -/>>- x = (m -/>-) ->- x
 
-(-/>/-) :: Traversable Functor (->) (->) g f
-	=> (source -> g target) -> f source -> g (f target)
-m -/>/- x = map @((-/->) _) @((-/->) _) .: Kleisli (Straight m) =- x
+-- (-/>/-) :: Traversable Functor g f (-->)
+	-- => (source -> g target) -> f source -> g (f target)
+-- m -/>/- x = map @((-/->) _) @((-/->) _) .: Kleisli (Straight m) =- x
 
-(-/>>/-)
-	:: Traversable Functor (->) (->) h f
-	=> Traversable Functor (->) (->) h g
-	=> (source -> h target) -> f (g source) -> h (f (g target))
-m -/>>/- x = (m -/>/-) -/>/- x
+-- (-/>>/-)
+	-- :: Traversable Functor h f (-->)
+	-- => Traversable Functor h g (-->)
+	-- => (source -> h target) -> f (g source) -> h (f (g target))
+-- m -/>>/- x = (m -/>/-) -/>/- x
 
-(--/>/--)
-	:: Traversable Functor (->) (->) h (Straight f o)
-	=> Traversable Functor (->) (->) h g
-	=> Covariant Straight Functor h (->) (->)
-	=> (source -> h target) -> f o source -> h (f o target)
-m --/>/-- x = (=-) ->- (m -/>/- Straight x)
+-- (--/>/--)
+	-- :: Traversable Functor h (Straight f o) (-->)
+	-- => Traversable Functor h g (-->)
+	-- => Covariant Straight Functor h (->) (->)
+	-- => (source -> h target) -> f o source -> h (f o target)
+-- m --/>/-- x = (=-) ->- (m -/>/- Straight x)
 
-(-/>/--)
-	:: Traversable Functor (->) (->) h (Opposite f o)
-	=> Traversable Functor (->) (->) h g
-	=> Covariant Straight Functor h (->) (->)
-	=> (source -> h target) -> f source o -> h (f target o)
-m -/>/-- x = (=-) ->- (m -/>/- Opposite x)
+-- (-/>/--)
+	-- :: Traversable Functor h (Opposite f o) (-->)
+	-- => Traversable Functor h g (-->)
+	-- => Covariant Straight Functor h (->) (->)
+	-- => (source -> h target) -> f source o -> h (f target o)
+-- m -/>/-- x = (=-) ->- (m -/>/- Opposite x)
 
-(--/>>/--)
-	:: Traversable Functor (->) (->) h (Straight f o)
-	=> Traversable Functor (->) (->) h g
-	=> Covariant Straight Functor h (->) (->)
-	=> (source -> h target) -> f o (g source) -> h (f o (g target))
-m --/>>/-- x = (=-) ->- ((m -/>/-) -/>/- Straight x)
+-- (--/>>/--)
+	-- :: Traversable Functor h (Straight f o) (-->)
+	-- => Traversable Functor h g (-->)
+	-- => Covariant Straight Functor h (->) (->)
+	-- => (source -> h target) -> f o (g source) -> h (f o (g target))
+-- m --/>>/-- x = (=-) ->- ((m -/>/-) -/>/- Straight x)
 
-(-/>>/--)
-	:: Traversable Functor (->) (->) h (Opposite f o)
-	=> Traversable Functor (->) (->) h g
-	=> Covariant Straight Functor h (->) (->)
-	=> (source -> h target) -> f (g source) o -> h (f (g target) o)
-m -/>>/-- x = (=-) ->- ((m -/>/-) -/>/- Opposite x)
+-- (-/>>/--)
+	-- :: Traversable Functor h (Opposite f o) (-->)
+	-- => Traversable Functor h g (-->)
+	-- => Covariant Straight Functor h (->) (->)
+	-- => (source -> h target) -> f (g source) o -> h (f (g target) o)
+-- m -/>>/-- x = (=-) ->- ((m -/>/-) -/>/- Opposite x)
 
 (|*|) :: forall f l r o
 	. Semimonoidal Functor (:*:) (:*:) (-->) (-->) (-->) f
@@ -637,7 +642,7 @@ l |*| r = \tensor -> component @(-->) @(-->) =- Day (l :*: r)
 (|+|) :: forall f l r o
 	. Semimonoidal Functor (:+:) (:+:) (-->) (-->) (-->) f
 	=> (l -> o) -> (r -> o) -> (f l :+: f r) -> f o
-l |+| r = \lr -> component @(-->) @(-->) =- Day lr 
+l |+| r = \lr -> component @(-->) @(-->) =- Day lr
 	(Straight .: \case { This lo -> l lo; That ro -> r ro })
 
 point :: Monoidal Functor (:*:) (:*:) (-->) (-->) (-->) f => o -> f o
@@ -657,6 +662,8 @@ return :: forall to f o
 	=> Casting to Identity
 	=> to .: o .: f o
 return = component @to @to . (-=) @to @Identity
+
+-- TODO: merge `point` and `return` in `intro` method
 
 (=-=) :: forall m f source target . (Semigroupoid m, Casting m f)
 	=> m .: Casted f source .: Casted f target -> m .: f source .: f target
@@ -702,12 +709,12 @@ return = component @to @to . (-=) @to @Identity
 	=> (source -> target) -> f' source -> f target
 m ->= x = map @(-->) @(-->) (Straight m) =- ((=-) x)
 
-(-/>>/=)
-	:: Traversable Functor (->) (->) h f
-	=> Traversable Functor (->) (->) h g
-	=> (Casting (->) f', Casted f' source ~ f (g source))
-	=> (source -> h target) -> f' source -> h (f (g target))
-m -/>>/= x = (m -/>/-) -/>/- ((=-) x)
+-- (-/>>/=)
+	-- :: Traversable Functor h f (-->)
+	-- => Traversable Functor h g (-->)
+	-- => (Casting (->) f', Casted f' source ~ f (g source))
+	-- => (source -> h target) -> f' source -> h (f (g target))
+-- m -/>>/= x = (m -/>/-) -/>/- ((=-) x)
 
 instance
 	( Functor between to f
