@@ -4,7 +4,7 @@
 
 module Adj.Algebra.Category where
 
-import Adj.Auxiliary (type (.:), type (<?>) ((<?>)), type (=!?=), FG (FG), type (=?!=), GF, type (=!?!=), type (=!!??=), Casted, Casting ((-=), (=-)))
+import Adj.Auxiliary (type (.:), type (<?>) ((<?>)), type (=!?=), FG (FG), type (=?!=), GF (GF), type (=!?!=), type (=!!??=), Casted, Casting ((-=), (=-)))
 import Adj.Algebra.Set ((:*:) ((:*:)), (:+:) (This, That), Unit (Unit), Neutral, absurd)
 
 infixr 9 .
@@ -734,6 +734,14 @@ instance
 	, Casting to (f =!?= g)
 	) => Functor from to (f =!?= g) where
 	map m = (=-=) ((-||-) @from @between @to @f @g m)
+
+instance {-# OVERLAPS #-}
+	(f >>/>> g) <?> (f ></<> g) => Functor (-->) (-->) (f =!?= g) where
+	map (Straight m) = Straight .: \(FG x) -> FG .: (<-||-) @f @g m x
+
+instance {-# OVERLAPS #-}
+	(g >>/>> f) <?> (g ></<> f) => Functor (-->) (-->) (f =?!= g) where
+	map (Straight m) = Straight .: \(GF x) -> GF .: (<-||-) @g @f m x
 
 -- TODO: ambigous intermediate category for =!?= Functor instance
 -- instance
