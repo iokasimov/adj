@@ -475,10 +475,10 @@ instance Transformation (<--) (<--) ((-->) Unit) (Opposite (:*:) r) where
 	=> (source -> target) -> f source -> f target
 m ->>- x = map @(-->) @(-->) (Straight m) =- x
 
-(-<-)
+(-<<-)
 	:: Contravariant Straight Functor f (->) (->)
 	=> (source -> target) -> f target -> f source
-m -<- x = map @(-->) @(<--) (Straight m) =- x
+m -<<- x = map @(-->) @(<--) (Straight m) =- x
 
 (->>>-)
 	:: Covariant Straight Functor f (->) (->)
@@ -498,18 +498,18 @@ m -><- x = (-||-) @(-->) @(-->) @(<--) (Straight m) =- x
 	=> (source -> target) -> f (g target) -> f (g source)
 m -<>- x = (-||-) @(<--) @(-->) @(-->) (Opposite m) =- x
 
-(-<<-)
+(-<<<-)
 	:: Contravariant Straight Functor f (->) (->)
 	=> Contravariant Opposite Functor g (->) (->)
 	=> (source -> target) -> f (g source) -> f (g target)
-m -<<- x = (-||-) @(<--) @(-->) @(<--) (Opposite m) =- x
+m -<<<- x = (-||-) @(<--) @(-->) @(<--) (Opposite m) =- x
 
--- (->>>-)
-	-- :: Covariant Straight Functor f (->) (->)
-	-- => Covariant Straight Functor g (->) (->)
-	-- => Covariant Straight Functor h (->) (->)
-	-- => (source -> target) -> f (g (h source)) -> f (g (h target))
--- m ->>>- x = (-|||-) @(-->) @(-->) @(-->) @(-->) (Straight m) =- x
+(->>>>-)
+	:: Covariant Straight Functor f (->) (->)
+	=> Covariant Straight Functor g (->) (->)
+	=> Covariant Straight Functor h (->) (->)
+	=> (source -> target) -> f (g (h source)) -> f (g (h target))
+m ->>>>- x = (-|||-) @(-->) @(-->) @(-->) @(-->) (Straight m) =- x
 
 (->--)
 	:: Covariant Straight Functor (Opposite f o) (->) (->)
@@ -761,4 +761,4 @@ instance d => ((((<--) o) >>/>> ((<--) o)) <?> d) where (<?>) = \_ r -> r
 (<-||-) :: forall f g source target
 	. (f >>/>> g) <?> (f ></<> g)
 	=> (source -> target) -> f (g source) -> f (g target)
-(<-||-) = (<?>) @(f >>/>> g) @(f ></<> g) (->>>-) (-<<-)
+(<-||-) = (<?>) @(f >>/>> g) @(f ></<> g) (->>>-) (-<<<-)
