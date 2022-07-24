@@ -511,29 +511,27 @@ m -<><- x = (-||-) @(<--) @(-->) @(<--) (Opposite m) =- x
 	=> (source -> target) -> f (g (h source)) -> f (g (h target))
 m ->>>>- x = (-|||-) @(-->) @(-->) @(-->) @(-->) (Straight m) =- x
 
-(->--)
-	:: Functor (-->) (-->) (Opposite f o)
-	=> (source -> target) -> f source o -> f target o
-m ->-- x = (-|--) @(-->) @(-->) (Straight m) =- x
-
-(-->--)
-	:: Functor (-->) (-->) (Straight f o)
-	=> (source -> target) -> f o source -> f o target
-m -->-- x = (--|--) @(-->) @(-->) (Straight m) =- x
-
 (->>--)
 	:: Functor (-->) (-->) (Opposite f o)
-	=> Functor (-->) (-->) g
-	=> (source -> target) -> f (g source) o -> f (g target) o
-m ->>-- x = (-||--) @(-->) @(-->) @(-->) (Straight m) =- x
+	=> (source -> target) -> f source o -> f target o
+m ->>-- x = (-|--) @(-->) @(-->) (Straight m) =- x
 
 (-->>--)
 	:: Functor (-->) (-->) (Straight f o)
+	=> (source -> target) -> f o source -> f o target
+m -->>-- x = (--|--) @(-->) @(-->) (Straight m) =- x
+
+(->>>--)
+	:: Functor (-->) (-->) (Opposite f o)
+	=> Functor (-->) (-->) g
+	=> (source -> target) -> f (g source) o -> f (g target) o
+m ->>>-- x = (-||--) @(-->) @(-->) @(-->) (Straight m) =- x
+
+(-->>>--)
+	:: Functor (-->) (-->) (Straight f o)
 	=> Functor (-->) (-->) g
 	=> (source -> target) -> f o (g source) -> f o (g target)
-m -->>-- x = (--||--) @(-->) @(-->) @(-->) (Straight m) =- x
-
--- TOOD: define -<<<-, -><<-, -><>-, -<<>-, -<>>-, -<><-
+m -->>>-- x = (--||--) @(-->) @(-->) @(-->) (Straight m) =- x
 
 (-/>-)
 	:: Bindable Functor f (-->)
