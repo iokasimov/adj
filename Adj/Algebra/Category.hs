@@ -804,6 +804,11 @@ instance Casting (->) f => Casting (-->) f where
 	(=-) = Straight (=-)
 	(-=) = Straight (-=)
 
+(<-|-)
+	:: Covariant Straight Functor f (->) (->)
+	=> (source -> target) -> f source -> f target
+(<-|-) = (->-)
+
 type (>>/>>) f g = (Functor (-->) (-->) f, Functor (-->) (-->) g)
 type (></<>) f g = (Functor (-->) (<--) f, Functor (<--) (-->) g)
 type (<</<>) f g = (Functor (<--) (<--) f, Functor (<--) (-->) g)

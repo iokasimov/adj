@@ -48,6 +48,8 @@ pattern Construct :: o -> f (Construction f o) -> Construction f o
 pattern Construct x xs <- Generate (Identity x :*: FG xs)
 	where Construct x xs = Generate (Identity x :*: FG xs)
 
+-- TODO: instance Transformation (-->) (-->) (Construction f) f where
+
 type Instruction = Generation (:+:)
 
 pattern Instruct :: f (Instruction f o) -> Instruction f o
