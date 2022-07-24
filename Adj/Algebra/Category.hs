@@ -4,7 +4,7 @@
 
 module Adj.Algebra.Category where
 
-import Adj.Auxiliary (type (.:), type (<?>) ((<?>)), type (=!?=), FG (FG), type (=?!=), GF, type (=!?!=), type (=!!??=), Casted, Casting ((-=), (=-)))
+import Adj.Auxiliary (type (.:), type (<?>) ((<?>)), type (=!?=), FG (FG), type (=?!=), GF (GF), type (=!?!=), type (=!!??=), Casted, Casting ((-=), (=-)))
 import Adj.Algebra.Set ((:*:) ((:*:)), (:+:) (This, That), Unit (Unit), Neutral, absurd)
 
 infixr 9 .
@@ -322,6 +322,8 @@ instance Functor (<--) (<--) ((:*:>) l) where
 	map (Opposite m) = Opposite .: \case
 		Straight (l :*: r) -> Straight (l :*: m r)
 
+-- TODO: instance Transformation (-->) (-->) (((:*:>) l) =!?= g) (((:*:>) l) =?!= g) where
+
 type (:+:>) = Straight (:+:)
 
 instance Functor (-->) (-->) ((:+:>) l) where
@@ -334,6 +336,12 @@ instance Functor (<--) (<--) ((:+:>) l) where
 		Straight (This l) -> Straight .: This l
 		Straight (That r) -> Straight . That .: m r
 
+instance Monoidal Functor (:*:) (:*:) (-->) (-->) (-->) g
+	=> Transformation (-->) (-->) (((:+:>) l) =!?= g) (((:+:>) l) =?!= g) where
+		transformation (Straight morphism) = Straight .: \case
+			FG (Straight (That r)) -> GF ...: Straight . That . morphism ->- r
+			FG (Straight (This l)) -> GF ...: point . Straight . This .: l
+
 type (<:*:) = Opposite (:*:)
 
 instance Functor (-->) (-->) ((<:*:) r) where
@@ -343,6 +351,8 @@ instance Functor (-->) (-->) ((<:*:) r) where
 instance Functor (<--) (<--) ((<:*:) r) where
 	map (Opposite m) = Opposite . (=-=) .: \case
 		l :*: r -> m l :*: r
+
+-- TODO: instance Transformation (-->) (-->) (((<:*:) r) =!?= g) (((<:*:) r) =?!= g) where
 
 type (<:+:) = Opposite (:+:)
 
@@ -355,6 +365,12 @@ instance Functor (<--) (<--) ((<:+:) r) where
 	map (Opposite m) = Opposite . (=-=) .: \case
 		This l -> This .: m l
 		That r -> That r
+
+instance Monoidal Functor (:*:) (:*:) (-->) (-->) (-->) g
+	=> Transformation (-->) (-->) (((<:+:) r) =!?= g) (((<:+:) r) =?!= g) where
+		transformation (Straight morphism) = Straight .: \case
+			FG (Opposite (This l)) -> GF ...: Opposite . This . morphism ->- l
+			FG (Opposite (That r)) -> GF ...: point . Opposite . That .: r
 
 instance Transformation (-->) (-->) (Day (-->) ((:+:>) l) ((:+:>) l) (:*:) (:*:)) ((:+:>) l) where
 	transformation (Straight morphism) = Straight .: \case
