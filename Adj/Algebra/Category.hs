@@ -193,11 +193,11 @@ instance Functor .: Kleisli f target .: target .: f
 		g . Kleisli f = Kleisli .: map g . f
 
 instance
-	( Monad f (Straight to)
-	, Transformation (Straight to) (Straight to) Identity f
-	, Functor (Kleisli f (Straight to)) (Straight to) f
-	, Casting (Straight to) Identity
-	) => Category (Kleisli f (Straight to)) where
+	( Monad f to
+	, Transformation to to Identity f
+	, Functor (Kleisli f to) to f
+	, Casting to Identity
+	) => Category (Kleisli f to) where
 	identity = Kleisli .: return
 
 type family Covariant m functor f from to where
@@ -676,6 +676,13 @@ instance
 instance {-# OVERLAPS #-}
 	(f >>/>> g) <?> (f ></<> g) => Functor (-->) (-->) (f =!?= g) where
 	map (Straight m) = Straight . (=-=) .: ((<-||-) @f @g m)
+
+instance
+	( Functor between to g
+	, Functor from between f
+	, Casting to (f =?!= g)
+	) => Functor from to (f =?!= g) where
+	map m = (=-=) ((-||-) @from @between @to @g @f m)
 
 instance {-# OVERLAPS #-}
 	(g >>/>> f) <?> (g ></<> f) => Functor (-->) (-->) (f =?!= g) where
