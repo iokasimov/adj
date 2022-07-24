@@ -471,65 +471,65 @@ instance Transformation (<--) (<--) ((-->) Unit) (Opposite (:*:) r) where
 		-- Identity x -> FG . Straight .: \s -> Straight ...: s :*: morphism x
 
 (->>-)
-	:: Covariant Straight Functor f (->) (->)
+	:: Functor (-->) (-->) f
 	=> (source -> target) -> f source -> f target
 m ->>- x = map @(-->) @(-->) (Straight m) =- x
 
 (-<<-)
-	:: Contravariant Straight Functor f (->) (->)
+	:: Functor (-->) (<--) f
 	=> (source -> target) -> f target -> f source
 m -<<- x = map @(-->) @(<--) (Straight m) =- x
 
 (->>>-)
-	:: Covariant Straight Functor f (->) (->)
-	=> Covariant Straight Functor g (->) (->)
+	:: Functor (-->) (-->) f
+	=> Functor (-->) (-->) g
 	=> (source -> target) -> f (g source) -> f (g target)
 m ->>>- x = (-||-) @(-->) @(-->) @(-->) (Straight m) =- x
 
 (-><-)
-	:: Contravariant Straight Functor f (->) (->)
-	=> Covariant Straight Functor g (->) (->)
+	:: Functor (-->) (<--) f
+	=> Functor (-->) (-->) g
 	=> (source -> target) -> f (g target) -> f (g source)
 m -><- x = (-||-) @(-->) @(-->) @(<--) (Straight m) =- x
 
 (-<>-)
-	:: Covariant Straight Functor f (->) (->)
-	=> Contravariant Opposite Functor g (->) (->)
+	:: Functor (-->) (-->) f
+	=> Functor (<--) (-->) g
 	=> (source -> target) -> f (g target) -> f (g source)
 m -<>- x = (-||-) @(<--) @(-->) @(-->) (Opposite m) =- x
 
 (-<<<-)
-	:: Contravariant Straight Functor f (->) (->)
-	=> Contravariant Opposite Functor g (->) (->)
+	:: Functor (-->) (<--) f
+	=> Functor (<--) (-->) g
 	=> (source -> target) -> f (g source) -> f (g target)
 m -<<<- x = (-||-) @(<--) @(-->) @(<--) (Opposite m) =- x
 
 (->>>>-)
-	:: Covariant Straight Functor f (->) (->)
-	=> Covariant Straight Functor g (->) (->)
-	=> Covariant Straight Functor h (->) (->)
+	:: Functor (-->) (-->) f
+	=> Functor (-->) (-->) g
+	=> Functor (-->) (-->) h
 	=> (source -> target) -> f (g (h source)) -> f (g (h target))
 m ->>>>- x = (-|||-) @(-->) @(-->) @(-->) @(-->) (Straight m) =- x
 
 (->--)
-	:: Covariant Straight Functor (Opposite f o) (->) (->)
+	:: Functor (-->) (-->) (Opposite f o)
 	=> (source -> target) -> f source o -> f target o
 m ->-- x = (-|--) @(-->) @(-->) (Straight m) =- x
 
 (-->--)
-	:: Covariant Straight Functor (Straight f o) (->) (->)
+	:: Functor (-->) (-->) (Straight f o)
 	=> (source -> target) -> f o source -> f o target
 m -->-- x = (--|--) @(-->) @(-->) (Straight m) =- x
 
 (->>--)
-	:: Covariant Straight Functor (Opposite f o) (->) (->)
-	=> Covariant Straight Functor g (->) (->)
+	:: Functor (-->) (-->) (Opposite f o)
+	=> Functor (-->) (-->) g
 	=> (source -> target) -> f (g source) o -> f (g target) o
 m ->>-- x = (-||--) @(-->) @(-->) @(-->) (Straight m) =- x
 
 (-->>--)
-	:: Covariant Straight Functor (Straight f o) (->) (->)
-	=> Covariant Straight Functor g (->) (->)
+	:: Functor (-->) (-->) (Straight f o)
+	=> Functor (-->) (-->) g
 	=> (source -> target) -> f o (g source) -> f o (g target)
 m -->>-- x = (--||--) @(-->) @(-->) @(-->) (Straight m) =- x
 
