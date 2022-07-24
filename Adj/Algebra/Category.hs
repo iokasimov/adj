@@ -42,6 +42,8 @@ infixl 7 ->-, -<-, ->=
 
 infixl 5 <-||-
 
+infixr 5 |*|-|
+
 {- |
 > * Associativity: f . (g . h) ≡ (f . g) . h
 -}
@@ -645,11 +647,10 @@ m --/>>/-- x = (=-) ->- ((m -/>/-) -/>/- Straight x)
 	=> (source -> h target) -> f (g source) o -> h (f (g target) o)
 m -/>>/-- x = (=-) ->- ((m -/>/-) -/>/- Opposite x)
 
-(|*|) :: forall f l r o
+(|*|-|) :: forall f l r o
 	. Semimonoidal Functor (:*:) (:*:) (-->) (-->) (-->) f
-	=> f l -> f r -> (l -> r -> o) -> f o
-l |*| r = \tensor -> component @(-->) @(-->) =- Day (l :*: r)
-	(Straight .: \(lo :*: ro) -> tensor lo ro)
+	=> (l :*: r -> o) -> (f l :*: f r) -> f o
+tensor |*|-| x = component @(-->) @(-->) =- Day x (Straight tensor)
 
 (|+|) :: forall f l r o
 	. Semimonoidal Functor (:+:) (:+:) (-->) (-->) (-->) f

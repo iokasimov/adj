@@ -303,3 +303,5 @@
 * Define `<>/>>` type alias
 * Define `<-||-` operator
 * Define `<-|-` operator
+* Remove `|*|` operator
+* Define `|*|-|` operator
