@@ -4,7 +4,7 @@
 module Adj.Program.Primitive.Generation where
 
 import Adj.Auxiliary (Casted, Casting ((=-), (-=)), type (=!?=), FG (FG), FFGH (FFGH), type (=!!??=), Structural (Structural))
-import Adj.Algebra.Category (Semigroupoid ((.)), Category ((.:), identity), Functor (map), Covariant, Traversable, Identity (Identity), Day (Day), type (-->), type (-/->), Straight (Straight), Opposite, Kleisli (Kleisli), (->-), (->>-), (->>--), (->--), (-->--), (=-=))
+import Adj.Algebra.Category (Semigroupoid ((.)), Category ((.:), identity), Functor (map), Transformation (transformation), Covariant, Traversable, Identity (Identity), Day (Day), type (-->), type (-/->), Straight (Straight), Opposite, Kleisli (Kleisli), (->-), (->>-), (->>--), (->--), (-->--), (=-=))
 import Adj.Algebra.Set (Setoid, (:*:) ((:*:)), (:+:) (This, That))
 
 newtype Generation f g o = Generation
@@ -58,6 +58,7 @@ pattern Load :: o -> Instruction f o
 pattern Load x <- Generate (This (Identity x))
 	where Load x = Generate (This (Identity x))
 
--- TODO: use Transformation instead of Component
--- instance Covariant Straight Functor f (->) (->) => Component (-->) f (Instruction f) where
-	-- component = Straight .: Instruct . (Load ->-)
+instance Covariant Straight Functor f (->) (->)
+	=> Transformation (-->) (-->) f (Instruction f) where
+		transformation (Straight morphism) =
+			Straight .: Instruct . (Load . morphism ->-)

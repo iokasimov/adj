@@ -737,11 +737,11 @@ instance
 
 instance {-# OVERLAPS #-}
 	(f >>/>> g) <?> (f ></<> g) => Functor (-->) (-->) (f =!?= g) where
-	map (Straight m) = Straight .: \(FG x) -> FG .: (<-||-) @f @g m x
+	map (Straight m) = Straight . (=-=) .: ((<-||-) @f @g m)
 
 instance {-# OVERLAPS #-}
 	(g >>/>> f) <?> (g ></<> f) => Functor (-->) (-->) (f =?!= g) where
-	map (Straight m) = Straight .: \(GF x) -> GF .: (<-||-) @g @f m x
+	map (Straight m) = Straight . (=-=) .: ((<-||-) @g @f m)
 
 -- TODO: ambigous intermediate category for =!?= Functor instance
 -- instance
@@ -803,13 +803,6 @@ instance
 instance Casting (->) f => Casting (-->) f where
 	(=-) = Straight (=-)
 	(-=) = Straight (-=)
-
--- instance
-	-- ( Casting (->) f
-	-- , Monoidal Functor (:*:) (:*:) (-->) (-->) g
-	-- ) => Casting ((-/->) g) f where
-	-- (=-) = Kleisli . Straight .: point . (=-)
-	-- (-=) = Kleisli . Straight .: point . (-=)
 
 type (>>/>>) f g = (Functor (-->) (-->) f, Functor (-->) (-->) g)
 type (></<>) f g = (Functor (-->) (<--) f, Functor (<--) (-->) g)
