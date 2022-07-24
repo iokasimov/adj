@@ -310,3 +310,5 @@
 * Rename `->>>-` to `->>>>-`
 * Rename `-<-` to `-<<-`
 * Rename `-<<-` to `-<<<-`
+* Rename `-<>-` to `-<>>-`
+* Rename `-><-` to `->><-`

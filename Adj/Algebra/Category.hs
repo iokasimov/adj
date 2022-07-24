@@ -36,8 +36,8 @@ infixl 7 =-=, -=-, =--
 infixl 2 --/>>/--
 infixl 3 --/>/--, -/>>/--
 infixl 4 -/>/--, -/>>/-, -->>--, -/>>/=
-infixl 5 ->>>-, -->--, ->>--, -/>/-, -/>>-
-infixl 6 ->>-, -><-, -<>-, ->--, -/>-
+infixl 5 ->>>-, ->><-, -<>>-, -->--, ->>--, -/>/-, -/>>-
+infixl 6 ->>-, ->--, -/>-
 -- infixl 7 ->-, -<-, ->=
 
 infixl 5 <-||-
@@ -486,17 +486,17 @@ m -<<- x = map @(-->) @(<--) (Straight m) =- x
 	=> (source -> target) -> f (g source) -> f (g target)
 m ->>>- x = (-||-) @(-->) @(-->) @(-->) (Straight m) =- x
 
-(-><-)
-	:: Functor (-->) (<--) f
-	=> Functor (-->) (-->) g
+(->><-)
+	:: Functor (-->) (-->) g
+	=> Functor (-->) (<--) f
 	=> (source -> target) -> f (g target) -> f (g source)
-m -><- x = (-||-) @(-->) @(-->) @(<--) (Straight m) =- x
+m ->><- x = (-||-) @(-->) @(-->) @(<--) (Straight m) =- x
 
-(-<>-)
-	:: Functor (-->) (-->) f
-	=> Functor (<--) (-->) g
+(-<>>-)
+	:: Functor (<--) (-->) g
+	=> Functor (-->) (-->) f
 	=> (source -> target) -> f (g target) -> f (g source)
-m -<>- x = (-||-) @(<--) @(-->) @(-->) (Opposite m) =- x
+m -<>>- x = (-||-) @(<--) @(-->) @(-->) (Opposite m) =- x
 
 (-<<<-)
 	:: Functor (-->) (<--) f
