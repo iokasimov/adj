@@ -498,11 +498,11 @@ m ->><- x = (-||-) @(-->) @(-->) @(<--) (Straight m) =- x
 	=> (source -> target) -> f (g target) -> f (g source)
 m -<>>- x = (-||-) @(<--) @(-->) @(-->) (Opposite m) =- x
 
-(-<<<-)
-	:: Functor (-->) (<--) f
-	=> Functor (<--) (-->) g
+(-<><-)
+	:: Functor (<--) (-->) g
+	=> Functor (-->) (<--) f
 	=> (source -> target) -> f (g source) -> f (g target)
-m -<<<- x = (-||-) @(<--) @(-->) @(<--) (Opposite m) =- x
+m -<><- x = (-||-) @(<--) @(-->) @(<--) (Opposite m) =- x
 
 (->>>>-)
 	:: Functor (-->) (-->) f
@@ -761,4 +761,4 @@ instance d => ((((<--) o) >>/>> ((<--) o)) <?> d) where (<?>) = \_ r -> r
 (<-||-) :: forall f g source target
 	. (f >>/>> g) <?> (f ></<> g)
 	=> (source -> target) -> f (g source) -> f (g target)
-(<-||-) = (<?>) @(f >>/>> g) @(f ></<> g) (->>>-) (-<<<-)
+(<-||-) = (<?>) @(f >>/>> g) @(f ></<> g) (->>>-) (-<><-)
