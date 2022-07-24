@@ -34,11 +34,10 @@ infixl 6 =---
 infixl 7 =-=, -=-, =--
 
 infixl 2 --/>>/--
-infixl 3 --/>/--, -/>>/--
-infixl 4 -/>/--, -/>>/-, -->>--, -/>>/=
-infixl 5 ->>>-, ->><-, -<>>-, -->--, ->>--, -/>/-, -/>>-
-infixl 6 ->>-, ->--, -/>-
--- infixl 7 ->-, -<-, ->=
+infixl 3 -->>>--, --/>/--, -/>>/--
+infixl 4 -/>/--, -/>>/-, ->>>--, -->>--, -/>>/=
+infixl 5 ->>>-, ->><-, -<>>-, ->>--, -/>/-, -/>>-
+infixl 6 ->>-, -/>-
 
 infixl 5 <-||-
 infixl 6 <-|-
@@ -505,9 +504,9 @@ m -<>>- x = (-||-) @(<--) @(-->) @(-->) (Opposite m) =- x
 m -<><- x = (-||-) @(<--) @(-->) @(<--) (Opposite m) =- x
 
 (->>>>-)
-	:: Functor (-->) (-->) f
+	:: Functor (-->) (-->) h
 	=> Functor (-->) (-->) g
-	=> Functor (-->) (-->) h
+	=> Functor (-->) (-->) f
 	=> (source -> target) -> f (g (h source)) -> f (g (h target))
 m ->>>>- x = (-|||-) @(-->) @(-->) @(-->) @(-->) (Straight m) =- x
 
@@ -539,8 +538,8 @@ m -->>>-- x = (--||--) @(-->) @(-->) @(-->) (Straight m) =- x
 m -/>- x = component @(-->) @(-->) @(FG _ _) =- FG (m ->>- x)
 
 (-/>>-)
-	:: Covariant Straight Functor f (->) (->)
-	=> Bindable Functor g (-->)
+	:: Bindable Functor g (-->)
+	=> Functor (-->) (-->) f
 	=> (source -> g target) -> f (g source) -> f (g target)
 m -/>>- x = (m -/>-) ->>- x
 
@@ -549,36 +548,36 @@ m -/>>- x = (m -/>-) ->>- x
 m -/>/- x = (=-) ...: component @(-->) @(-->) @(FG _ _) @(GF _ _) =- FG (m ->>- x)
 
 (-/>>/-)
-	:: Traversable Functor f h (-->)
-	=> Traversable Functor g h (-->)
+	:: Traversable Functor g h (-->)
+	=> Traversable Functor f h (-->)
 	=> (source -> h target) -> f (g source) -> h (f (g target))
 m -/>>/- x = (m -/>/-) -/>/- x
 
 (--/>/--)
-	:: Traversable Functor (Straight f o) h (-->)
+	:: Functor (-->) (-->) h
 	=> Traversable Functor g h (-->)
-	=> Covariant Straight Functor h (->) (->)
+	=> Traversable Functor (Straight f o) h (-->)
 	=> (source -> h target) -> f o source -> h (f o target)
 m --/>/-- x = (=-) ->>- (m -/>/- Straight x)
 
 (-/>/--)
-	:: Traversable Functor (Opposite f o) h (-->)
+	:: Covariant Straight Functor h (->) (->)
 	=> Traversable Functor g h (-->)
-	=> Covariant Straight Functor h (->) (->)
+	=> Traversable Functor (Opposite f o) h (-->)
 	=> (source -> h target) -> f source o -> h (f target o)
 m -/>/-- x = (=-) ->>- (m -/>/- Opposite x)
 
 (--/>>/--)
-	:: Traversable Functor (Straight f o) h (-->)
+	:: Covariant Straight Functor h (->) (->)
 	=> Traversable Functor g h (-->)
-	=> Covariant Straight Functor h (->) (->)
+	=> Traversable Functor (Straight f o) h (-->)
 	=> (source -> h target) -> f o (g source) -> h (f o (g target))
 m --/>>/-- x = (=-) ->>- ((m -/>/-) -/>/- Straight x)
 
 (-/>>/--)
-	:: Traversable Functor (Opposite f o) h (-->)
+	:: Covariant Straight Functor h (->) (->)
 	=> Traversable Functor g h (-->)
-	=> Covariant Straight Functor h (->) (->)
+	=> Traversable Functor (Opposite f o) h (-->)
 	=> (source -> h target) -> f (g source) o -> h (f (g target) o)
 m -/>>/-- x = (=-) ->>- ((m -/>/-) -/>/- Opposite x)
 
