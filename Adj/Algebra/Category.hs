@@ -41,6 +41,7 @@ infixl 6 ->>-, -><-, -<>-, ->--, -/>-
 infixl 7 ->-, -<-, ->=
 
 infixl 5 <-||-
+infixl 6 <-|-
 
 infixr 5 |*|-|
 
@@ -744,41 +745,37 @@ instance {-# OVERLAPS #-}
 	(g >>/>> f) <?> (g ></<> f) => Functor (-->) (-->) (f =?!= g) where
 	map (Straight m) = Straight . (=-=) .: ((<-||-) @g @f m)
 
--- TODO: ambigous intermediate category for =!?= Functor instance
--- instance
-	-- ( Component (-->) (Day (-->) f f (:*:) (:*:)) f
-	-- , Component (-->) (Day (-->) g g (:*:) (:*:)) g
-	-- , Covariant Straight Functor f (->) (->)
-	-- ) => Transformation (-->) (-->) (Day (-->) (f =!?= g) (f =!?= g) (:*:) (:*:)) (f =!?= g) where
-	-- transformation (Straight morphism) = Straight .: \(Day (FG l :*: FG r) tensor) ->
-	-- TODO: find a way to simplify this instance
-		-- FG ...: (=-) (component @(-->) @(Day (-->) g g (:*:) (:*:)) @g) . (\x -> Day x (Straight morphism . tensor))
-			-- ->- (=-) (component @(-->) @(Day (-->) f f (:*:) (:*:)) @f) (Day (l :*: r) identity)
+instance
+	( Transformation (-->) (-->) (Day (-->) f f (:*:) (:*:)) f
+	, Transformation (-->) (-->) (Day (-->) g g (:*:) (:*:)) g
+	, Covariant Straight Functor f (->) (->)
+	) => Transformation (-->) (-->) (Day (-->) (f =!?= g) (f =!?= g) (:*:) (:*:)) (f =!?= g) where
+	transformation (Straight morphism) =
+		 Straight .: \(Day (FG l :*: FG r) (Straight tensor)) ->
+			FG ....: (morphism . tensor |*|-|)
+				<-|- (identity |*|-| l :*: r)
 
--- TODO: ambigous intermediate category for =!?= Functor instance
--- instance
-	-- ( Covariant Straight Functor f (->) (->)
-	-- , Covariant Straight Functor g (->) (->)
-	-- ) => Transformation (-->) (-->) (Day (-->) (f =!?= g) Identity (:*:) (:*:)) (f =!?= g) where
-	-- transformation (Straight morphism) = Straight .: \(Day (FG l :*: Identity r) tensor) ->
-		-- -- TODO: looks like an adjunction
-		-- FG ....: (Straight morphism . tensor =-) . (:*: r) ->>- l
+instance
+	( Covariant Straight Functor f (->) (->)
+	, Covariant Straight Functor g (->) (->)
+	) => Transformation (-->) (-->) (Day (-->) (f =!?= g) Identity (:*:) (:*:)) (f =!?= g) where
+	transformation (Straight morphism) = Straight .: \(Day (FG l :*: Identity r) tensor) ->
+		-- TODO: looks like an adjunction
+		FG ....: (Straight morphism . tensor =-) . (:*: r) ->>- l
 
--- TODO: ambigous intermediate category for =!?= Functor instance
--- instance
-	-- ( Covariant Straight Functor f (->) (->)
-	-- , Covariant Straight Functor g (->) (->)
-	-- ) => Transformation (-->) (-->) (Day (-->) Identity (f =!?= g) (:*:) (:*:)) (f =!?= g) where
-	-- transformation (Straight morphism) = Straight .: \(Day (Identity l :*: FG r) tensor) ->
-		-- FG ....: (Straight morphism . tensor =-) . (l :*:) ->>- r
+instance
+	( Covariant Straight Functor f (->) (->)
+	, Covariant Straight Functor g (->) (->)
+	) => Transformation (-->) (-->) (Day (-->) Identity (f =!?= g) (:*:) (:*:)) (f =!?= g) where
+	transformation (Straight morphism) = Straight .: \(Day (Identity l :*: FG r) tensor) ->
+		FG ....: (Straight morphism . tensor =-) . (l :*:) ->>- r
 
--- TODO: ambigous intermediate category for =!?= Functor instance
--- instance
-	-- ( Monoidal Functor (:*:) (:*:) (-->) (-->) f
-	-- , Monoidal Functor (:*:) (:*:) (-->) (-->) g
-	-- ) => Transformation (-->) (-->) ((-->) Unit) (f =!?= g) where
-	-- transformation (Straight morphism) = Straight .: \(Straight tensor)
-		-- -> FG . point @f . point @g . morphism .: tensor Unit
+instance
+	( Monoidal Functor (:*:) (:*:) (-->) (-->) (-->) f
+	, Monoidal Functor (:*:) (:*:) (-->) (-->) (-->) g
+	) => Transformation (-->) (-->) ((-->) Unit) (f =!?= g) where
+	transformation (Straight morphism) = Straight .: \(Straight tensor)
+		-> FG . point . point . morphism .: tensor Unit
 
 instance
 	( Functor from between f'
@@ -815,7 +812,7 @@ type (></<>) f g = (Functor (-->) (<--) f, Functor (<--) (-->) g)
 type (<</<>) f g = (Functor (<--) (<--) f, Functor (<--) (-->) g)
 type (<>/>>) f g = (Functor (<--) (<--) f, Functor (<--) (-->) g)
 
-instance {-# OVERLAPS #-} (f >>/>> g) => ((f >>/>> g) <?> d) where (<?>) = \r _ -> r
+instance {-# OVERLAPPABLE #-} (f >>/>> g) => ((f >>/>> g) <?> d) where (<?>) = \r _ -> r
 instance d => ((((<--) o) >>/>> ((<--) o)) <?> d) where (<?>) = \_ r -> r
 
 (<-||-) :: forall f g source target
