@@ -4,7 +4,7 @@
 
 module Adj.Algebra.Category where
 
-import Adj.Auxiliary (type (.:), type (<?>) ((<?>)), type (=!?=), FG (FG), type (=?!=), GF (GF), type (=!?!=), type (=!!??=), Casted, Casting ((-=), (=-)))
+import Adj.Auxiliary (type (.:), type (<?>) ((<?>)), type (=!?=), FG (FG), type (=?!=), GF, type (=!?!=), type (=!!??=), Casted, Casting ((-=), (=-)))
 import Adj.Algebra.Set ((:*:) ((:*:)), (:+:) (This, That), Unit (Unit), Neutral, absurd)
 
 infixr 9 .
@@ -294,130 +294,6 @@ instance Functor (-->) (-->) Identity where
 	map (Straight m) = Straight .: \case
 		Identity x -> Identity .: m x
 
--- TODO: use Transformation instead of Component
--- instance Component (-->) Identity Identity
-	-- => Functor ((-/->) Identity) (-->) Identity where
-	-- map (Kleisli (Straight m)) = Straight .: \case
-		-- Identity x -> m x
-
--- instance
-	-- ( Covariant Straight Functor g (->) (->)
-	-- , Bindable Functor (->) (->) g
-	-- ) => Functor ((-/->) g) ((-/->) g) Identity where
-	-- map (Kleisli (Straight m)) = Kleisli . Straight .: \case
-		-- Identity x -> (-|-) @_ @(-->) (Straight Identity) =- m x
-
-type (:*:>) = Straight (:*:)
-
-instance Functor (-->) (-->) ((:*:>) l) where
-	map (Straight m) = Straight .: \case
-		Straight (l :*: r) -> Straight (l :*: m r)
-
-instance Functor (<--) (<--) ((:*:>) l) where
-	map (Opposite m) = Opposite .: \case
-		Straight (l :*: r) -> Straight (l :*: m r)
-
--- TODO: use Transformation instead of Component
--- instance
-	-- ( Bindable Functor (->) (->) ((:*:>) l)
-	-- , Component (-->) Identity ((:*:>) l)
-	-- ) => Functor ((-/->) ((:*:>) l)) (-->) ((:*:>) l) where
-	-- map (Kleisli (Straight m)) = Straight .: \case
-		-- Straight (_ :*: r) -> m r
-
--- instance
-	-- ( Covariant Straight Functor f (->) (->)
-	-- , Bindable Functor (->) (->) f
-	-- ) => Functor ((-/->) f) ((-/->) f) ((:*:>) l) where
-	-- map (Kleisli (Straight m)) = Kleisli . Straight .: \case
-		-- Straight (l :*: r) -> Straight . (l :*:) ->- m r
-
-type (:+:>) = Straight (:+:)
-
-instance Functor (-->) (-->) ((:+:>) l) where
-	map (Straight m) = Straight .: \case
-		Straight (This l) -> Straight .: This l
-		Straight (That r) -> Straight . That .: m r
-
-instance Functor (<--) (<--) ((:+:>) l) where
-	map (Opposite m) = Opposite .: \case
-		Straight (This l) -> Straight .: This l
-		Straight (That r) -> Straight . That .: m r
-
--- TODO: use Transformation instead of Component
--- instance
-	-- ( Bindable Functor (->) (->) ((:+:>) l)
-	-- , Component (-->) Identity ((:+:>) l)
-	-- ) => Functor ((-/->) ((:+:>) l)) (-->) ((:+:>) l) where
-	-- map (Kleisli (Straight m)) = Straight .: \case
-		-- Straight (This l) -> Straight .: This l
-		-- Straight (That r) -> m r
-
--- TODO: use Transformation instead of Component
--- instance
-	-- ( Covariant Straight Functor f (->) (->)
-	-- , Bindable Functor (->) (->) f
-	-- , Monoidal Functor (:*:) (:*:) (-->) (-->) f
-	-- ) => Functor ((-/->) f) ((-/->) f) ((:+:>) l) where
-		-- map (Kleisli (Straight m)) = Kleisli . Straight .: \case
-			-- Straight (That r) -> Straight . That ->- m r
-			-- Straight (This l) -> point . Straight . This .: l
-
-type (<:*:) = Opposite (:*:)
-
-instance Functor (-->) (-->) ((<:*:) r) where
-	map (Straight m) = Straight . (=-=) .: \case
-		l :*: r -> m l :*: r
-
-instance Functor (<--) (<--) ((<:*:) r) where
-	map (Opposite m) = Opposite . (=-=) .: \case
-		l :*: r -> m l :*: r
-
--- TODO: use Transformation instead of Component
--- instance
-	-- ( Component (-->) Identity ((<:*:) r)
-	-- , Bindable Functor (->) (->) ((<:*:) r)
-	-- ) => Functor ((-/->) ((<:*:) r)) (-->) ((<:*:) r) where
-	-- map (Kleisli (Straight m)) = Straight .: \case
-		-- Opposite (l :*: _) -> m l
-
--- TODO: return back after changing Bindable type family
--- instance
-	-- ( Covariant Straight Functor f (->) (->)
-	-- , Bindable Functor (->) (->) f
-	-- ) => Functor ((-/->) f) ((-/->) f) ((<:*:) r) where
-	-- map (Kleisli (Straight m)) = Kleisli . Straight .: \case
-		-- Opposite (l :*: r) -> Opposite . (:*: r) ->- m l
-
-type (<:+:) = Opposite (:+:)
-
-instance Functor (-->) (-->) ((<:+:) r) where
-	map (Straight m) = Straight . (=-=) .: \case
-		This l -> This .: m l
-		That r -> That r
-
-instance Functor (<--) (<--) ((<:+:) r) where
-	map (Opposite m) = Opposite . (=-=) .: \case
-		This l -> This .: m l
-		That r -> That r
-
--- TODO: use Transformation instead of Component
--- instance Component (-->) Identity ((<:+:) r)
-	-- => Functor ((-/->) ((<:+:) r)) (-->) ((<:+:) r) where
-	-- map (Kleisli (Straight m)) = Straight .: \case
-		-- Opposite (This l) -> m l
-		-- Opposite (That r) -> Opposite .: That r
-
--- TODO: use Transformation instead of Component
--- instance
-	-- ( Covariant Straight Functor f (->) (->)
-	-- , Bindable Functor (->) (->) f
-	-- , Monoidal Functor (:*:) (:*:) (-->) (-->) f
-	-- ) => Functor ((-/->) f) ((-/->) f) ((<:+:) r) where
-		-- map (Kleisli (Straight m)) = Kleisli . Straight .: \case
-			-- Opposite (This l) -> Opposite . This ->- m l
-			-- -- Opposite (That r) -> point . Opposite . That .: r
-
 data Day m f g from to result where
 	Day :: from (f l) (g r)
 		-> m (to l r) result
@@ -435,6 +311,50 @@ instance Transformation (-->) (-->) (Day (-->) Identity Identity (:*:) (:*:)) Id
 	transformation (Straight morphism) = Straight .: \case
 		Day (Identity l :*: Identity r) (Straight tensor)
 			-> Identity . morphism . tensor ...: l :*: r
+
+type (:*:>) = Straight (:*:)
+
+instance Functor (-->) (-->) ((:*:>) l) where
+	map (Straight m) = Straight .: \case
+		Straight (l :*: r) -> Straight (l :*: m r)
+
+instance Functor (<--) (<--) ((:*:>) l) where
+	map (Opposite m) = Opposite .: \case
+		Straight (l :*: r) -> Straight (l :*: m r)
+
+type (:+:>) = Straight (:+:)
+
+instance Functor (-->) (-->) ((:+:>) l) where
+	map (Straight m) = Straight .: \case
+		Straight (This l) -> Straight .: This l
+		Straight (That r) -> Straight . That .: m r
+
+instance Functor (<--) (<--) ((:+:>) l) where
+	map (Opposite m) = Opposite .: \case
+		Straight (This l) -> Straight .: This l
+		Straight (That r) -> Straight . That .: m r
+
+type (<:*:) = Opposite (:*:)
+
+instance Functor (-->) (-->) ((<:*:) r) where
+	map (Straight m) = Straight . (=-=) .: \case
+		l :*: r -> m l :*: r
+
+instance Functor (<--) (<--) ((<:*:) r) where
+	map (Opposite m) = Opposite . (=-=) .: \case
+		l :*: r -> m l :*: r
+
+type (<:+:) = Opposite (:+:)
+
+instance Functor (-->) (-->) ((<:+:) r) where
+	map (Straight m) = Straight . (=-=) .: \case
+		This l -> This .: m l
+		That r -> That r
+
+instance Functor (<--) (<--) ((<:+:) r) where
+	map (Opposite m) = Opposite . (=-=) .: \case
+		This l -> This .: m l
+		That r -> That r
 
 instance Transformation (-->) (-->) (Day (-->) ((:+:>) l) ((:+:>) l) (:*:) (:*:)) ((:+:>) l) where
 	transformation (Straight morphism) = Straight .: \case
