@@ -38,7 +38,7 @@ infixl 3 --/>/--, -/>>/--
 infixl 4 -/>/--, -/>>/-, -->>--, -/>>/=
 infixl 5 ->>>-, -->--, ->>--, -/>/-, -/>>-
 infixl 6 ->>-, -><-, -<>-, ->--, -/>-
-infixl 7 ->-, -<-, ->=
+-- infixl 7 ->-, -<-, ->=
 
 infixl 5 <-||-
 infixl 6 <-|-
@@ -339,7 +339,7 @@ instance Functor (<--) (<--) ((:+:>) l) where
 instance Monoidal Functor (:*:) (:*:) (-->) (-->) (-->) g
 	=> Transformation (-->) (-->) (((:+:>) l) =!?= g) (((:+:>) l) =?!= g) where
 		transformation (Straight morphism) = Straight .: \case
-			FG (Straight (That r)) -> GF ...: Straight . That . morphism ->- r
+			FG (Straight (That r)) -> GF ....: Straight . That . morphism ->>- r
 			FG (Straight (This l)) -> GF ...: point . Straight . This .: l
 
 type (<:*:) = Opposite (:*:)
@@ -369,8 +369,8 @@ instance Functor (<--) (<--) ((<:+:) r) where
 instance Monoidal Functor (:*:) (:*:) (-->) (-->) (-->) g
 	=> Transformation (-->) (-->) (((<:+:) r) =!?= g) (((<:+:) r) =?!= g) where
 		transformation (Straight morphism) = Straight .: \case
-			FG (Opposite (This l)) -> GF ...: Opposite . This . morphism ->- l
-			FG (Opposite (That r)) -> GF ...: point . Opposite . That .: r
+			FG (Opposite (This l)) -> GF .....: Opposite . This . morphism ->>- l
+			FG (Opposite (That r)) -> GF ..: point . Opposite . That .: r
 
 instance Transformation (-->) (-->) (Day (-->) ((:+:>) l) ((:+:>) l) (:*:) (:*:)) ((:+:>) l) where
 	transformation (Straight morphism) = Straight .: \case
@@ -458,7 +458,7 @@ instance Transformation (<--) (<--) ((-->) Unit) (Opposite (:*:) r) where
 -- (f =!? g) -> f: if g is Co Pointed
 -- instance Transformation (-->) (-->) (Identity =!?= Identity) Identity where
 -- 	transformation (Straight morphism) = Straight .: \case
--- 		FG (Identity x) -> morphism ->- x
+-- 		FG (Identity x) -> morphism ->>- x
 
 -- TODO: amgibous intermediate category for =!?= Functor instance
 -- instance Transformation (-->) (-->) ((:*:>) s =!?= (-->) s) Identity where
@@ -470,21 +470,21 @@ instance Transformation (<--) (<--) ((-->) Unit) (Opposite (:*:) r) where
 	-- transformation (Straight morphism) = Straight .: \case
 		-- Identity x -> FG . Straight .: \s -> Straight ...: s :*: morphism x
 
-(->-)
+(->>-)
 	:: Covariant Straight Functor f (->) (->)
 	=> (source -> target) -> f source -> f target
-m ->- x = map @(-->) @(-->) (Straight m) =- x
+m ->>- x = map @(-->) @(-->) (Straight m) =- x
 
 (-<-)
 	:: Contravariant Straight Functor f (->) (->)
 	=> (source -> target) -> f target -> f source
 m -<- x = map @(-->) @(<--) (Straight m) =- x
 
-(->>-)
+(->>>-)
 	:: Covariant Straight Functor f (->) (->)
 	=> Covariant Straight Functor g (->) (->)
 	=> (source -> target) -> f (g source) -> f (g target)
-m ->>- x = (-||-) @(-->) @(-->) @(-->) (Straight m) =- x
+m ->>>- x = (-||-) @(-->) @(-->) @(-->) (Straight m) =- x
 
 (-><-)
 	:: Contravariant Straight Functor f (->) (->)
@@ -504,12 +504,12 @@ m -<>- x = (-||-) @(<--) @(-->) @(-->) (Opposite m) =- x
 	=> (source -> target) -> f (g source) -> f (g target)
 m -<<- x = (-||-) @(<--) @(-->) @(<--) (Opposite m) =- x
 
-(->>>-)
-	:: Covariant Straight Functor f (->) (->)
-	=> Covariant Straight Functor g (->) (->)
-	=> Covariant Straight Functor h (->) (->)
-	=> (source -> target) -> f (g (h source)) -> f (g (h target))
-m ->>>- x = (-|||-) @(-->) @(-->) @(-->) @(-->) (Straight m) =- x
+-- (->>>-)
+	-- :: Covariant Straight Functor f (->) (->)
+	-- => Covariant Straight Functor g (->) (->)
+	-- => Covariant Straight Functor h (->) (->)
+	-- => (source -> target) -> f (g (h source)) -> f (g (h target))
+-- m ->>>- x = (-|||-) @(-->) @(-->) @(-->) @(-->) (Straight m) =- x
 
 (->--)
 	:: Covariant Straight Functor (Opposite f o) (->) (->)
@@ -538,17 +538,17 @@ m -->>-- x = (--||--) @(-->) @(-->) @(-->) (Straight m) =- x
 (-/>-)
 	:: Bindable Functor f (-->)
 	=> (source -> f target) -> f source -> f target
-m -/>- x = component @(-->) @(-->) @(FG _ _) =- FG (m ->- x)
+m -/>- x = component @(-->) @(-->) @(FG _ _) =- FG (m ->>- x)
 
 (-/>>-)
 	:: Covariant Straight Functor f (->) (->)
 	=> Bindable Functor g (-->)
 	=> (source -> g target) -> f (g source) -> f (g target)
-m -/>>- x = (m -/>-) ->- x
+m -/>>- x = (m -/>-) ->>- x
 
 (-/>/-) :: Traversable Functor f g (-->)
 	=> (source -> g target) -> f source -> g (f target)
-m -/>/- x = (=-) ...: component @(-->) @(-->) @(FG _ _) @(GF _ _) =- FG (m ->- x)
+m -/>/- x = (=-) ...: component @(-->) @(-->) @(FG _ _) @(GF _ _) =- FG (m ->>- x)
 
 (-/>>/-)
 	:: Traversable Functor f h (-->)
@@ -561,28 +561,28 @@ m -/>>/- x = (m -/>/-) -/>/- x
 	=> Traversable Functor g h (-->)
 	=> Covariant Straight Functor h (->) (->)
 	=> (source -> h target) -> f o source -> h (f o target)
-m --/>/-- x = (=-) ->- (m -/>/- Straight x)
+m --/>/-- x = (=-) ->>- (m -/>/- Straight x)
 
 (-/>/--)
 	:: Traversable Functor (Opposite f o) h (-->)
 	=> Traversable Functor g h (-->)
 	=> Covariant Straight Functor h (->) (->)
 	=> (source -> h target) -> f source o -> h (f target o)
-m -/>/-- x = (=-) ->- (m -/>/- Opposite x)
+m -/>/-- x = (=-) ->>- (m -/>/- Opposite x)
 
 (--/>>/--)
 	:: Traversable Functor (Straight f o) h (-->)
 	=> Traversable Functor g h (-->)
 	=> Covariant Straight Functor h (->) (->)
 	=> (source -> h target) -> f o (g source) -> h (f o (g target))
-m --/>>/-- x = (=-) ->- ((m -/>/-) -/>/- Straight x)
+m --/>>/-- x = (=-) ->>- ((m -/>/-) -/>/- Straight x)
 
 (-/>>/--)
 	:: Traversable Functor (Opposite f o) h (-->)
 	=> Traversable Functor g h (-->)
 	=> Covariant Straight Functor h (->) (->)
 	=> (source -> h target) -> f (g source) o -> h (f (g target) o)
-m -/>>/-- x = (=-) ->- ((m -/>/-) -/>/- Opposite x)
+m -/>>/-- x = (=-) ->>- ((m -/>/-) -/>/- Opposite x)
 
 (|*|-|) :: forall f l r o
 	. Semimonoidal Functor (:*:) (:*:) (-->) (-->) (-->) f
@@ -704,14 +704,14 @@ instance
 	) => Transformation (-->) (-->) (Day (-->) (f =!?= g) Identity (:*:) (:*:)) (f =!?= g) where
 	transformation (Straight morphism) = Straight .: \(Day (FG l :*: Identity r) tensor) ->
 		-- TODO: looks like an adjunction
-		FG ....: (Straight morphism . tensor =-) . (:*: r) ->>- l
+		FG .....: (Straight morphism . tensor =-) . (:*: r) ->>>- l
 
 instance
 	( Covariant Straight Functor f (->) (->)
 	, Covariant Straight Functor g (->) (->)
 	) => Transformation (-->) (-->) (Day (-->) Identity (f =!?= g) (:*:) (:*:)) (f =!?= g) where
 	transformation (Straight morphism) = Straight .: \(Day (Identity l :*: FG r) tensor) ->
-		FG ....: (Straight morphism . tensor =-) . (l :*:) ->>- r
+		FG .....: (Straight morphism . tensor =-) . (l :*:) ->>>- r
 
 instance
 	( Monoidal Functor (:*:) (:*:) (-->) (-->) (-->) f
@@ -748,7 +748,7 @@ instance Casting (->) f => Casting (-->) f where
 (<-|-)
 	:: Covariant Straight Functor f (->) (->)
 	=> (source -> target) -> f source -> f target
-(<-|-) = (->-)
+(<-|-) = (->>-)
 
 type (>>/>>) f g = (Functor (-->) (-->) f, Functor (-->) (-->) g)
 type (></<>) f g = (Functor (-->) (<--) f, Functor (<--) (-->) g)
@@ -761,4 +761,4 @@ instance d => ((((<--) o) >>/>> ((<--) o)) <?> d) where (<?>) = \_ r -> r
 (<-||-) :: forall f g source target
 	. (f >>/>> g) <?> (f ></<> g)
 	=> (source -> target) -> f (g source) -> f (g target)
-(<-||-) = (<?>) @(f >>/>> g) @(f ></<> g) (->>-) (-<<-)
+(<-||-) = (<?>) @(f >>/>> g) @(f ></<> g) (->>>-) (-<<-)

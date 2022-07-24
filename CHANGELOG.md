@@ -305,3 +305,5 @@
 * Define `<-|-` operator
 * Remove `|*|` operator
 * Define `|*|-|` operator
+* Rename `->>-` to `->>>-`
+* Rename `->-` to `->>-`
