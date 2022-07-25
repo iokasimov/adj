@@ -3,7 +3,7 @@
 
 module Adj.Algebra.Set where
 
-import Adj.Auxiliary (type (<?>) ((<?>)), Structural (Structural), type (=!?=), type (=!?!=), type (=!!??=), FG (FG), FGF (FGF), FFGH (FFGH))
+import Adj.Auxiliary (Structural (Structural), type (=!?=), type (=!?!=), type (=!!??=), FG (FG), FGF (FGF), FFGH (FFGH))
 
 infixr 6 :+*:
 infixr 7 :*:, :+:, =/=

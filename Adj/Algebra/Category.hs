@@ -4,7 +4,7 @@
 
 module Adj.Algebra.Category where
 
-import Adj.Auxiliary (type (.:), type (<?>) ((<?>)), type (=!?=), FG (FG), type (=?!=), GF (GF), type (=!?!=), type (=!!??=), Casted, Casting ((-=), (=-)))
+import Adj.Auxiliary (type (.:), type (-?-) ((-?-)), type (=!?=), FG (FG), type (=?!=), GF (GF), type (=!?!=), type (=!!??=), Casted, Casting ((-=), (=-)))
 import Adj.Algebra.Set ((:*:) ((:*:)), (:+:) (This, That), Unit (Unit), Neutral, absurd)
 
 infixr 9 .
@@ -660,7 +660,7 @@ instance
 	map m = (=-=) ((-||-) @from @between @to @f @g m)
 
 instance {-# OVERLAPS #-}
-	(f ->>>- g) <?> (f -<><- g) => Functor (-->) (-->) (f =!?= g) where
+	(f ->>>- g) -?- (f -<><- g) => Functor (-->) (-->) (f =!?= g) where
 	map (Straight m) = Straight . (=-=) .: ((<-||-) @f @g m)
 
 instance
@@ -671,7 +671,7 @@ instance
 	map m = (=-=) ((-||-) @from @between @to @g @f m)
 
 instance {-# OVERLAPS #-}
-	(g ->>>- f) <?> (g -<><- f) => Functor (-->) (-->) (f =?!= g) where
+	(g ->>>- f) -?- (g -<><- f) => Functor (-->) (-->) (f =?!= g) where
 	map (Straight m) = Straight . (=-=) .: ((<-||-) @g @f m)
 
 instance
@@ -743,10 +743,10 @@ type (->><-) f g = (Functor (-->) (-->) g, Functor (-->) (<--) f)
 type (-<<>-) f g = (Functor (<--) (<--) g, Functor (<--) (-->) f)
 type (-><>-) f g = (Functor (-->) (<--) g, Functor (<--) (-->) f)
 
-instance {-# OVERLAPPABLE #-} (f ->>>- g) => ((f ->>>- g) <?> d) where (<?>) = \r _ -> r
-instance d => ((((<--) o) ->>>- ((<--) o)) <?> d) where (<?>) = \_ r -> r
+instance {-# OVERLAPPABLE #-} (f ->>>- g) => ((f ->>>- g) -?- d) where (-?-) = \r _ -> r
+instance d => ((((<--) o) ->>>- ((<--) o)) -?- d) where (-?-) = \_ r -> r
 
 (<-||-) :: forall f g source target
-	. (f ->>>- g) <?> (f -<><- g)
+	. (f ->>>- g) -?- (f -<><- g)
 	=> (source -> target) -> f (g source) -> f (g target)
-(<-||-) = (<?>) @(f ->>>- g) @(f -<><- g) (->>>-) (-<><-)
+(<-||-) = (-?-) @(f ->>>- g) @(f -<><- g) (->>>-) (-<><-)
