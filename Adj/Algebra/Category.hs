@@ -471,39 +471,26 @@ instance Transformation (<--) (<--) ((-->) Unit) (Opposite (:*:) r) where
 	-- transformation (Straight morphism) = Straight .: \case
 		-- Identity x -> FG . Straight .: \s -> Straight ...: s :*: morphism x
 
-(->>-)
-	:: Functor (-->) (-->) f
-	=> (source -> target) -> f source -> f target
+(->>-) :: (->>-) f => (source -> target) -> f source -> f target
 m ->>- x = map @(-->) @(-->) (Straight m) =- x
 
-(-<<-)
-	:: Functor (-->) (<--) f
-	=> (source -> target) -> f target -> f source
-m -<<- x = map @(-->) @(<--) (Straight m) =- x
+(-<<-) :: (-<<-) f => (target -> source) -> f target -> f source
+m -<<- x = map @(<--) @(<--) (Opposite m) =- x
 
-(->>>-)
-	:: Functor (-->) (-->) f
-	=> Functor (-->) (-->) g
-	=> (source -> target) -> f (g source) -> f (g target)
+(->>>-) :: (->>>-) f g => (source -> target) -> f (g source) -> f (g target)
 m ->>>- x = (-||-) @(-->) @(-->) @(-->) (Straight m) =- x
 
-(->><-)
-	:: Functor (-->) (-->) g
-	=> Functor (-->) (<--) f
-	=> (source -> target) -> f (g target) -> f (g source)
+(->><-) :: (->><-) f g => (source -> target) -> f (g target) -> f (g source)
 m ->><- x = (-||-) @(-->) @(-->) @(<--) (Straight m) =- x
 
-(-<>>-)
-	:: Functor (<--) (-->) g
-	=> Functor (-->) (-->) f
-	=> (source -> target) -> f (g target) -> f (g source)
+(-<>>-) :: (-<>>-) f g => (source -> target) -> f (g target) -> f (g source)
 m -<>>- x = (-||-) @(<--) @(-->) @(-->) (Opposite m) =- x
 
-(-<><-)
-	:: Functor (<--) (-->) g
-	=> Functor (-->) (<--) f
-	=> (source -> target) -> f (g source) -> f (g target)
+(-<><-) :: (-<><-) f g => (source -> target) -> f (g source) -> f (g target)
 m -<><- x = (-||-) @(<--) @(-->) @(<--) (Opposite m) =- x
+
+(-<<<-) :: (-<<<-) f g => (source -> target) -> f (g source) -> f (g target)
+m -<<<- x = (-||-) @(<--) @(<--) @(<--) (Opposite m) =- x
 
 (->>>>-)
 	:: Functor (-->) (-->) h
