@@ -219,11 +219,12 @@ type family OP direction where
 
 type family Semimonoidal x source target from to tensor f where
 	Semimonoidal Functor source target from to tensor f =
-		Transformation .: from .: to .: Day tensor f f source target .: f
+		(Functor from to f, Transformation .: from .: to .: Day tensor f f source target .: f)
 
 type family Monoidal x source target from to tensor f where
 	Monoidal Functor source target from to tensor f =
-		( Transformation .: from .: to .: Day tensor f f source target .: f
+		( Functor from to f
+		, Transformation .: from .: to .: Day tensor f f source target .: f
 		, Transformation .: from .: to .: Day tensor Identity f source target .: f
 		, Transformation .: from .: to .: Day tensor f Identity source target .: f
 		, Transformation .: from .: to .: tensor (Neutral target) .: f
@@ -689,25 +690,20 @@ instance {-# OVERLAPS #-}
 instance
 	( Transformation (-->) (-->) (Day (-->) f f (:*:) (:*:)) f
 	, Transformation (-->) (-->) (Day (-->) g g (:*:) (:*:)) g
-	, Covariant Straight Functor f (->) (->)
 	) => Transformation (-->) (-->) (Day (-->) (f =!?= g) (f =!?= g) (:*:) (:*:)) (f =!?= g) where
 	transformation (Straight morphism) =
 		 Straight .: \(Day (FG l :*: FG r) (Straight tensor)) ->
 			FG ....: (morphism . tensor |*|-|)
 				<-|- (identity |*|-| l :*: r)
 
-instance
-	( Covariant Straight Functor f (->) (->)
-	, Covariant Straight Functor g (->) (->)
-	) => Transformation (-->) (-->) (Day (-->) (f =!?= g) Identity (:*:) (:*:)) (f =!?= g) where
+instance (->>>-) f g
+	=> Transformation (-->) (-->) (Day (-->) (f =!?= g) Identity (:*:) (:*:)) (f =!?= g) where
 	transformation (Straight morphism) = Straight .: \(Day (FG l :*: Identity r) tensor) ->
 		-- TODO: looks like an adjunction
 		FG .....: (Straight morphism . tensor =-) . (:*: r) ->>>- l
 
-instance
-	( Covariant Straight Functor f (->) (->)
-	, Covariant Straight Functor g (->) (->)
-	) => Transformation (-->) (-->) (Day (-->) Identity (f =!?= g) (:*:) (:*:)) (f =!?= g) where
+instance (->>>-) f g
+	=> Transformation (-->) (-->) (Day (-->) Identity (f =!?= g) (:*:) (:*:)) (f =!?= g) where
 	transformation (Straight morphism) = Straight .: \(Day (Identity l :*: FG r) tensor) ->
 		FG .....: (Straight morphism . tensor =-) . (l :*:) ->>>- r
 

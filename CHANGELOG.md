@@ -321,3 +321,5 @@
 * Rename `-\>\--` to `-\>>\--`
 * Rename `--\>\--` to `--\>>\--`
 * Rename `--\>>\--` to `--\>>>\--`
+* Change `Semimonoidal` type family definition
+* Change `Monoidal` type family definition
