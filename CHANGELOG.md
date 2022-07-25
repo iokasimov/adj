@@ -329,3 +329,5 @@
 * Define `->><-` type alias
 * Define `-<<>-` type alias
 * Define `-><>-` type alias
+* Define `-<<-` type alias
+* Define `->>-` type alias

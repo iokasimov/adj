@@ -744,6 +744,9 @@ instance Casting (->) f => Casting (-->) f where
 	=> (source -> target) -> f source -> f target
 (<-|-) = (->>-)
 
+type (->>-) f = Functor (-->) (-->) f
+type (-<<-) f = Functor (<--) (<--) f
+
 type (->>>-) f g = (Functor (-->) (-->) g, Functor (-->) (-->) f)
 type (-<><-) f g = (Functor (<--) (-->) g, Functor (-->) (<--) f)
 type (-<>>-) f g = (Functor (<--) (-->) g, Functor (-->) (-->) f)
