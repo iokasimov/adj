@@ -297,10 +297,8 @@
 * Define `Pointed` type family
 
 # 0.1.5
-* Define `>>/>>` type alias
-* Define `>>/<>` type alias
-* Define `<</<>` type alias
-* Define `<>/>>` type alias
+* Define `->>>-` type alias
+* Define `-<><-` type alias
 * Define `<-||-` operator
 * Define `<-|-` operator
 * Remove `|*|` operator
