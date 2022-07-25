@@ -746,6 +746,12 @@ instance Casting (->) f => Casting (-->) f where
 
 type (->>>-) f g = (Functor (-->) (-->) g, Functor (-->) (-->) f)
 type (-<><-) f g = (Functor (<--) (-->) g, Functor (-->) (<--) f)
+type (-<>>-) f g = (Functor (<--) (-->) g, Functor (-->) (-->) f)
+type (-<<<-) f g = (Functor (<--) (<--) g, Functor (<--) (<--) f)
+type (-><<-) f g = (Functor (-->) (<--) g, Functor (<--) (<--) f)
+type (->><-) f g = (Functor (-->) (-->) g, Functor (-->) (<--) f)
+type (-<<>-) f g = (Functor (<--) (<--) g, Functor (<--) (-->) f)
+type (-><>-) f g = (Functor (-->) (<--) g, Functor (<--) (-->) f)
 
 instance {-# OVERLAPPABLE #-} (f ->>>- g) => ((f ->>>- g) <?> d) where (<?>) = \r _ -> r
 instance d => ((((<--) o) ->>>- ((<--) o)) <?> d) where (<?>) = \_ r -> r

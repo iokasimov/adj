@@ -303,23 +303,29 @@
 * Define `<-|-` operator
 * Remove `|*|` operator
 * Define `|*|-|` operator
-* Rename `->-` to `->>-`
-* Rename `->>-` to `->>>-`
-* Rename `->>>-` to `->>>>-`
-* Rename `-<-` to `-<<-`
-* Rename `-<<-` to `-<><-`
-* Rename `-<>-` to `-<>>-`
-* Rename `-><-` to `->><-`
-* Rename `->--` to `->>--`
-* Rename `-->--` to `-->>--`
-* Rename `->>--` to `->>>--`
-* Rename `-->>--` to `-->>>--`
-* Rename `-\>-` to `-\>>-`
-* Rename `-\>>-` to `-\>>>-`
-* Rename `-\>\-` to `-\>>\-`
-* Rename `-\>>\-` to `-\>>>\-`
-* Rename `-\>\--` to `-\>>\--`
-* Rename `--\>\--` to `--\>>\--`
-* Rename `--\>>\--` to `--\>>>\--`
+* Rename `->-` operator to `->>-`
+* Rename `->>-` operator to `->>>-`
+* Rename `->>>-` operator to `->>>>-`
+* Rename `-<-` operator to `-<<-`
+* Rename `-<<-` operator to `-<><-`
+* Rename `-<>-` operator to `-<>>-`
+* Rename `-><-` operator to `->><-`
+* Rename `->--` operator to `->>--`
+* Rename `-->--` operator to `-->>--`
+* Rename `->>--` operator to `->>>--`
+* Rename `-->>--` operator to `-->>>--`
+* Rename `-\>-` operator to `-\>>-`
+* Rename `-\>>-` operator to `-\>>>-`
+* Rename `-\>\-` operator to `-\>>\-`
+* Rename `-\>>\-` operator to `-\>>>\-`
+* Rename `-\>\--` operator to `-\>>\--`
+* Rename `--\>\--` operator to `--\>>\--`
+* Rename `--\>>\--` operator to `--\>>>\--`
 * Change `Semimonoidal` type family definition
 * Change `Monoidal` type family definition
+* Define `-<>>-` type alias
+* Define `-<<<-` type alias
+* Define `-><<-` type alias
+* Define `->><-` type alias
+* Define `-<<>-` type alias
+* Define `-><>-` type alias
