@@ -345,3 +345,5 @@
 * Define `--<><--` operator
 * Define `-><>--` operator
 * Define `--><>--` operator
+* Define `-<<<--` operator
+* Define `--<<<--` operator
