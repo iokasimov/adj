@@ -751,6 +751,14 @@ instance
 		.: (-||--) @from @between @to @f @g m
 		. (--||--) @from @between @to @f @h m
 
+-- instance {-# OVERLAPS #-}
+	-- (Opposite f o ->>>- g) -???- (Opposite f o -<><- g) -??- (Opposite f o -><>- g) -?- (Opposite f o -<<<- g)
+	-- (Straight f o ->>>- g) -???- (Straight f o -<><- g) -??- (Straight f o -><>- g) -?- (Straight f o -<<<- g)
+	-- => Functor (-->) (-->) ((=!!??=) f g h) where
+	-- map (Straight m) = Straight . (=-=) .:
+		-- .: (-||--) @from @between @to @f @g m
+		-- . (--||--) @from @between @to @f @h m
+
 instance Casting (->) f => Casting (-->) f where
 	(=-) = Straight (=-)
 	(-=) = Straight (-=)
@@ -795,3 +803,19 @@ instance d => ((((<--) i) -><>- ((<--) i)) -?- d) where (-?-) = \_ r -> r
 (<-||-) = (-???-) @(f ->>>- g) @((f -<><- g) -??- (f -><>- g) -?- (f -<<<- g)) (->>>-)
 	((-??-) @(f -<><- g) @((f -><>- g) -?- (f -<<<- g)) (-<><-)
 		((-?-) @(f -><>- g) @(f -<<<- g) (-><>-) (-<<<-)))
+
+(<-||--) :: forall f g o source target
+	. (Opposite f o ->>>- g) -???- (Opposite f o -<><- g)
+		-??- (Opposite f o -><>- g) -?- (Opposite f o -<<<- g)
+	=> (source -> target) -> f (g source) o -> f (g target) o
+(<-||--) = (-???-) @(Opposite f o ->>>- g) @((Opposite f o -<><- g) -??- (Opposite f o -><>- g) -?- (Opposite f o -<<<- g)) (->>>--)
+	((-??-) @(Opposite f o -<><- g) @((Opposite f o -><>- g) -?- (Opposite f o -<<<- g)) (-<><--)
+		((-?-) @(Opposite f o -><>- g) @(Opposite f o -<<<- g) (-><>--) (-<<<--)))
+
+(<--||--) :: forall f g o source target
+	. (Straight f o ->>>- g) -???- (Straight f o -<><- g)
+		-??- (Straight f o -><>- g) -?- (Straight f o -<<<- g)
+	=> (source -> target) -> f o (g source) -> f o (g target)
+(<--||--) = (-???-) @(Straight f o ->>>- g) @((Straight f o -<><- g) -??- (Straight f o -><>- g) -?- (Straight f o -<<<- g)) (-->>>--)
+	((-??-) @(Straight f o -<><- g) @((Straight f o -><>- g) -?- (Straight f o -<<<- g)) (--<><--)
+		((-?-) @(Straight f o -><>- g) @(Straight f o -<<<- g) (--><>--) (--<<<--)))
