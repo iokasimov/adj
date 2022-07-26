@@ -530,6 +530,12 @@ m -<>>-- x = (-||--) @(<--) @(-->) @(-->) (Opposite m) =- x
 (--<>>--) :: (-<>>-) (Straight f o) g => (source -> target) -> f o (g target) -> f o (g source)
 m --<>>-- x = (--||--) @(<--) @(-->) @(-->) (Opposite m) =- x
 
+(-<><--) :: (-<><-) (Opposite f o) g => (source -> target) -> f (g source) o -> f (g target) o
+m -<><-- x = (-||--) @(<--) @(-->) @(<--) (Opposite m) =- x
+
+(--<><--) :: (-<><-) (Straight f o) g => (source -> target) -> f o (g source) -> f o (g target)
+m --<><-- x = (--||--) @(<--) @(-->) @(<--) (Opposite m) =- x
+
 (-/>>-)
 	:: Bindable Functor f (-->)
 	=> (source -> f target) -> f source -> f target
