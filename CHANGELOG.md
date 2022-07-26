@@ -335,3 +335,5 @@
 * Rename `<?>` typeclass and operator to `-?-`
 * Define `-??-` typeclass
 * Define `-???-` typeclass
+
+# 0.1.6
