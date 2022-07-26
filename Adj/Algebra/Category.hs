@@ -528,6 +528,12 @@ m ->>>-- x = (-||--) @(-->) @(-->) @(-->) (Straight m) =- x
 	=> (source -> target) -> f o (g source) -> f o (g target)
 m -->>>-- x = (--||--) @(-->) @(-->) @(-->) (Straight m) =- x
 
+(->><--) :: (->><-) (Opposite f o) g => (source -> target) -> f (g target) o -> f (g source) o
+m ->><-- x = (-||--) @(-->) @(-->) @(<--) (Straight m) =- x
+
+(-->><--) :: (->><-) (Straight f o) g => (source -> target) -> f o (g target) -> f o (g source)
+m -->><-- x = (--||--) @(-->) @(-->) @(<--) (Straight m) =- x
+
 (-/>>-)
 	:: Bindable Functor f (-->)
 	=> (source -> f target) -> f source -> f target
@@ -734,6 +740,10 @@ instance
 instance Casting (->) f => Casting (-->) f where
 	(=-) = Straight (=-)
 	(-=) = Straight (-=)
+
+instance Casting (->) f => Casting (<--) f where
+	(=-) = Opposite (-=)
+	(-=) = Opposite (=-)
 
 (<-|-)
 	:: Covariant Straight Functor f (->) (->)
