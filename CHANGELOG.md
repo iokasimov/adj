@@ -339,3 +339,5 @@
 # 0.1.6
 * Define `->><--` operator
 * Define `-->><--` operator
+* Define `-<>>--` operator
+* Define `--<>>--` operator
