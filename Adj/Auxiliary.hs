@@ -26,8 +26,6 @@ infixr 6 =!?=
 infixr 5 =!?!=
 infixr 4 =!!??=
 
-infixr 7 -?-
-
 type (.:) oo o = oo o
 type (..:) oo o = oo o
 type (...:) oo o = oo o
@@ -45,8 +43,6 @@ type (:.....) oo o = oo o
 type (:......) oo o = oo o
 type (:.......) oo o = oo o
 type (:........) oo o = oo o
-
-class c -?- d where (-?-) :: (c => r) -> (d => r) -> r
 
 type family Casted (f :: * -> *) a
 
