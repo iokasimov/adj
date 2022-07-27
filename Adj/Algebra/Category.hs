@@ -4,7 +4,7 @@
 
 module Adj.Algebra.Category where
 
-import Adj.Auxiliary (type (.:), type (=!?=), FG (FG), type (=?!=), GF (GF), type (=!?!=), type (=!!??=), Casted, Casting ((-=), (=-)))
+import Adj.Auxiliary (type (.:), type (=!?=), FG (FG), type (=?!=), GF (GF), type (=!?!=), type (=!!??=), FFGH (FFGH), type Casted, Casting ((-=), (=-)))
 import Adj.Algebra.Set ((:*:) ((:*:)), (:+:) (This, That), Unit (Unit), Neutral, absurd)
 
 infixr 9 .
@@ -44,6 +44,8 @@ infixr 5 -???-
 infixr 6 -??-
 infixr 7 -?-
 
+infixl 3 <--||--
+infixl 4 <-||--
 infixl 5 <-||-
 infixl 6 <-|-
 
@@ -769,6 +771,21 @@ instance {-# OVERLAPS #-}
 	map (Straight m) = Straight . (=-=)
 		.: (<-||--) @f @g m
 		. (<--||--) @f @h m
+
+instance
+	( forall o . Functor (-->) (-->) (Opposite f o)
+	, forall o . Functor (-->) (-->) (Straight f o)
+	, Semimonoidal Functor f f (-->) (-->) (-->) i
+	, Functor (-->) (-->) g, Functor (-->) (-->) h, Functor (-->) (-->) i
+	, Transformation (-->) (-->) (g =!?= i) (g =?!= i)
+	, Transformation (-->) (-->) (h =!?= i) (h =?!= i)
+	) => Transformation (-->) (-->) ((=!!??=) f g h =!?= i) ((=!!??=) f g h =?!= i) where
+		-- TODO: simplify this
+	transformation morphism = Straight .: \case
+		FG (FFGH xs) -> GF ....: FFGH ->>-
+			(\x -> component @(-->) @(-->) @(Day (-->) i i f f) @i =- Day x identity)
+				((=-) . (transformation @(-->) @(-->) @(h =!?= i) @(h =?!= i) morphism =-) . FG -->>--
+				(=-) . (transformation @(-->) @(-->) @(g =!?= i) @(g =?!= i) morphism =-) . FG ->>-- xs)
 
 instance Casting (->) f => Casting (-->) f where
 	(=-) = Straight (=-)
