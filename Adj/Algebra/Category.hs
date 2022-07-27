@@ -731,6 +731,17 @@ instance
 		-> FG . point . point . morphism .: tensor Unit
 
 instance
+	( Functor (-->) (-->) f, Functor (-->) (-->) g, Functor (-->) (-->) h
+	, Transformation (-->) (-->) (f =!?= h) (f =?!= h)
+	, Transformation (-->) (-->) (g =!?= h) (g =?!= h)
+	) => Transformation (-->) (-->) ((f =!?= g) =!?= h) ((f =!?= g) =?!= h) where
+	transformation morphism = Straight .: \case
+		-- TODO: simplify this
+		FG (FG xs) -> GF ....:
+			FG ->>- ((=-) . (transformation @(-->) @(-->) @(f =!?= h) @(f =?!= h) identity =-)
+			. FG .: ((=-) . (transformation @(-->) @(-->) @(g =!?= h) @(g =?!= h) morphism =-) . FG ->>- xs))
+
+instance
 	( Functor from between f'
 	, Functor between between' g
 	, Functor between' to f
