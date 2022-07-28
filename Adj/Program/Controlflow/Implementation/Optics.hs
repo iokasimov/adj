@@ -2,13 +2,17 @@ module Adj.Program.Controlflow.Implementation.Optics where
 
 import Adj.Auxiliary ((=-), type (=!?=), FG (FG))
 import Adj.Algebra.Category (type (<--), type (-->), type (:*:>), type (:+:>), (.), (..:), Opposite (Opposite), Straight (Straight), extract)
-import Adj.Algebra.Set ((:+:) (This, That))
+import Adj.Algebra.Set ((:+:) (This, That), (:*:) ((:*:)))
 
 type Lens queried required source target =
 	source --> (((:*:>) (queried target) =!?= (-->) (required target)) source)
 
 view :: Lens queried required source target -> source -> queried target
 view lens source = extract . Opposite . (=-) . (=-) ..: lens =- source
+
+change :: Lens queried required source target
+	-> (queried target -> required target) -> source -> source
+change lens f source = let (q :*: r) = (=-) . (=-) ..: lens =- source in r =- f q
 
 type Prism available set subset =
 	set --> (((:+:>) (available subset) =!?= (<--) (available subset)) set)
