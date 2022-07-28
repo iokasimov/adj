@@ -350,3 +350,4 @@
 * Define `<-||--` operator
 * Define `<--||--` operator
 * Define `change` method
+* Define `Tagged` datatype

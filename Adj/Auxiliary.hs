@@ -108,3 +108,11 @@ newtype Structural o = Structural o
 data I = I | II | III | IIII
 	| IIIII | IIIIII | IIIIIII
 	| IIIIIIII | IIIIIIIII
+
+newtype Tagged tag o = Tagged o
+
+type instance Casted (Tagged tag) o = o
+
+instance Casting (->) (Tagged tag) where
+	(=-) (Tagged x) = x
+	(-=) x = Tagged x
