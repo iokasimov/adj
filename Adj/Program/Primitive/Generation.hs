@@ -3,8 +3,8 @@
 
 module Adj.Program.Primitive.Generation where
 
-import Adj.Auxiliary (Casted, Casting ((=-), (-=)), type (=!?=), FG (FG), FFGH (FFGH), type (=!!??=), Structural (Structural))
-import Adj.Algebra.Category (Semigroupoid ((.)), Category ((.:), identity), Functor (map), Transformation (transformation), Covariant, Traversable, Identity (Identity), Day (Day), type (-->), Straight (Straight), Opposite, Kleisli (Kleisli), (->>-), (->>>-), (->>>--), (-->>--), (=-=))
+import Adj.Auxiliary (Casted, Casting ((=-), (-=)), type (=!?=), FG (FG), type (=?!=), GF (GF), FFGH (FFGH), type (=!!??=), Structural (Structural))
+import Adj.Algebra.Category (Semigroupoid ((.)), Category ((.:), (..:), (....:)), Functor (map), Transformation (transformation), Covariant, Traversable, Semimonoidal, Identity (Identity), type (-->), Straight (Straight), Opposite, (->>-), (->>>-), (->>>--), (-->>--), (=-=))
 import Adj.Algebra.Set (Setoid, (:*:) ((:*:)), (:+:) (This, That))
 
 newtype Generation f g o = Generation
@@ -29,18 +29,20 @@ instance
 	) => Functor (-->) (-->) (Generation f g) where
 	map (Straight m) = Straight . (=-=) . (=-=) .: (->>>--) m . (-->>--) ((=-=) (m ->>>-))
 
--- instance
-	-- ( forall o . Functor (-->) (-->) (Straight f o)
-	-- , forall o . Functor (-->) (-->) (Opposite f o)
-	-- , Covariant Straight Functor g (->) (->)
-	-- , Semimonoidal Functor f f (-->) (-->) h
-	-- -- TODO: how did we get to this?
-	-- , Bindable Functor (->) (->) h
-	-- , Traversable Functor (->) (->) h g
-	-- -- ) => Functor ((-/->) h) ((-/->) h) (Generation f g) where
-	-- -- map (Kleisli (Straight m)) = Kleisli . Straight .: \(Generate xs) ->
-		-- let new = (\(FG x) -> FG ->- (m -/>>/- x)) -->-- (m -/>/-) ->-- xs in
-		-- Generate ->- component @(-->) @(Day (-->) h h f f) =- Day new identity
+instance
+	( forall o . Functor (-->) (-->) (Opposite f o)
+	, forall o . Functor (-->) (-->) (Straight f o)
+	, Functor (-->) (-->) g
+	, Functor (-->) (-->) h
+	, Semimonoidal Functor f f (-->) (-->) (-->) h
+	, Traversable Functor g h (-->)
+	) => Transformation (-->) (-->) (Generation f g =!?= h) (Generation f g =?!= h) where
+	transformation morphism = Straight .: \case
+		FG (Generation xs) -> GF ....: Generation
+			->>- (=-) ..: transformation @(-->) @(-->)
+				@((=!!??=) f Identity (g =!?= Generation f g) =!?= h)
+				@((=!!??=) f Identity (g =!?= Generation f g) =?!= h)
+				morphism =- FG xs
 
 type Construction = Generation (:*:)
 

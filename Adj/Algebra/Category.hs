@@ -458,6 +458,11 @@ instance Transformation (<--) (<--) ((-->) Unit) (Opposite (:*:) r) where
 	transformation (Opposite morphism) = Opposite .: \case
 		Opposite (l :*: _) -> Straight .: \_ -> morphism l
 
+instance Covariant Straight Functor g (->) (->) 
+	=> Transformation (-->) (-->) (Identity =!?= g) (Identity =?!= g) where
+	transformation (Straight morphism) = Straight .: \case
+		FG (Identity x) -> GF (Identity . morphism ->>- x)
+
 -- TODO: it would be nice to generatlize this instance with contstraint unions
 -- (f =!? g) -> g: if f is Monoidal Functor (:*:) (:*:) (<--) (<--) (-->)
 -- (f =!? g) -> g: if f is Co Pointed
