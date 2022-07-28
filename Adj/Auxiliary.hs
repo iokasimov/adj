@@ -77,7 +77,7 @@ newtype FGF f g f' o = FGF (f (g (f' o)))
 
 type (=!?!=) = FGF
 
-type instance Casted (FGF f g f') a = f (g (f' a))
+type instance Casted (FGF f g f') o = f (g (f' o))
 
 instance Casting (->) (FGF f g f') where
 	(=-) ~(FGF x) = x
@@ -102,6 +102,14 @@ type instance Casted (FGG f gg g) o = f (gg g o)
 instance Casting (->) (FGG f gg g) where
 	(=-) ~(FGG x) = x
 	(-=) = FGG
+
+newtype FGFH f g h l r = FGFH (f (g l) (h r))
+
+type instance Casted (FGFH f g h l) r = f (g l) (h r)
+
+instance Casting (->) (FGFH f g l r) where
+	(=-) ~(FGFH x) = x
+	(-=) = FGFH
 
 newtype Structural o = Structural o
 
