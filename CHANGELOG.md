@@ -352,4 +352,9 @@
 * Define `change` method
 * Define `Tagged` datatype
 * Define `Adj.Program.Controlflow.Implementation.Store` module
-* Define `FGFH` scheme
+* Define `FFGH__` scheme
+* Rename `FG` to `FG_`
+* Rename `GF` to `GF_`
+* Rename `FGF` to `FGF_`
+* Rename `FGG` to `FGG_`
+* Rename `FFGH` to `FFGH_`

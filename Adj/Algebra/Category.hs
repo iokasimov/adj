@@ -4,7 +4,7 @@
 
 module Adj.Algebra.Category where
 
-import Adj.Auxiliary (type (.:), type (=!?=), FG (FG), type (=?!=), GF (GF), type (=!?!=), type (=!!??=), FFGH (FFGH), type Casted, Casting ((-=), (=-)))
+import Adj.Auxiliary (type (.:), type (=!?=), FG_ (FG_), type (=?!=), GF_ (GF_), type (=!?!=), type (=!!??=), FFGH_ (FFGH_), type Casted, Casting ((-=), (=-)))
 import Adj.Algebra.Set ((:*:) ((:*:)), (:+:) (This, That), Unit (Unit), Neutral, absurd)
 
 infixr 9 .
@@ -239,7 +239,7 @@ type family Monoidal x source target from to tensor f where
 type Monad f to = (Bindable Functor f to, Pointed Functor f to)
 
 type Comonad f to =
-	( Transformation .: Opposite to .: Opposite to .: FG f f .: f
+	( Transformation .: Opposite to .: Opposite to .: FG_ f f .: f
 	, Transformation .: Opposite to .: Opposite to .: Identity .: f
 	)
 
@@ -248,19 +248,19 @@ type family Pointed x f to where
 
 -- TODO: can we somehow include a notion about semigroupoids/semifunctors here?
 type family Bindable x f to where
-	Bindable Functor f to = Transformation .: to .: to .: FG f f .: f
+	Bindable Functor f to = Transformation .: to .: to .: FG_ f f .: f
 
 -- TODO: we need to add laws here, maybe inherit them from functor composition
 type family Traversable x f g to where
 	Traversable Functor f g to =
-		( Transformation .: to .: to .: FG f g .: GF f g
+		( Transformation .: to .: to .: FG_ f g .: GF_ f g
 		, Functor .: to .: to .: f
 		)
 
 type family Adjunction f g from to where
 	Adjunction f g from to =
-		( Transformation .: to .: from .: FG f g .: Identity
-		, Transformation .: from .: to .: Identity .: FG g f
+		( Transformation .: to .: from .: FG_ f g .: Identity
+		, Transformation .: from .: to .: Identity .: FG_ g f
 		)
 
 instance Semigroupoid (->) where
@@ -346,8 +346,8 @@ instance Functor (<--) (<--) ((:+:>) l) where
 instance Monoidal Functor (:*:) (:*:) (-->) (-->) (-->) g
 	=> Transformation (-->) (-->) (((:+:>) l) =!?= g) (((:+:>) l) =?!= g) where
 		transformation (Straight morphism) = Straight .: \case
-			FG (Straight (That r)) -> GF ....: Straight . That . morphism ->>- r
-			FG (Straight (This l)) -> GF ...: point . Straight . This .: l
+			FG_ (Straight (That r)) -> GF_ ....: Straight . That . morphism ->>- r
+			FG_ (Straight (This l)) -> GF_ ...: point . Straight . This .: l
 
 type (<:*:) = Opposite (:*:)
 
@@ -376,8 +376,8 @@ instance Functor (<--) (<--) ((<:+:) r) where
 instance Monoidal Functor (:*:) (:*:) (-->) (-->) (-->) g
 	=> Transformation (-->) (-->) (((<:+:) r) =!?= g) (((<:+:) r) =?!= g) where
 		transformation (Straight morphism) = Straight .: \case
-			FG (Opposite (This l)) -> GF .....: Opposite . This . morphism ->>- l
-			FG (Opposite (That r)) -> GF ..: point . Opposite . That .: r
+			FG_ (Opposite (This l)) -> GF_ .....: Opposite . This . morphism ->>- l
+			FG_ (Opposite (That r)) -> GF_ ..: point . Opposite . That .: r
 
 instance Transformation (-->) (-->) (Day (-->) ((:+:>) l) ((:+:>) l) (:*:) (:*:)) ((:+:>) l) where
 	transformation (Straight morphism) = Straight .: \case
@@ -461,7 +461,7 @@ instance Transformation (<--) (<--) ((-->) Unit) (Opposite (:*:) r) where
 instance Covariant Straight Functor g (->) (->) 
 	=> Transformation (-->) (-->) (Identity =!?= g) (Identity =?!= g) where
 	transformation (Straight morphism) = Straight .: \case
-		FG (Identity x) -> GF (Identity . morphism ->>- x)
+		FG_ (Identity x) -> GF_ (Identity . morphism ->>- x)
 
 -- TODO: it would be nice to generatlize this instance with contstraint unions
 -- (f =!? g) -> g: if f is Monoidal Functor (:*:) (:*:) (<--) (<--) (-->)
@@ -470,17 +470,17 @@ instance Covariant Straight Functor g (->) (->)
 -- (f =!? g) -> f: if g is Co Pointed
 -- instance Transformation (-->) (-->) (Identity =!?= Identity) Identity where
 -- 	transformation (Straight morphism) = Straight .: \case
--- 		FG (Identity x) -> morphism ->>- x
+-- 		FG_ (Identity x) -> morphism ->>- x
 
 -- TODO: amgibous intermediate category for =!?= Functor instance
 -- instance Transformation (-->) (-->) ((:*:>) s =!?= (-->) s) Identity where
 	-- transformation (Straight morphism) = Straight .: \case
-		-- FG (Straight (s :*: Straight ms)) -> Identity . morphism .: ms s
+		-- FG_ (Straight (s :*: Straight ms)) -> Identity . morphism .: ms s
 
 -- TODO: amgibous intermediate category for =!?= Functor instance
 -- instance Transformation (-->) (-->) Identity ((-->) s =!?= (:*:>) s) where
 	-- transformation (Straight morphism) = Straight .: \case
-		-- Identity x -> FG . Straight .: \s -> Straight ...: s :*: morphism x
+		-- Identity x -> FG_ . Straight .: \s -> Straight ...: s :*: morphism x
 
 (->>-) :: (->>-) f => (source -> target) -> f source -> f target
 m ->>- x = map @(-->) @(-->) (Straight m) =- x
@@ -558,7 +558,7 @@ m --<<<-- x = (--||--) @(<--) @(<--) @(<--) (Opposite m) =- x
 (-/>>-)
 	:: Bindable Functor f (-->)
 	=> (source -> f target) -> f source -> f target
-m -/>>- x = component @(-->) @(-->) @(FG _ _) =- FG (m ->>- x)
+m -/>>- x = component @(-->) @(-->) @(FG_ _ _) =- FG_ (m ->>- x)
 
 (-/>>>-)
 	:: Bindable Functor g (-->)
@@ -568,7 +568,7 @@ m -/>>>- x = (m -/>>-) ->>- x
 
 (-/>>/-) :: Traversable Functor f g (-->)
 	=> (source -> g target) -> f source -> g (f target)
-m -/>>/- x = (=-) ...: component @(-->) @(-->) @(FG _ _) @(GF _ _) =- FG (m ->>- x)
+m -/>>/- x = (=-) ...: component @(-->) @(-->) @(FG_ _ _) @(GF_ _ _) =- FG_ (m ->>- x)
 
 (-/>>>/-)
 	:: Traversable Functor g h (-->)
@@ -624,8 +624,8 @@ extract x = component @(<--) @(<--) @((-->) (Neutral (:*:))) =- x =- Unit
 empty :: Monoidal Functor (:*:) (:+:) (-->) (-->) (-->) f => f o
 empty = component @(-->) @(-->) @((-->) (Neutral (:+:))) =- Straight absurd
 
-join :: Transformation .: (-->) .: (-->) .: FG f f .: f => f (f o) -> f o
-join x = component @(-->) @(-->) =- FG x
+join :: Transformation .: (-->) .: (-->) .: FG_ f f .: f => f (f o) -> f o
+join x = component @(-->) @(-->) =- FG_ x
 
 return :: forall to f o
 	. Transformation .: to .: to .: Identity .: f
@@ -715,27 +715,27 @@ instance
 	, Transformation (-->) (-->) (Day (-->) g g (:*:) (:*:)) g
 	) => Transformation (-->) (-->) (Day (-->) (f =!?= g) (f =!?= g) (:*:) (:*:)) (f =!?= g) where
 	transformation (Straight morphism) =
-		 Straight .: \(Day (FG l :*: FG r) (Straight tensor)) ->
-			FG ....: (morphism . tensor |*|-|)
+		 Straight .: \(Day (FG_ l :*: FG_ r) (Straight tensor)) ->
+			FG_ ....: (morphism . tensor |*|-|)
 				<-|- (identity |*|-| l :*: r)
 
 instance (->>>-) f g
 	=> Transformation (-->) (-->) (Day (-->) (f =!?= g) Identity (:*:) (:*:)) (f =!?= g) where
-	transformation (Straight morphism) = Straight .: \(Day (FG l :*: Identity r) tensor) ->
+	transformation (Straight morphism) = Straight .: \(Day (FG_ l :*: Identity r) tensor) ->
 		-- TODO: looks like an adjunction
-		FG .....: (Straight morphism . tensor =-) . (:*: r) ->>>- l
+		FG_ .....: (Straight morphism . tensor =-) . (:*: r) ->>>- l
 
 instance (->>>-) f g
 	=> Transformation (-->) (-->) (Day (-->) Identity (f =!?= g) (:*:) (:*:)) (f =!?= g) where
-	transformation (Straight morphism) = Straight .: \(Day (Identity l :*: FG r) tensor) ->
-		FG .....: (Straight morphism . tensor =-) . (l :*:) ->>>- r
+	transformation (Straight morphism) = Straight .: \(Day (Identity l :*: FG_ r) tensor) ->
+		FG_ .....: (Straight morphism . tensor =-) . (l :*:) ->>>- r
 
 instance
 	( Monoidal Functor (:*:) (:*:) (-->) (-->) (-->) f
 	, Monoidal Functor (:*:) (:*:) (-->) (-->) (-->) g
 	) => Transformation (-->) (-->) ((-->) Unit) (f =!?= g) where
 	transformation (Straight morphism) = Straight .: \(Straight tensor)
-		-> FG . point . point . morphism .: tensor Unit
+		-> FG_ . point . point . morphism .: tensor Unit
 
 instance
 	( Functor (-->) (-->) f, Functor (-->) (-->) g, Functor (-->) (-->) h
@@ -744,9 +744,9 @@ instance
 	) => Transformation (-->) (-->) ((f =!?= g) =!?= h) ((f =!?= g) =?!= h) where
 	transformation morphism = Straight .: \case
 		-- TODO: simplify this
-		FG (FG xs) -> GF ....:
-			FG ->>- ((=-) . (transformation @(-->) @(-->) @(f =!?= h) @(f =?!= h) identity =-)
-			. FG .: ((=-) . (transformation @(-->) @(-->) @(g =!?= h) @(g =?!= h) morphism =-) . FG ->>- xs))
+		FG_ (FG_ xs) -> GF_ ....:
+			FG_ ->>- ((=-) . (transformation @(-->) @(-->) @(f =!?= h) @(f =?!= h) identity =-)
+			. FG_ .: ((=-) . (transformation @(-->) @(-->) @(g =!?= h) @(g =?!= h) morphism =-) . FG_ ->>- xs))
 
 instance
 	( Functor from between f'
@@ -787,10 +787,10 @@ instance
 	) => Transformation (-->) (-->) ((=!!??=) f g h =!?= i) ((=!!??=) f g h =?!= i) where
 		-- TODO: simplify this
 	transformation morphism = Straight .: \case
-		FG (FFGH xs) -> GF ....: FFGH ->>-
+		FG_ (FFGH_ xs) -> GF_ ....: FFGH_ ->>-
 			(\x -> component @(-->) @(-->) @(Day (-->) i i f f) @i =- Day x identity)
-				((=-) . (transformation @(-->) @(-->) @(h =!?= i) @(h =?!= i) morphism =-) . FG -->>--
-				(=-) . (transformation @(-->) @(-->) @(g =!?= i) @(g =?!= i) morphism =-) . FG ->>-- xs)
+				((=-) . (transformation @(-->) @(-->) @(h =!?= i) @(h =?!= i) morphism =-) . FG_ -->>--
+				(=-) . (transformation @(-->) @(-->) @(g =!?= i) @(g =?!= i) morphism =-) . FG_ ->>-- xs)
 
 instance Casting (->) f => Casting (-->) f where
 	(=-) = Straight (=-)

@@ -3,7 +3,7 @@
 
 module Adj.Program.Primitive.Generation where
 
-import Adj.Auxiliary (Casted, Casting ((=-), (-=)), type (=!?=), FG (FG), type (=?!=), GF (GF), FFGH (FFGH), type (=!!??=), Structural (Structural))
+import Adj.Auxiliary (Casted, Casting ((=-), (-=)), type (=!?=), FG_ (FG_), type (=?!=), GF_ (GF_), FFGH_ (FFGH_), type (=!!??=), Structural (Structural))
 import Adj.Algebra.Category (Semigroupoid ((.)), Category ((.:), (..:), (....:)), Functor (map), Transformation (transformation), Covariant, Traversable, Semimonoidal, Identity (Identity), type (-->), Straight (Straight), Opposite, (->>-), (->>>-), (->>>--), (-->>--), (=-=))
 import Adj.Algebra.Set (Setoid, (:*:) ((:*:)), (:+:) (This, That))
 
@@ -19,8 +19,8 @@ instance Casting (->) (Generation f g) where
 	(=-) (Generation m) = m
 	(-=) m = Generation m
 
-pattern Generate :: f (Identity o) (FG g (Generation f g) o) -> Generation f g o
-pattern Generate xs <- Generation (FFGH xs) where Generate xs = Generation (FFGH xs)
+pattern Generate :: f (Identity o) (FG_ g (Generation f g) o) -> Generation f g o
+pattern Generate xs <- Generation (FFGH_ xs) where Generate xs = Generation (FFGH_ xs)
 
 instance
 	( forall o . Functor (-->) (-->) (Straight f o)
@@ -38,25 +38,25 @@ instance
 	, Traversable Functor g h (-->)
 	) => Transformation (-->) (-->) (Generation f g =!?= h) (Generation f g =?!= h) where
 	transformation morphism = Straight .: \case
-		FG (Generation xs) -> GF ....: Generation
+		FG_ (Generation xs) -> GF_ ....: Generation
 			->>- (=-) ..: transformation @(-->) @(-->)
 				@((=!!??=) f Identity (g =!?= Generation f g) =!?= h)
 				@((=!!??=) f Identity (g =!?= Generation f g) =?!= h)
-				morphism =- FG xs
+				morphism =- FG_ xs
 
 type Construction = Generation (:*:)
 
 pattern Construct :: o -> f (Construction f o) -> Construction f o
-pattern Construct x xs <- Generate (Identity x :*: FG xs)
-	where Construct x xs = Generate (Identity x :*: FG xs)
+pattern Construct x xs <- Generate (Identity x :*: FG_ xs)
+	where Construct x xs = Generate (Identity x :*: FG_ xs)
 
 -- TODO: instance Transformation (-->) (-->) (Construction f) f where
 
 type Instruction = Generation (:+:)
 
 pattern Instruct :: f (Instruction f o) -> Instruction f o
-pattern Instruct xs <- Generate (That (FG xs))
-	where Instruct xs = Generate (That (FG xs))
+pattern Instruct xs <- Generate (That (FG_ xs))
+	where Instruct xs = Generate (That (FG_ xs))
 
 pattern Load :: o -> Instruction f o
 pattern Load x <- Generate (This (Identity x))

@@ -53,63 +53,65 @@ class Casting m t where
 
 -- TODO: newtype FF f o = f (f o)
 
-newtype FG f g o = FG (f (g o))
+newtype FG_ f g o = FG_ (f (g o))
 
-type (=!?=) = FG
+type (=!?=) = FG_
 
 type instance Casted (f =!?= g) a = f (g a)
 
-instance Casting (->) (FG f g) where
-	(=-) ~(FG x) = x
-	(-=) = FG
+instance Casting (->) (FG_ f g) where
+	(=-) ~(FG_ x) = x
+	(-=) = FG_
 
-newtype GF f g o = GF (g (f o))
+-- TODO: add underscore to names that indicate a number of parameters
 
-type (=?!=) = GF
+newtype GF_ f g o = GF_ (g (f o))
+
+type (=?!=) = GF_
 
 type instance Casted (f =?!= g) a = g (f a)
 
-instance Casting (->) (GF f g) where
-	(=-) ~(GF x) = x
-	(-=) = GF
+instance Casting (->) (GF_ f g) where
+	(=-) ~(GF_ x) = x
+	(-=) = GF_
 
-newtype FGF f g f' o = FGF (f (g (f' o)))
+newtype FGF_ f g f' o = FGF_ (f (g (f' o)))
 
-type (=!?!=) = FGF
+type (=!?!=) = FGF_
 
-type instance Casted (FGF f g f') o = f (g (f' o))
+type instance Casted (FGF_ f g f') o = f (g (f' o))
 
-instance Casting (->) (FGF f g f') where
-	(=-) ~(FGF x) = x
-	(-=) = FGF
+instance Casting (->) (FGF_ f g f') where
+	(=-) ~(FGF_ x) = x
+	(-=) = FGF_
 
-newtype FFGH f g h o = FFGH (f (g o) (h o))
+newtype FFGH_ f g h o = FFGH_ (f (g o) (h o))
 
-type (=!!??=) = FFGH
+type (=!!??=) = FFGH_
 
-type instance Casted (FFGH f g h) o = f (g o) (h o)
+type instance Casted (FFGH_ f g h) o = f (g o) (h o)
 
-instance Casting (->) (FFGH f g h) where
-	(=-) ~(FFGH x) = x
-	(-=) = FFGH
+instance Casting (->) (FFGH_ f g h) where
+	(=-) ~(FFGH_ x) = x
+	(-=) = FFGH_
 
-newtype FGG f gg g o = FGG (f (gg g o))
+newtype FGG_ f gg g o = FGG_ (f (gg g o))
 
-type (=!??=) = FGG
+type (=!??=) = FGG_
 
-type instance Casted (FGG f gg g) o = f (gg g o)
+type instance Casted (FGG_ f gg g) o = f (gg g o)
 
-instance Casting (->) (FGG f gg g) where
-	(=-) ~(FGG x) = x
-	(-=) = FGG
+instance Casting (->) (FGG_ f gg g) where
+	(=-) ~(FGG_ x) = x
+	(-=) = FGG_
 
-newtype FGFH f g h l r = FGFH (f (g l) (h r))
+newtype FFGH__ f g h l r = FFGH__ (f (g l) (h r))
 
-type instance Casted (FGFH f g h l) r = f (g l) (h r)
+type instance Casted (FFGH__ f g h l) r = f (g l) (h r)
 
-instance Casting (->) (FGFH f g l r) where
-	(=-) ~(FGFH x) = x
-	(-=) = FGFH
+instance Casting (->) (FFGH__ f g l r) where
+	(=-) ~(FFGH__ x) = x
+	(-=) = FFGH__
 
 newtype Structural o = Structural o
 
