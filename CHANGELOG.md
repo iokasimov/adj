@@ -370,3 +370,4 @@
 * Define `Adj.Program.Datastructure.Property.Substructure` module
 * Remove `Endo` type family
 * Define `Endo` morphism
+* Define `<->` type operator
