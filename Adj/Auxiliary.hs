@@ -113,6 +113,28 @@ instance Casting (->) (FFGH__ f g l r) where
 	(=-) ~(FFGH__ x) = x
 	(-=) = FFGH__
 
+-- TODO: think about a type operator which
+-- could visually describet the scheme
+newtype FFGHHI__ f g h i l r = FFGHHI__
+	((f (g l) =!?= h (i l)) r)
+
+type instance Casted (FFGHHI__ f g h i l) r = (f (g l) =!?= h (i l)) r
+
+instance Casting (->) (FFGHHI__ f g h i l) where
+	(=-) ~(FFGHHI__ x) = x
+	(-=) = FFGHHI__
+
+-- TODO: think about a type operator which
+-- could visually describet the scheme
+newtype FFGGIH__ f g h i l r = FFGGIH__
+	((f (g (i l)) =!?= h l) r)
+
+type instance Casted (FFGGIH__ f g h i l) r = (f (g (i l)) =!?= h l) r
+
+instance Casting (->) (FFGGIH__ f g h i l) where
+	(=-) ~(FFGGIH__ x) = x
+	(-=) = FFGGIH__
+
 newtype Structural o = Structural o
 
 data I = I | II | III | IIII
