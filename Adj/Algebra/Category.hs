@@ -20,8 +20,8 @@ infixl 1 ........:
 infixr 6 <-\-, -/->
 infixr 7 <--, -->
 
-infixr 8 <:*:, :*:>
-infixr 8 <:+:, :+:>
+infixr 6 <:*:, :*:>
+infixr 6 <:+:, :+:>
 
 infixl 3 --|||--
 infixl 4 -|||--, --||--
