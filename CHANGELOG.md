@@ -367,3 +367,4 @@
 * Change `change` method definition
 
 # 0.1.7
+* Define `Adj.Program.Datastructure.Property.Substructure` module

@@ -42,6 +42,7 @@ library
     Adj.Program.Datastructure.Implementation.Tree
     Adj.Program.Datastructure.Property
     Adj.Program.Datastructure.Property.Cardinality
+    Adj.Program.Datastructure.Property.Substructure
   default-extensions:
     DataKinds
     ConstraintKinds
