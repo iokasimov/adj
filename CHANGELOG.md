@@ -365,3 +365,5 @@
 * Change `Lens` type alias definition
 * Change `view` method definition
 * Change `change` method definition
+
+# 0.1.7
