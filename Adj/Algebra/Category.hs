@@ -185,6 +185,14 @@ instance Semigroupoid morhism => Semigroupoid (Opposite morhism) where
 instance Category morhism => Category (Opposite morhism) where
 	identity = Opposite identity
 
+newtype Endo m source target = Endo (m target target)
+
+type instance Casted (Endo m source) target = m target target
+
+instance Casting (->) (Endo m target) where
+	(=-) (Endo m) = m
+	(-=) m = Endo m
+
 newtype Kleisli f m source target =
 	Kleisli (m source .: f target)
 

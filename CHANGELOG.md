@@ -368,3 +368,5 @@
 
 # 0.1.7
 * Define `Adj.Program.Datastructure.Property.Substructure` module
+* Remove `Endo` type family
+* Define `Endo` morphism
