@@ -358,3 +358,7 @@
 * Rename `FGF` to `FGF_`
 * Rename `FGG` to `FGG_`
 * Rename `FFGH` to `FFGH_`
+* Define `FFGHHI__` scheme
+* Define `FFGGIH__` scheme
+* Define `FFGHH__` scheme
+* Define `FFGGH__` scheme

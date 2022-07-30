@@ -105,6 +105,26 @@ instance Casting (->) (FGG_ f gg g) where
 	(=-) ~(FGG_ x) = x
 	(-=) = FGG_
 
+-- TODO: think about a type operator which
+-- could visually describet the scheme
+newtype FFGHH__ f g h l r = FFGHH__ (f (g l) (h l r))
+
+type instance Casted (FFGHH__ f g h l) r = f (g l) (h l r)
+
+instance Casting (->) (FFGHH__ f g h l) where
+	(=-) ~(FFGHH__ x) = x
+	(-=) = FFGHH__
+
+-- TODO: think about a type operator which
+-- could visually describet the scheme
+newtype FFGGH__ f g h l r = FFGGH__ (f (g l r) (h r))
+
+type instance Casted (FFGGH__ f g h l) r = f (g l r) (h r)
+
+instance Casting (->) (FFGGH__ f g h l) where
+	(=-) ~(FFGGH__ x) = x
+	(-=) = FFGGH__
+
 newtype FFGH__ f g h l r = FFGH__ (f (g l) (h r))
 
 type instance Casted (FFGH__ f g h l) r = f (g l) (h r)
