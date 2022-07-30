@@ -1,20 +1,24 @@
 module Adj.Program.Controlflow.Implementation.Optics where
 
-import Adj.Auxiliary ((=-), type (=!?=), FG_ (FG_))
-import Adj.Algebra.Category (type (<--), type (-->), type (:*:>), type (:+:>), (.), (..:), Opposite (Opposite), Straight (Straight), extract)
+import Adj.Auxiliary ((=-), type (=!?=), FG_ (FG_), FFGHH__ (FFGHH__), FFGHHI__ (FFGHHI__))
+import Adj.Algebra.Category (type (<--), type (-->), type (:+:>), (.), (.:), Opposite (Opposite), Straight (Straight), Identity (Identity), extract)
 import Adj.Algebra.Set ((:+:) (This, That), (:*:) ((:*:)))
+import Adj.Program.Controlflow.Implementation.Store (Store)
 
--- TODO: to use it as natural transformation
--- I should hide source and target parameters
-type Lens queried required source target =
-	source --> (((:*:>) (queried target) =!?= (-->) (required target)) source)
+type Lens queried required = FFGHH__ (-->)
+	Identity (Opposite (Store queried required))
 
 view :: Lens queried required source target -> source -> queried target
-view lens source = extract . Opposite . (=-) . (=-) ..: lens =- source
+view (FFGHH__ lens) source =
+	let (Opposite (FFGHHI__ store)) = lens =- Identity source
+	in extract . Opposite . (=-) . (=-) .: store
 
 change :: Lens queried required source target
 	-> (queried target -> required target) -> source -> source
-change lens f source = let (q :*: r) = (=-) . (=-) ..: lens =- source in r =- f q
+change (FFGHH__ lens) f source =
+	let (Opposite (FFGHHI__ store)) = lens =- Identity source in
+	let (q :*: r) = (=-) . (=-) .: store in
+	r =- f q
 
 type Prism available set subset =
 	set --> (((:+:>) (available subset) =!?= (<--) (available subset)) set)
