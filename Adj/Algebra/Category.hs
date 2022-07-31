@@ -157,6 +157,23 @@ component :: forall from to f g object
 	=> to .: f object .: g object
 component = transformation @from @to @f @g identity
 
+-- TODO: find a way to define a horizontal composition without overlapped instances
+-- instance
+	-- ( Functor between to h
+	-- , Functor between to i
+	-- , Transformation from between f g
+	-- , Transformation between to h i
+	-- ) => Transformation from to (h =!?= f) (i =!?= g) where
+
+-- TODO: find a way to define a vertical composition without overlapped instances
+-- instance
+	-- ( Functor from to f
+	-- , Functor from to g
+	-- , Functor from to h
+	-- , Transformation from to f g
+	-- , Transformation from to g h
+	-- ) => Transformation from to f h where
+--
 newtype Straight m source target = Straight (m source target)
 
 type instance Casted (Straight m source) target = m source target
@@ -331,6 +348,8 @@ instance Transformation (-->) (-->) (Day (-->) Identity Identity (:*:) (:*:)) Id
 	transformation (Straight morphism) = Straight .: \case
 		Day (Identity l :*: Identity r) (Straight tensor)
 			-> Identity . morphism . tensor ...: l :*: r
+
+-- TOOD: instance Transformation (<--) (<--) (Day (-->) Identity Identity (:*:) (:*:)) Identity where
 
 type (:*:>) = Straight (:*:)
 
