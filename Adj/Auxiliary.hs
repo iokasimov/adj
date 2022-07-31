@@ -155,6 +155,14 @@ instance Casting (->) (FFGGIH__ f g h i l) where
 	(=-) ~(FFGGIH__ x) = x
 	(-=) = FFGGIH__
 
+newtype FFGGHH__ f g h l r = FFGGHH__ (f (g l r) (h l r))
+
+type instance Casted (FFGGHH__ f g h l) r = f (g l r) (h l r)
+
+instance Casting (->) (FFGGHH__ f g h l) where
+	(=-) ~(FFGGHH__ x) = x
+	(-=) = FFGGHH__
+
 newtype Structural o = Structural o
 
 data I = I | II | III | IIII

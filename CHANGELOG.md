@@ -371,3 +371,4 @@
 * Remove `Endo` type family
 * Define `Endo` morphism
 * Define `<->` type operator
+* Define `FFGGHH__` scheme
