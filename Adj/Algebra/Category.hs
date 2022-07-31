@@ -193,6 +193,12 @@ instance Casting (->) (Endo m target) where
 	(=-) (Endo m) = m
 	(-=) m = Endo m
 
+instance Category morphism => Semigroupoid (Endo morphism) where
+	Endo _ . Endo _ = Endo identity
+
+instance Category morphism => Category (Endo morphism) where
+	identity = Endo identity
+
 newtype Kleisli f m source target =
 	Kleisli (m source .: f target)
 
